@@ -20,7 +20,14 @@ object BuildConfiguration extends Build {
     settings = Seq(
       libraryDependencies ++= Seq(
         "com.novocode" % "junit-interface" % "0.10" % "test",
-        "junit" % "junit" % "4.11" % "test"
+        "org.hamcrest" % "hamcrest-all" % "1.3",
+        "org.hamcrest" % "hamcrest-core" % "1.3",
+        ("junit" % "junit-dep" % "4.11")
+          .exclude("org.hamcrest", "hamcrest-core"),
+        ("org.mockito" % "mockito-all" % "1.9.5")
+          .exclude("org.hamcrest", "hamcrest-core"),
+        ("org.mockito" % "mockito-core" % "1.9.5")
+          .exclude("org.hamcrest", "hamcrest-core")
       )
     )
   )
