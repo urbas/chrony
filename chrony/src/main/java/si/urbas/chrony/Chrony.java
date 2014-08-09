@@ -14,7 +14,7 @@ public class Chrony {
     eventRepository.addEvent(event);
   }
 
-  public ChronyReport getReport() {
+  public Report getReport() {
     return reportFactory.createReport(eventRepository);
   }
 

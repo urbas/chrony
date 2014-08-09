@@ -12,14 +12,14 @@ public class ChronyTest {
 
   private Chrony chrony;
   private EventRepository eventRepository;
-  private ChronyReport chronyReport;
+  private Report report;
 
   @Before
   public void setUp() throws Exception {
     eventRepository = mock(EventRepository.class);
-    chronyReport = mock(ChronyReport.class);
+    report = mock(Report.class);
     ReportFactory reportFactory = mock(ReportFactory.class);
-    when(reportFactory.createReport(eventRepository)).thenReturn(chronyReport);
+    when(reportFactory.createReport(eventRepository)).thenReturn(report);
     chrony = new Chrony(eventRepository, reportFactory);
   }
 
@@ -32,7 +32,7 @@ public class ChronyTest {
 
   @Test
   public void getReport_MUST_return_a_report_created_with_the_report_factory() {
-    assertEquals(chronyReport, chrony.getReport());
+    assertEquals(report, chrony.getReport());
   }
 
 }

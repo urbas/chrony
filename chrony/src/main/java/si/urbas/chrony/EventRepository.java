@@ -1,7 +1,5 @@
 package si.urbas.chrony;
 
-public class EventRepository {
-  public void addEvent(Event event) {
-
-  }
+public abstract class EventRepository {
+  public abstract void addEvent(Event event);
 }
