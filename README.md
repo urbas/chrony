@@ -1,9 +1,12 @@
 # Chrony
 
-Chrony takes as input events from your personal life and reports  how __frequent__ they are, how __regular__ they are,
-whether they are part of a __ceremony__, or how __relevant__ they are at present.
+Chrony takes as input events from your personal life and produces a _personal report_ of how __relevant__ the collected events are at the present, how __frequent__ they are, how __regular__ they are, and whether they are part of a __ceremony__.
 
 Let's define the above terms.
+
+## Relevance
+
+Relevance is a measure of how high on the personal report an event should be listed.
 
 ## Event frequency
 
@@ -11,20 +14,17 @@ The frequency of an event is a measure of how often they repeated within a certa
 
 ## Regularity
 
-The regularity of an event is a measure of how closely they align with other cycles in a typical human life. An event
-can have a daily regularity, it may happens every day in the morning.
+The regularity of an event is a measure of how closely they align with other cycles in a typical human life. An event can have a daily regularity, it may happens every day in the morning.
 
 ## Ceremony
 
 A ceremony is a sequence of events that regularly or frequently occur together in a specific order.
 
-## Relevance
-
-Relevance is a measure of how likely the event is to occur again (within a certain time frame).
-
 # Use cases
 
-- I want to see the most frequent events.
+- I want to see the most relevant events.
+- I want to see the frequency of listed events (in terms of repetitions in an hour, day, week, month, etc.).
+- I want the most frequent events to rank high on relevance.
 
 # Technical notes
 
