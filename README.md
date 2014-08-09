@@ -22,6 +22,10 @@ A ceremony is a sequence of events that regularly or frequently occur together i
 
 Relevance is a measure of how likely the event is to occur again (within a certain time frame).
 
+# Use cases
+
+- I want to see the most frequent events.
+
 # Technical notes
 
 - Chrony should not need any connection to the internet (no collected events should ever get through the web).

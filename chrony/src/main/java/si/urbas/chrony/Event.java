@@ -1,4 +1,3 @@
 package si.urbas.chrony;
 
-public class Event {
-}
+public class Event {}
