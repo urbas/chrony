@@ -22,7 +22,7 @@ A ceremony is a sequence of events that regularly or frequently occur together i
 
 # Use cases
 
-- I want to see the most relevant events.
+- I want to see the most relevant events (in descending order).
 - I want to see the frequency of listed events (in terms of repetitions in an hour, day, week, month, etc.).
 - I want the most frequent events to rank high on relevance.
 
