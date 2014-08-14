@@ -12,7 +12,7 @@ public class Report {
   }
 
   public Iterable<EventDescription> relevantEvents() {
-    EventRepositoryAnalysis eventRepositoryAnalysis = analyzer.analyze(eventRepository);
-    return analysisInterpreter.findRelevantEvents(eventRepositoryAnalysis);
+    Analysis analysis = analyzer.analyze(eventRepository);
+    return analysisInterpreter.mostRelevantEvents(analysis);
   }
 }

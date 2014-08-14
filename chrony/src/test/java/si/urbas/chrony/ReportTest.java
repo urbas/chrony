@@ -13,7 +13,7 @@ public class ReportTest {
   private Report report;
   private Analyzer analyzer;
   private EventRepository eventRepository;
-  private EventRepositoryAnalysis eventRepositoryAnalysis;
+  private Analysis analysis;
   private AnalysisInterpreter analysisInterpreter;
   private ArrayList<EventDescription> eventDescriptions;
 
@@ -21,12 +21,12 @@ public class ReportTest {
   public void setUp() throws Exception {
     eventRepository = mock(EventRepository.class);
     analyzer = mock(Analyzer.class);
-    eventRepositoryAnalysis = mock(EventRepositoryAnalysis.class);
+    analysis = mock(Analysis.class);
     analysisInterpreter = mock(AnalysisInterpreter.class);
     eventDescriptions = new ArrayList<>();
 
-    doReturn(eventRepositoryAnalysis).when(analyzer).analyze(eventRepository);
-    doReturn(eventDescriptions).when(analysisInterpreter).findRelevantEvents(eventRepositoryAnalysis);
+    doReturn(analysis).when(analyzer).analyze(eventRepository);
+    doReturn(eventDescriptions).when(analysisInterpreter).mostRelevantEvents(analysis);
 
     report = new Report(eventRepository, analyzer, analysisInterpreter);
   }
@@ -40,7 +40,7 @@ public class ReportTest {
   @Test
   public void relevantEvents_MUST_pass_the_result_of_the_event_analysis_to_analysis_interpreter() {
     report.relevantEvents();
-    verify(analysisInterpreter).findRelevantEvents(eventRepositoryAnalysis);
+    verify(analysisInterpreter).mostRelevantEvents(analysis);
   }
 
   @Test
