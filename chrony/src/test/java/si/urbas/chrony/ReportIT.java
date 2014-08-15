@@ -16,7 +16,7 @@ public class ReportIT {
   @Before
   public void setUp() throws Exception {
     eventRepository = new MemoryEventRepository();
-    FrequencyOnlyAnalyzer analyzer = new FrequencyOnlyAnalyzer(new TestEventGrouper());
+    FrequencyOnlyAnalyzer analyzer = new FrequencyOnlyAnalyzer(new ByNameEventGrouper());
     AnalysisInterpreter analysisInterpreter = new AnalysisInterpreter();
     report = new Report(eventRepository, analyzer, analysisInterpreter);
   }

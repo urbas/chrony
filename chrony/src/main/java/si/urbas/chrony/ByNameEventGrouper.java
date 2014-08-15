@@ -1,11 +1,12 @@
 package si.urbas.chrony;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-class TestEventGrouper implements EventGrouper {
+class ByNameEventGrouper implements EventGrouper {
   @Override
   public Iterable<Event> extractEventGroups(EventRepository eventRepository) {
-    ArrayList<Event> events = new ArrayList<>();
+    Set<Event> events = new HashSet<>();
     for (EventSample eventSample : eventRepository.allEvents()) {
       events.add(new Event(eventSample.name));
     }
