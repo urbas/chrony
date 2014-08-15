@@ -1,8 +1,19 @@
 package si.urbas.chrony;
 
-public class MemoryEventRepository extends EventRepository {
-  @Override
-  public void addEvent(Event event) {
+import java.util.ArrayList;
+import java.util.Collections;
 
+public class MemoryEventRepository implements EventRepository {
+
+  private final ArrayList<EventSample> eventSamples = new ArrayList<>();
+
+  @Override
+  public void addEvent(EventSample eventSample) {
+    eventSamples.add(eventSample);
+  }
+
+  @Override
+  public Iterable<EventSample> allEvents() {
+    return Collections.unmodifiableList(eventSamples);
   }
 }

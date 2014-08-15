@@ -15,7 +15,7 @@ public class ReportTest {
   private EventRepository eventRepository;
   private Analysis analysis;
   private AnalysisInterpreter analysisInterpreter;
-  private ArrayList<EventDescription> eventDescriptions;
+  private ArrayList<Event> events;
 
   @Before
   public void setUp() throws Exception {
@@ -23,10 +23,10 @@ public class ReportTest {
     analyzer = mock(Analyzer.class);
     analysis = mock(Analysis.class);
     analysisInterpreter = mock(AnalysisInterpreter.class);
-    eventDescriptions = new ArrayList<>();
+    events = new ArrayList<>();
 
     doReturn(analysis).when(analyzer).analyze(eventRepository);
-    doReturn(eventDescriptions).when(analysisInterpreter).mostRelevantEvents(analysis);
+    doReturn(events).when(analysisInterpreter).mostRelevantEvents(analysis);
 
     report = new Report(eventRepository, analyzer, analysisInterpreter);
   }
@@ -45,7 +45,7 @@ public class ReportTest {
 
   @Test
   public void relevantEvents_MUST_return_the_relevant_results_returned_by_the_analysis_interpreter() {
-    assertSame(eventDescriptions, report.relevantEvents());
+    assertSame(events, report.relevantEvents());
   }
 
 }

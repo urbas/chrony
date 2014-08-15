@@ -1,9 +1,7 @@
 package si.urbas.chrony;
 
-import java.util.ArrayList;
-
 public class AnalysisInterpreter {
-  public Iterable<EventDescription> mostRelevantEvents(Analysis analysis) {
-    return new ArrayList<>();
+  public Iterable<Event> mostRelevantEvents(Analysis analysis) {
+    return analysis.allEvents();
   }
 }

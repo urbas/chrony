@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 public class ChronyTest {
 
+  private static final String TEST_EVENT_NAME = "Test event name";
   private Chrony chrony;
   private EventRepository eventRepository;
   private Report report;
@@ -25,9 +26,9 @@ public class ChronyTest {
 
   @Test
   public void addEvent_MUST_add_the_event_to_the_event_repository() {
-    Event event = new Event();
-    chrony.addEvent(event);
-    verify(eventRepository).addEvent(event);
+    EventSample eventSample = new EventSample(TEST_EVENT_NAME);
+    chrony.addEvent(eventSample);
+    verify(eventRepository).addEvent(eventSample);
   }
 
   @Test

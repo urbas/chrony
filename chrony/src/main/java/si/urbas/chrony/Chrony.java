@@ -10,8 +10,8 @@ public class Chrony {
     this.reportFactory = reportFactory;
   }
 
-  public void addEvent(Event event) {
-    eventRepository.addEvent(event);
+  public void addEvent(EventSample eventSample) {
+    eventRepository.addEvent(eventSample);
   }
 
   public Report getReport() {

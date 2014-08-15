@@ -1,4 +1,5 @@
 package si.urbas.chrony;
 
-public class Analysis {
+public interface Analysis {
+  public Iterable<Event> allEvents();
 }

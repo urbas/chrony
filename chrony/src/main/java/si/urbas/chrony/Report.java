@@ -11,7 +11,7 @@ public class Report {
     this.analysisInterpreter = analysisInterpreter;
   }
 
-  public Iterable<EventDescription> relevantEvents() {
+  public Iterable<Event> relevantEvents() {
     Analysis analysis = analyzer.analyze(eventRepository);
     return analysisInterpreter.mostRelevantEvents(analysis);
   }
