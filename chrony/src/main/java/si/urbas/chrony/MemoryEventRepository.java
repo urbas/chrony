@@ -1,7 +1,8 @@
 package si.urbas.chrony;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MemoryEventRepository implements EventRepository {
 
@@ -13,7 +14,9 @@ public class MemoryEventRepository implements EventRepository {
   }
 
   @Override
-  public Iterable<EventSample> allEvents() {
-    return Collections.unmodifiableList(eventSamples);
+  public Set<String> allEvents() {
+    return eventSamples.stream()
+                       .map(eventSample -> eventSample.name)
+                       .collect(Collectors.toSet());
   }
 }

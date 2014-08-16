@@ -1,21 +1,20 @@
 package si.urbas.chrony;
 
+import java.util.Set;
+
 public class Chrony {
 
   private final EventRepository eventRepository;
-  private final ReportFactory reportFactory;
 
-  public Chrony(EventRepository eventRepository, ReportFactory reportFactory) {
+  public Chrony(EventRepository eventRepository) {
     this.eventRepository = eventRepository;
-    this.reportFactory = reportFactory;
   }
 
   public void addEvent(EventSample eventSample) {
     eventRepository.addEvent(eventSample);
   }
 
-  public Report getReport() {
-    return reportFactory.createReport(eventRepository);
+  public Set<String> allEvents() {
+    return eventRepository.allEvents();
   }
-
 }

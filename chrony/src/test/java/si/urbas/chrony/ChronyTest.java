@@ -3,37 +3,36 @@ package si.urbas.chrony;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.util.Date;
+import java.util.HashSet;
+
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.*;
 
 public class ChronyTest {
 
   private static final String TEST_EVENT_NAME = "Test event name";
   private Chrony chrony;
   private EventRepository eventRepository;
-  private Report report;
+  private final HashSet<String> events = new HashSet<>();
 
   @Before
   public void setUp() throws Exception {
     eventRepository = mock(EventRepository.class);
-    report = mock(Report.class);
-    ReportFactory reportFactory = mock(ReportFactory.class);
-    when(reportFactory.createReport(eventRepository)).thenReturn(report);
-    chrony = new Chrony(eventRepository, reportFactory);
+    when(eventRepository.allEvents()).thenReturn(events);
+    chrony = new Chrony(eventRepository);
   }
 
   @Test
   public void addEvent_MUST_add_the_event_to_the_event_repository() {
-    EventSample eventSample = new EventSample(TEST_EVENT_NAME);
+    EventSample eventSample = new EventSample(TEST_EVENT_NAME, new Date());
     chrony.addEvent(eventSample);
     verify(eventRepository).addEvent(eventSample);
   }
 
   @Test
-  public void getReport_MUST_return_a_report_created_with_the_report_factory() {
-    assertEquals(report, chrony.getReport());
+  public void allEvents_MUST_return_the_names_of_added_events_as_returned_by_the_event_repository() {
+    assertSame(chrony.allEvents(), events);
   }
 
 }

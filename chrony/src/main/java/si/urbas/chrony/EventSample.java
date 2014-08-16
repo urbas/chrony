@@ -1,26 +1,38 @@
 package si.urbas.chrony;
 
+import java.util.Date;
+
 public class EventSample {
 
   public final String name;
+  private final Date timestamp;
 
-  public EventSample(String name) {
+  public EventSample(String name, Date timestamp) {
     this.name = name;
+    this.timestamp = timestamp;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) { return true; }
-    if (o == null || getClass() != o.getClass()) { return false; }
+    if (this == o) {
+      return true;
+    } else if (o == null || getClass() != o.getClass()) {
+      return false;
+    } else {
+      EventSample that = (EventSample) o;
+      return equals(that);
+    }
+  }
 
-    EventSample that = (EventSample) o;
-
-    return name.equals(that.name);
-
+  public boolean equals(EventSample that) {
+    return name.equals(that.name) &&
+           timestamp.equals(that.timestamp);
   }
 
   @Override
   public int hashCode() {
-    return name.hashCode();
+    int result = name.hashCode();
+    result = 31 * result + timestamp.hashCode();
+    return result;
   }
 }

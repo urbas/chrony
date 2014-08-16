@@ -20,14 +20,15 @@ The regularity of an event is a measure of how closely they align with other cyc
 
 A ceremony is a sequence of events that regularly or frequently occur together in a specific order.
 
-# Use cases
+# User stories
 
-- I want to see the most relevant events (in descending order).
-- I want to see the frequency of listed events (in terms of repetitions in an hour, day, week, month, etc.).
-- I want the most frequent events to rank high on relevance.
+- DONE: I want to add my events (with their names and timestamps) into chrony.
+- DONE: I want to be able to fetch a list of all events I added so far.
 
 # Technical notes
 
-- Chrony should not need any connection to the internet (no collected events should ever get through the web).
-- Chrony should be reactive (whenever some events are added, the report should get updated).
-- Chrony should run on smartphones and PCs.
+- Chrony is a lightweight library (intended primarily for use within applications to optimise the application's user experience).
+- Chrony's events are identified by the name.
+- Chrony does not need any connection to the internet (no collected events ever get through the web).
+- Chrony runs on smartphones and PCs.
+- Chrony is reactive (whenever some events are added, the report should get updated).

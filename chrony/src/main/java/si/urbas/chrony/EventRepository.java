@@ -1,6 +1,8 @@
 package si.urbas.chrony;
 
+import java.util.Set;
+
 public interface EventRepository {
   void addEvent(EventSample eventSample);
-  Iterable<EventSample> allEvents();
+  Set<String> allEvents();
 }
