@@ -10,8 +10,8 @@ public class Chrony {
     this.eventRepository = eventRepository;
   }
 
-  public void addEvent(EventSample eventSample) {
-    eventRepository.addEvent(eventSample);
+  public void addEvent(Event event) {
+    eventRepository.addEvent(event);
   }
 
   public Set<String> allEvents() {

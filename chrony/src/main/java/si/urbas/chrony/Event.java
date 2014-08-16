@@ -1,13 +1,15 @@
 package si.urbas.chrony;
 
-import java.util.Date;
-
-public class EventSample {
+public class Event {
 
   public final String name;
-  private final Date timestamp;
+  /**
+   * The instant in which this event occurred.
+   * The number of milliseconds since January 1, 1970, 00:00:00 GMT.
+   */
+  public final long timestamp;
 
-  public EventSample(String name, Date timestamp) {
+  public Event(String name, long timestamp) {
     this.name = name;
     this.timestamp = timestamp;
   }
@@ -19,20 +21,20 @@ public class EventSample {
     } else if (o == null || getClass() != o.getClass()) {
       return false;
     } else {
-      EventSample that = (EventSample) o;
+      Event that = (Event) o;
       return equals(that);
     }
   }
 
-  public boolean equals(EventSample that) {
+  public boolean equals(Event that) {
     return name.equals(that.name) &&
-           timestamp.equals(that.timestamp);
+           timestamp == that.timestamp;
   }
 
   @Override
   public int hashCode() {
     int result = name.hashCode();
-    result = 31 * result + timestamp.hashCode();
+    result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
     return result;
   }
 }

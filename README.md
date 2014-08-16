@@ -22,7 +22,7 @@ A ceremony is a sequence of events that regularly or frequently occur together i
 
 # User stories
 
-- DONE: I want to add my events (with their names and timestamps) into chrony.
+- DONE: I want to add my events (with their names and timestamps) into Chrony.
 - DONE: I want to be able to fetch a list of all events I added so far.
 
 # Technical notes

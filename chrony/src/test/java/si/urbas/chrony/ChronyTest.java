@@ -25,9 +25,9 @@ public class ChronyTest {
 
   @Test
   public void addEvent_MUST_add_the_event_to_the_event_repository() {
-    EventSample eventSample = new EventSample(TEST_EVENT_NAME, new Date());
-    chrony.addEvent(eventSample);
-    verify(eventRepository).addEvent(eventSample);
+    Event event = new Event(TEST_EVENT_NAME, new Date().getTime());
+    chrony.addEvent(event);
+    verify(eventRepository).addEvent(event);
   }
 
   @Test
