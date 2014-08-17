@@ -2,7 +2,7 @@ package si.urbas.chrony;
 
 import java.util.Set;
 
-public class Chrony {
+public class Chrony implements EventRepository {
 
   private final EventRepository eventRepository;
 
@@ -10,10 +10,12 @@ public class Chrony {
     this.eventRepository = eventRepository;
   }
 
+  @Override
   public void addEvent(Event event) {
     eventRepository.addEvent(event);
   }
 
+  @Override
   public Set<String> allEvents() {
     return eventRepository.allEvents();
   }

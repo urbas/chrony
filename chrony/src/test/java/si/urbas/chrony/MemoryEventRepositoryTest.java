@@ -12,8 +12,8 @@ import static org.junit.Assert.assertThat;
 public class MemoryEventRepositoryTest {
 
   private static final String TEST_EVENT_1_NAME = "test event 1 name";
-  private static final Event EVENT_1_SAMPLE = new Event(TEST_EVENT_1_NAME, new Date().getTime());
   private static final String TEST_EVENT_2_NAME = "test event 2 name";
+  private static final Event EVENT_1_SAMPLE = new Event(TEST_EVENT_1_NAME, new Date().getTime());
   private static final Event EVENT_2_SAMPLE = new Event(TEST_EVENT_2_NAME, new Date().getTime());
   private MemoryEventRepository memoryEventRepository;
 

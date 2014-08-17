@@ -24,6 +24,8 @@ A ceremony is a sequence of events that regularly or frequently occur together i
 
 - DONE: I want to add my events (with their names and timestamps) into Chrony.
 - DONE: I want to be able to fetch a list of all events I added so far.
+- I want a list of events ordered by relevance.
+- I want to select the how the relevance of an event is calculated.
 
 # Technical notes
 
@@ -31,4 +33,3 @@ A ceremony is a sequence of events that regularly or frequently occur together i
 - Chrony's events are identified by the name.
 - Chrony does not need any connection to the internet (no collected events ever get through the web).
 - Chrony runs on smartphones and PCs.
-- Chrony is reactive (whenever some events are added, the report should get updated).
