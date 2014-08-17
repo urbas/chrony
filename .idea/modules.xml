@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/chrony/chrony.iml" filepath="$PROJECT_DIR$/chrony/chrony.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chrony-android-app.iml" filepath="$PROJECT_DIR$/chrony-android-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chronyApp/chronyApp.iml" filepath="$PROJECT_DIR$/chronyApp/chronyApp.iml" />
+    </modules>
+  </component>
+</project>
+
