@@ -8,8 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/chrony" />
             <option value="$PROJECT_DIR$/chronyApp" />
+            <option value="$PROJECT_DIR$/chronyLib" />
           </set>
         </option>
       </GradleProjectSettings>

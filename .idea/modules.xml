@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/chrony/chrony.iml" filepath="$PROJECT_DIR$/chrony/chrony.iml" />
-      <module fileurl="file://$PROJECT_DIR$/chrony-android-app.iml" filepath="$PROJECT_DIR$/chrony-android-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chrony.iml" filepath="$PROJECT_DIR$/chrony.iml" />
       <module fileurl="file://$PROJECT_DIR$/chronyApp/chronyApp.iml" filepath="$PROJECT_DIR$/chronyApp/chronyApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chronyLib/chronyLib.iml" filepath="$PROJECT_DIR$/chronyLib/chronyLib.iml" />
     </modules>
   </component>
 </project>

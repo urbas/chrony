@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-
-import si.urbas.chrony.SomeTest;
 
 
 public class DataEntry extends Activity {
@@ -16,8 +12,6 @@ public class DataEntry extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_data_entry);
-    TextView textView = (TextView) findViewById(R.id.textView);
-    textView.setText(SomeTest.SOME_CONSTANT);
   }
 
   @Override
