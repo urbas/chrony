@@ -8,10 +8,23 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".DataEntry">
 
-    <TextView
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView" />
-
+  <EditText
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/eventNameTextField"
+    android:layout_toStartOf="@+id/addEventButton" android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true" android:layout_alignParentStart="true"/>
+  <Button
+    style="?android:attr/buttonStyleSmall"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/new_event_button_text"
+    android:id="@+id/addEventButton" android:layout_alignBottom="@+id/eventNameTextField" android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true"/>
+  <ExpandableListView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/eventsListView" android:layout_below="@+id/eventNameTextField"
+    android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
+    android:fastScrollAlwaysVisible="false"/>
 </RelativeLayout>
