@@ -13,7 +13,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/eventNameTextField"
     android:layout_toStartOf="@+id/addEventButton" android:layout_alignParentTop="true"
-    android:layout_alignParentLeft="true" android:layout_alignParentStart="true"/>
+    android:layout_alignParentLeft="true" android:layout_alignParentStart="true" android:inputType="text"/>
   <Button
     style="?android:attr/buttonStyleSmall"
     android:layout_width="wrap_content"
@@ -21,10 +21,9 @@
     android:text="@string/new_event_button_text"
     android:id="@+id/addEventButton" android:layout_alignBottom="@+id/eventNameTextField" android:layout_alignParentRight="true"
     android:layout_alignParentEnd="true"/>
-  <ExpandableListView
+  <ListView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/eventsListView" android:layout_below="@+id/eventNameTextField"
-    android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
-    android:fastScrollAlwaysVisible="false"/>
+    android:id="@+id/eventsListView" android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true" android:layout_below="@+id/addEventButton"/>
 </RelativeLayout>

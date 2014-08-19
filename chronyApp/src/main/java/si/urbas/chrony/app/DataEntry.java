@@ -4,14 +4,35 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.*;
+import si.urbas.chrony.Event;
+import si.urbas.chrony.EventRepository;
+
+import java.util.Date;
 
 
 public class DataEntry extends Activity {
 
+  private final EventRepository eventRepository = new EventRepository();
+  private Button addEventButton;
+  private ListView eventsListView;
+  private ArrayAdapter<String> eventsListViewAdapter;
+  private EditText eventNameTextField;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
     setContentView(R.layout.activity_data_entry);
+
+    addEventButton = (Button) findViewById(R.id.addEventButton);
+    eventsListView = (ListView) findViewById(R.id.eventsListView);
+    eventNameTextField = (EditText)findViewById(R.id.eventNameTextField);
+
+    eventsListView.setAdapter(EventListViewHelpers.toListAdapter(this, eventRepository));
+
+    addEventButton.setOnClickListener(new EventAddClickListener());
   }
 
   @Override
@@ -28,5 +49,19 @@ public class DataEntry extends Activity {
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
     return id == R.id.action_settings || super.onOptionsItemSelected(item);
+  }
+
+  private void addNewEventFromEditField() {
+    String eventName = eventNameTextField.getText().toString();
+    long eventTimestamp = new Date().getTime();
+    Event newEvent = new Event(eventName, eventTimestamp);
+    eventRepository.addEvent(newEvent);
+  }
+
+  private class EventAddClickListener implements View.OnClickListener {
+    @Override
+    public void onClick(View view) {
+      addNewEventFromEditField();
+    }
   }
 }
