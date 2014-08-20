@@ -2,6 +2,7 @@ package si.urbas.chrony.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +17,6 @@ import java.util.Date;
 public class DataEntry extends Activity {
 
   private final EventRepository eventRepository = new InMemoryEventRepository();
-  private Button addEventButton;
   private ListView eventsListView;
   private EditText eventNameTextField;
 
@@ -26,13 +26,14 @@ public class DataEntry extends Activity {
 
     setContentView(R.layout.activity_data_entry);
 
-    addEventButton = (Button) findViewById(R.id.addEventButton);
+    Button addEventButton = (Button) findViewById(R.id.addEventButton);
     eventsListView = (ListView) findViewById(R.id.eventsListView);
     eventNameTextField = (EditText)findViewById(R.id.eventNameTextField);
 
     refreshEventListView();
 
     addEventButton.setOnClickListener(new EventAddClickListener());
+    eventNameTextField.setOnEditorActionListener(new EventNameEditorActionListener());
   }
 
   @Override
@@ -67,6 +68,14 @@ public class DataEntry extends Activity {
     @Override
     public void onClick(View view) {
       addNewEventFromEditField();
+    }
+  }
+
+  private class EventNameEditorActionListener implements TextView.OnEditorActionListener {
+    @Override
+    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+      addNewEventFromEditField();
+      return false;
     }
   }
 }
