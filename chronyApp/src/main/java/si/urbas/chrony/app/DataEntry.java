@@ -8,16 +8,16 @@ import android.view.View;
 import android.widget.*;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
+import si.urbas.chrony.InMemoryEventRepository;
 
 import java.util.Date;
 
 
 public class DataEntry extends Activity {
 
-  private final EventRepository eventRepository = new EventRepository();
+  private final EventRepository eventRepository = new InMemoryEventRepository();
   private Button addEventButton;
   private ListView eventsListView;
-  private ArrayAdapter<String> eventsListViewAdapter;
   private EditText eventNameTextField;
 
   @Override
@@ -30,7 +30,7 @@ public class DataEntry extends Activity {
     eventsListView = (ListView) findViewById(R.id.eventsListView);
     eventNameTextField = (EditText)findViewById(R.id.eventNameTextField);
 
-    eventsListView.setAdapter(EventListViewHelpers.toListAdapter(this, eventRepository));
+    refreshEventListView();
 
     addEventButton.setOnClickListener(new EventAddClickListener());
   }
@@ -56,6 +56,11 @@ public class DataEntry extends Activity {
     long eventTimestamp = new Date().getTime();
     Event newEvent = new Event(eventName, eventTimestamp);
     eventRepository.addEvent(newEvent);
+    refreshEventListView();
+  }
+
+  private void refreshEventListView() {
+    eventsListView.setAdapter(EventListViewHelpers.toListAdapter(this, eventRepository));
   }
 
   private class EventAddClickListener implements View.OnClickListener {

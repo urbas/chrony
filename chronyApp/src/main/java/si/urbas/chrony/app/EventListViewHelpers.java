@@ -16,11 +16,11 @@ public class EventListViewHelpers {
 
   public static ListAdapter toListAdapter(Context context, EventRepository eventRepository) {
     ArrayList<Map<String, String>> eventListItems = new ArrayList<Map<String, String>>();
-    Iterable<String> events = eventRepository.allEventNames();
+    Iterable<String> events = eventRepository.allEvents();
     for (String eventName : events) {
       HashMap<String, String> eventListItem = new HashMap<String, String>();
       eventListItem.put(EVENT_NAME_FIELD, eventName);
-      eventListItem.put(EVENT_COUNT_FIELD, eventRepository.eventCount(eventName));
+      eventListItem.put(EVENT_COUNT_FIELD, Integer.toString(eventRepository.eventCount(eventName)));
       eventListItems.add(eventListItem);
     }
     return new SimpleAdapter(context, eventListItems, R.layout.event_list_item_view, new String[]{EVENT_NAME_FIELD}, new int[]{R.id.eventNameTextView});

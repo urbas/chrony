@@ -1,15 +1,9 @@
 package si.urbas.chrony;
 
-public class EventRepository {
-  public void addEvent(Event event) {
+public interface EventRepository {
+  void addEvent(Event event);
 
-  }
+  Iterable<String> allEvents();
 
-  public Iterable<String> allEventNames() {
-    return null;
-  }
-
-  public String eventCount(String eventName) {
-    return null;
-  }
+  int eventCount(String eventName);
 }
