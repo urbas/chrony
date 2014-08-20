@@ -48,6 +48,7 @@ public class DataEntry extends Activity {
   private void registerUiEventHandlers() {
     addEventButton.setOnClickListener(new EventAddClickListener());
     eventNameTextField.setOnEditorActionListener(new EventNameEditorActionListener());
+    eventsListView.setOnItemClickListener(new EventItemClickListener());
   }
 
   private void bindViewToFields() {
@@ -59,6 +60,10 @@ public class DataEntry extends Activity {
 
   private void addNewEventFromEditField() {
     String eventName = eventNameTextField.getText().toString();
+    addNewEvent(eventName);
+  }
+
+  private void addNewEvent(String eventName) {
     long eventTimestamp = new Date().getTime();
     Event newEvent = new Event(eventName, eventTimestamp);
     eventRepository.addEvent(newEvent);
@@ -66,7 +71,7 @@ public class DataEntry extends Activity {
   }
 
   private void refreshEventListView() {
-    eventsListView.setAdapter(EventListViewHelpers.toListAdapter(this, eventRepository));
+    eventsListView.setAdapter(new EventListSimpleAdapter(this, eventRepository));
   }
 
   private class EventAddClickListener implements View.OnClickListener {
@@ -81,6 +86,14 @@ public class DataEntry extends Activity {
     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
       addNewEventFromEditField();
       return false;
+    }
+  }
+
+  private class EventItemClickListener implements AdapterView.OnItemClickListener {
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+      EventListSimpleAdapter eventListAdapter = (EventListSimpleAdapter) adapterView.getAdapter();
+      addNewEvent(eventListAdapter.getEventName(i));
     }
   }
 }
