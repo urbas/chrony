@@ -19,21 +19,14 @@ public class DataEntry extends Activity {
   private final EventRepository eventRepository = new InMemoryEventRepository();
   private ListView eventsListView;
   private EditText eventNameTextField;
+  private Button addEventButton;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    setContentView(R.layout.activity_data_entry);
-
-    Button addEventButton = (Button) findViewById(R.id.addEventButton);
-    eventsListView = (ListView) findViewById(R.id.eventsListView);
-    eventNameTextField = (EditText)findViewById(R.id.eventNameTextField);
-
+    bindViewToFields();
     refreshEventListView();
-
-    addEventButton.setOnClickListener(new EventAddClickListener());
-    eventNameTextField.setOnEditorActionListener(new EventNameEditorActionListener());
+    registerUiEventHandlers();
   }
 
   @Override
@@ -50,6 +43,18 @@ public class DataEntry extends Activity {
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
     return id == R.id.action_settings || super.onOptionsItemSelected(item);
+  }
+
+  private void registerUiEventHandlers() {
+    addEventButton.setOnClickListener(new EventAddClickListener());
+    eventNameTextField.setOnEditorActionListener(new EventNameEditorActionListener());
+  }
+
+  private void bindViewToFields() {
+    setContentView(R.layout.activity_data_entry);
+    addEventButton = (Button) findViewById(R.id.addEventButton);
+    eventsListView = (ListView) findViewById(R.id.eventsListView);
+    eventNameTextField = (EditText)findViewById(R.id.eventNameTextField);
   }
 
   private void addNewEventFromEditField() {
