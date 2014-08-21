@@ -66,15 +66,10 @@ public class SqliteEventRepository extends SQLiteOpenHelper implements EventRepo
     SQLiteDatabase dbReader = getReadableDatabase();
     Cursor cursor = dbReader.rawQuery("SELECT COUNT(*) FROM " + EVENTS_TABLE_NAME + " WHERE " + EVENTS_COLUMN_EVENT_NAME + " = ?", new String[]{eventName});
     try {
-      if (cursor.moveToNext()) {
-        return cursor.getInt(0);
-      } else {
-        return 0;
-      }
+      return cursor.moveToNext() ? cursor.getInt(0) : 0;
     } finally {
       closeDb(dbReader, cursor);
     }
-
   }
 
   private static void closeDb(SQLiteDatabase dbReader, Cursor cursor) {
