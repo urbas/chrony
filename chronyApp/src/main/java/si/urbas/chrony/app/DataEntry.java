@@ -9,14 +9,14 @@ import android.view.View;
 import android.widget.*;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
-import si.urbas.chrony.InMemoryEventRepository;
+import si.urbas.chrony.app.data.SqliteEventRepository;
 
 import java.util.Date;
 
 
 public class DataEntry extends Activity {
 
-  private final EventRepository eventRepository = new InMemoryEventRepository();
+  private EventRepository eventRepository;
   private ListView eventsListView;
   private EditText eventNameTextField;
   private Button addEventButton;
@@ -24,6 +24,7 @@ public class DataEntry extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setupEventRepository();
     bindViewToFields();
     refreshEventListView();
     registerUiEventHandlers();
@@ -45,17 +46,25 @@ public class DataEntry extends Activity {
     return id == R.id.action_settings || super.onOptionsItemSelected(item);
   }
 
-  private void registerUiEventHandlers() {
-    addEventButton.setOnClickListener(new EventAddClickListener());
-    eventNameTextField.setOnEditorActionListener(new EventNameEditorActionListener());
-    eventsListView.setOnItemClickListener(new EventItemClickListener());
+  private void setupEventRepository() {
+    eventRepository = new SqliteEventRepository(this);
   }
 
   private void bindViewToFields() {
     setContentView(R.layout.activity_data_entry);
     addEventButton = (Button) findViewById(R.id.addEventButton);
     eventsListView = (ListView) findViewById(R.id.eventsListView);
-    eventNameTextField = (EditText)findViewById(R.id.eventNameTextField);
+    eventNameTextField = (EditText) findViewById(R.id.eventNameTextField);
+  }
+
+  private void refreshEventListView() {
+    eventsListView.setAdapter(new EventListSimpleAdapter(this, eventRepository));
+  }
+
+  private void registerUiEventHandlers() {
+    addEventButton.setOnClickListener(new EventAddClickListener());
+    eventNameTextField.setOnEditorActionListener(new EventNameEditorActionListener());
+    eventsListView.setOnItemClickListener(new EventItemClickListener());
   }
 
   private void addNewEventFromEditField() {
@@ -68,10 +77,6 @@ public class DataEntry extends Activity {
     Event newEvent = new Event(eventName, eventTimestamp);
     eventRepository.addEvent(newEvent);
     refreshEventListView();
-  }
-
-  private void refreshEventListView() {
-    eventsListView.setAdapter(new EventListSimpleAdapter(this, eventRepository));
   }
 
   private class EventAddClickListener implements View.OnClickListener {
