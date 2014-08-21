@@ -49,19 +49,37 @@ public class SqliteEventRepository extends SQLiteOpenHelper implements EventRepo
   @Override
   public Iterable<String> allEvents() {
     SQLiteDatabase dbReader = getReadableDatabase();
-    Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_EVENT_NAME + " FROM " + EVENTS_TABLE_NAME, null);
-    ArrayList<String> allEVents = new ArrayList<String>();
-    while (cursor.moveToNext()) {
-      allEVents.add(cursor.getString(0));
+    Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_EVENT_NAME + " FROM " + EVENTS_TABLE_NAME + " GROUP BY " + EVENTS_COLUMN_EVENT_NAME, null);
+    try {
+      ArrayList<String> allEVents = new ArrayList<String>();
+      while (cursor.moveToNext()) {
+        allEVents.add(cursor.getString(0));
+      }
+      return allEVents;
+    } finally {
+      closeDb(dbReader, cursor);
     }
-    cursor.close();
-    dbReader.close();
-    return allEVents;
   }
 
   @Override
   public int eventCount(String eventName) {
-    return 1;
+    SQLiteDatabase dbReader = getReadableDatabase();
+    Cursor cursor = dbReader.rawQuery("SELECT COUNT(*) FROM " + EVENTS_TABLE_NAME + " WHERE " + EVENTS_COLUMN_EVENT_NAME + " = ?", new String[]{eventName});
+    try {
+      if (cursor.moveToNext()) {
+        return cursor.getInt(0);
+      } else {
+        return 0;
+      }
+    } finally {
+      closeDb(dbReader, cursor);
+    }
+
+  }
+
+  private static void closeDb(SQLiteDatabase dbReader, Cursor cursor) {
+    cursor.close();
+    dbReader.close();
   }
 
   private static void upgradeDbToVersion1(SQLiteDatabase db) {
