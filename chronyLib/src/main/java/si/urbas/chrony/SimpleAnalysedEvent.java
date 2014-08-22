@@ -4,10 +4,12 @@ public class SimpleAnalysedEvent implements AnalysedEvent {
 
   private final String name;
   private final int count;
+  private final float relevance;
 
-  protected SimpleAnalysedEvent(String name, int count) {
+  protected SimpleAnalysedEvent(String name, int count, float relevance) {
     this.name = name;
     this.count = count;
+    this.relevance = relevance;
   }
 
   @Override
@@ -18,5 +20,10 @@ public class SimpleAnalysedEvent implements AnalysedEvent {
   @Override
   public int getCount() {
     return count;
+  }
+
+  @Override
+  public float getRelevance() {
+    return relevance;
   }
 }

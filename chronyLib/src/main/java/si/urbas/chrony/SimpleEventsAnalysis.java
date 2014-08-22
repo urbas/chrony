@@ -20,7 +20,7 @@ public class SimpleEventsAnalysis implements EventsAnalysis {
     ArrayList<AnalysedEvent> analysedEvents = new ArrayList<AnalysedEvent>();
     for (String eventName : eventRepository.allEvents()) {
       List<Long> eventTimestamps = eventRepository.timestampsOf(eventName);
-      analysedEvents.add(new SimpleAnalysedEvent(eventName, eventTimestamps.size()));
+      analysedEvents.add(new SimpleAnalysedEvent(eventName, eventTimestamps.size(), eventTimestamps.size()));
     }
     return analysedEvents;
   }

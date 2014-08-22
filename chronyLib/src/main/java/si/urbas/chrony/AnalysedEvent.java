@@ -4,4 +4,6 @@ public interface AnalysedEvent {
   String getName();
 
   int getCount();
+
+  float getRelevance();
 }
