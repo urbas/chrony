@@ -9,6 +9,7 @@ import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SqliteEventRepository extends SQLiteOpenHelper implements EventRepository {
 
@@ -47,7 +48,7 @@ public class SqliteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
-  public Iterable<String> allEvents() {
+  public ArrayList<String> allEvents() {
     SQLiteDatabase dbReader = getReadableDatabase();
     Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_EVENT_NAME + " FROM " + EVENTS_TABLE_NAME + " GROUP BY " + EVENTS_COLUMN_EVENT_NAME, null);
     try {
@@ -62,11 +63,15 @@ public class SqliteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
-  public int eventCount(String eventName) {
+  public List<Long> timestampsOf(String eventName) {
     SQLiteDatabase dbReader = getReadableDatabase();
-    Cursor cursor = dbReader.rawQuery("SELECT COUNT(*) FROM " + EVENTS_TABLE_NAME + " WHERE " + EVENTS_COLUMN_EVENT_NAME + " = ?", new String[]{eventName});
+    Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_TIMESTAMP + " FROM " + EVENTS_TABLE_NAME + " WHERE " + EVENTS_COLUMN_EVENT_NAME + " = ?", new String[]{eventName});
     try {
-      return cursor.moveToNext() ? cursor.getInt(0) : 0;
+      ArrayList<Long> eventTimestamps = new ArrayList<Long>();
+      while (cursor.moveToNext()) {
+        eventTimestamps.add(cursor.getLong(0));
+      }
+      return eventTimestamps;
     } finally {
       closeDb(dbReader, cursor);
     }

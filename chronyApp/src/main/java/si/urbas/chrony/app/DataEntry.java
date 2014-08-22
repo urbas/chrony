@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.*;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
+import si.urbas.chrony.SimpleEventsAnalysis;
 import si.urbas.chrony.app.data.SqliteEventRepository;
 
 import java.util.Date;
@@ -58,7 +59,7 @@ public class DataEntry extends Activity {
   }
 
   private void refreshEventListView() {
-    eventsListView.setAdapter(new EventListSimpleAdapter(this, eventRepository));
+    eventsListView.setAdapter(new EventAnalysisListAdapter(this, new SimpleEventsAnalysis(eventRepository)));
   }
 
   private void registerUiEventHandlers() {
@@ -97,7 +98,7 @@ public class DataEntry extends Activity {
   private class EventItemClickListener implements AdapterView.OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-      EventListSimpleAdapter eventListAdapter = (EventListSimpleAdapter) adapterView.getAdapter();
+      EventAnalysisListAdapter eventListAdapter = (EventAnalysisListAdapter) adapterView.getAdapter();
       addNewEvent(eventListAdapter.getEventName(i));
     }
   }

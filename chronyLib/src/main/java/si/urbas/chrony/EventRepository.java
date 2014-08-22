@@ -1,7 +1,9 @@
 package si.urbas.chrony;
 
+import java.util.List;
+
 public interface EventRepository {
   void addEvent(Event event);
-  Iterable<String> allEvents();
-  int eventCount(String eventName);
+  List<String> allEvents();
+  List<Long> timestampsOf(String eventName);
 }
