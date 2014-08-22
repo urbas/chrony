@@ -1,20 +1,21 @@
-package si.urbas.chrony;
+package si.urbas.chrony.impl;
+
+import si.urbas.chrony.AnalysedEvent;
 
 public class SimpleAnalysedEvent implements AnalysedEvent {
-
-  private final String name;
+  private final String eventName;
   private final int count;
   private final float relevance;
 
-  protected SimpleAnalysedEvent(String name, int count, float relevance) {
-    this.name = name;
+  public SimpleAnalysedEvent(String eventName, int count, float relevance) {
+    this.eventName = eventName;
     this.count = count;
     this.relevance = relevance;
   }
 
   @Override
   public String getEventName() {
-    return name;
+    return eventName;
   }
 
   @Override

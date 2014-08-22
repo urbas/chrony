@@ -39,6 +39,7 @@ public class SqliteEventRepository extends SQLiteOpenHelper implements EventRepo
   public void addEvent(Event event) {
     ContentValues values = new ContentValues();
     values.put(EVENTS_COLUMN_EVENT_NAME, event.name);
+    values.put(EVENTS_COLUMN_TIMESTAMP, event.timestamp);
     SQLiteDatabase dbWriter = getWritableDatabase();
     try {
       dbWriter.insert(EVENTS_DB_NAME, null, values);

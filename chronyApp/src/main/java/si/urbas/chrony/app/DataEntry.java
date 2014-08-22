@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.*;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
-import si.urbas.chrony.SimpleEventsAnalysis;
+import si.urbas.chrony.impl.SimpleEventsAnalysis;
 import si.urbas.chrony.app.data.SqliteEventRepository;
 
 import java.util.Date;
