@@ -30,26 +30,14 @@ public class EventAnalysisListAdapter extends SimpleAdapter {
 
   private static List<Map<String, String>> toSimpleForm(EventsAnalysis eventsAnalysis) {
     ArrayList<Map<String, String>> eventListItems = new ArrayList<Map<String, String>>();
-    List<AnalysedEvent> analysedEvents = getEventsOrderedByRelevance(eventsAnalysis);
+    List<AnalysedEvent> analysedEvents = eventsAnalysis.getAnalysedEvents();
     for (AnalysedEvent analysedEvent : analysedEvents) {
       HashMap<String, String> eventListItem = new HashMap<String, String>();
-      eventListItem.put(EVENT_NAME_FIELD, analysedEvent.getName());
+      eventListItem.put(EVENT_NAME_FIELD, analysedEvent.getEventName());
       eventListItem.put(EVENT_COUNT_FIELD, Integer.toString(analysedEvent.getCount()));
       eventListItems.add(eventListItem);
     }
     return eventListItems;
   }
 
-  private static List<AnalysedEvent> getEventsOrderedByRelevance(EventsAnalysis eventsAnalysis) {
-    List<AnalysedEvent> analysedEvents = new ArrayList<AnalysedEvent>(eventsAnalysis.getAnalysedEvents());
-    Collections.sort(analysedEvents, new MostRelevantAnalysedEventComparator());
-    return analysedEvents;
-  }
-
-  private static class MostRelevantAnalysedEventComparator implements Comparator<AnalysedEvent> {
-    @Override
-    public int compare(AnalysedEvent analysedEventA, AnalysedEvent analysedEventB) {
-      return Float.compare(analysedEventB.getRelevance(), analysedEventA.getRelevance());
-    }
-  }
 }

@@ -2,6 +2,7 @@ package si.urbas.chrony;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SimpleEventsAnalysis implements EventsAnalysis {
@@ -22,6 +23,14 @@ public class SimpleEventsAnalysis implements EventsAnalysis {
       List<Long> eventTimestamps = eventRepository.timestampsOf(eventName);
       analysedEvents.add(new SimpleAnalysedEvent(eventName, eventTimestamps.size(), eventTimestamps.size()));
     }
+    Collections.sort(analysedEvents, new MostRelevantAnalysedEventComparator());
     return analysedEvents;
+  }
+
+  private static class MostRelevantAnalysedEventComparator implements Comparator<AnalysedEvent> {
+    @Override
+    public int compare(AnalysedEvent analysedEventA, AnalysedEvent analysedEventB) {
+      return Float.compare(analysedEventB.getRelevance(), analysedEventA.getRelevance());
+    }
   }
 }
