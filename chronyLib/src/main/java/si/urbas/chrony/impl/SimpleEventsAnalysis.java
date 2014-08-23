@@ -3,6 +3,8 @@ package si.urbas.chrony.impl;
 import si.urbas.chrony.AnalysedEvent;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventsAnalysis;
+import si.urbas.chrony.analysis.EventTimeMetrics;
+import si.urbas.chrony.analysis.GlobalTimeMetrics;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,53 +24,24 @@ public class SimpleEventsAnalysis implements EventsAnalysis {
   }
 
   private static List<AnalysedEvent> analyseEvents(EventRepository eventRepository) {
-    ArrayList<PerEventMetrics> perEventMetricsList = collectPerEventMetrics(eventRepository);
-    GlobalMetrics globalMetrics = calculateGlobalMetrics(perEventMetricsList);
-    return createAnalysis(perEventMetricsList, globalMetrics);
+    ArrayList<EventTimeMetrics> eventTimeMetrics = EventTimeMetrics.calculateMetrics(eventRepository);
+    GlobalTimeMetrics globalTimeMetrics = GlobalTimeMetrics.calculateMetrics(eventTimeMetrics);
+    return createAnalysis(eventTimeMetrics, globalTimeMetrics);
   }
 
-  private static ArrayList<AnalysedEvent> createAnalysis(ArrayList<PerEventMetrics> perEventMetricsList, GlobalMetrics globalMetrics) {
+  private static ArrayList<AnalysedEvent> createAnalysis(ArrayList<EventTimeMetrics> perEventMetricsList, GlobalTimeMetrics globalTimeMetrics) {
     ArrayList<AnalysedEvent> analysedEvents = new ArrayList<AnalysedEvent>();
-    for (PerEventMetrics perEventMetrics : perEventMetricsList) {
-      analysedEvents.add(new SimpleAnalysedEvent(perEventMetrics.name, perEventMetrics.count, calculateRelevanceOfEvent(perEventMetrics, globalMetrics)));
+    for (EventTimeMetrics perEventMetrics : perEventMetricsList) {
+      analysedEvents.add(new SimpleAnalysedEvent(perEventMetrics.name, perEventMetrics.count, calculateRelevanceOfEvent(perEventMetrics, globalTimeMetrics)));
     }
     Collections.sort(analysedEvents, new MostRelevantAnalysedEventComparator());
     return analysedEvents;
   }
 
-  private static float calculateRelevanceOfEvent(PerEventMetrics perEventMetrics, GlobalMetrics globalMetrics) {
-    long oldestToNewestTimeSpan = globalMetrics.newestTimestamp - globalMetrics.oldestEventRefreshTimestamp;
-    long oldestToThisTimeSpan = perEventMetrics.newestTimestamp - globalMetrics.oldestEventRefreshTimestamp;
+  private static float calculateRelevanceOfEvent(EventTimeMetrics perEventMetrics, GlobalTimeMetrics globalTimeMetrics) {
+    long oldestToNewestTimeSpan = globalTimeMetrics.newestTimestamp - globalTimeMetrics.oldestEventRefreshTimestamp;
+    long oldestToThisTimeSpan = perEventMetrics.newestTimestamp - globalTimeMetrics.oldestEventRefreshTimestamp;
     return (float) oldestToThisTimeSpan / (float) oldestToNewestTimeSpan;
-  }
-
-  private static GlobalMetrics calculateGlobalMetrics(ArrayList<PerEventMetrics> perEventMetricsList) {
-    long oldestTimestamp = Long.MAX_VALUE;
-    long newestTimestamp = Long.MIN_VALUE;
-    long oldestEventRefreshTimestamp = Long.MAX_VALUE;
-    for (PerEventMetrics perEventMetrics : perEventMetricsList) {
-      if (perEventMetrics.newestTimestamp > newestTimestamp) {
-        newestTimestamp = perEventMetrics.newestTimestamp;
-      }
-      if (perEventMetrics.oldestTimestamp < oldestTimestamp) {
-        oldestTimestamp = perEventMetrics.oldestTimestamp;
-      }
-      if (perEventMetrics.newestTimestamp < oldestEventRefreshTimestamp) {
-        oldestEventRefreshTimestamp = perEventMetrics.newestTimestamp;
-      }
-    }
-    return new GlobalMetrics(oldestTimestamp, newestTimestamp, oldestEventRefreshTimestamp);
-  }
-
-  private static ArrayList<PerEventMetrics> collectPerEventMetrics(EventRepository eventRepository) {
-    ArrayList<PerEventMetrics> analysedEvents = new ArrayList<PerEventMetrics>();
-    for (String eventName : eventRepository.allEvents()) {
-      List<Long> eventTimestamps = eventRepository.timestampsOf(eventName);
-      long latestTimestampForEvent = Collections.max(eventTimestamps);
-      long oldestTimestampForEvent = Collections.min(eventTimestamps);
-      analysedEvents.add(new PerEventMetrics(eventName, eventTimestamps.size(), latestTimestampForEvent, oldestTimestampForEvent));
-    }
-    return analysedEvents;
   }
 
   private static class MostRelevantAnalysedEventComparator implements Comparator<AnalysedEvent> {
