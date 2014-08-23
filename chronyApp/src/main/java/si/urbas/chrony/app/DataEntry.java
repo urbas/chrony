@@ -44,6 +44,13 @@ public class DataEntry extends Activity {
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
+    switch (id) {
+      case R.id.action_clear_database:
+        clearEventRepository();
+        return false;
+      default:
+        break;
+    }
     return id == R.id.action_settings || super.onOptionsItemSelected(item);
   }
 
@@ -56,6 +63,11 @@ public class DataEntry extends Activity {
     addEventButton = (Button) findViewById(R.id.addEventButton);
     eventsListView = (ListView) findViewById(R.id.eventsListView);
     eventNameTextField = (EditText) findViewById(R.id.eventNameTextField);
+  }
+
+  private void clearEventRepository() {
+    eventRepository.clear();
+    refreshEventListView();
   }
 
   private void refreshEventListView() {

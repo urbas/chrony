@@ -1,6 +1,6 @@
 package si.urbas.chrony.analysis;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class GlobalTimeMetrics {
 
@@ -14,7 +14,7 @@ public class GlobalTimeMetrics {
     this.oldestEventRefreshTimestamp = oldestEventRefreshTimestamp;
   }
 
-  public static GlobalTimeMetrics calculateMetrics(ArrayList<EventTimeMetrics> eventMetricsList) {
+  public static GlobalTimeMetrics calculateGlobalMetrics(List<EventTimeMetrics> eventMetricsList) {
     if (eventMetricsList.size() == 0) {
       throw new IllegalArgumentException("Cannot calculate global statistics for an empty set of events.");
     }

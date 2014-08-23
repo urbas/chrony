@@ -21,12 +21,12 @@ public class GlobalTimeMetricsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void calculateMetrics_MUST_throw_an_exception_WHEN_no_event_time_metrics_are_given() {
-    GlobalTimeMetrics.calculateMetrics(new ArrayList<EventTimeMetrics>());
+    GlobalTimeMetrics.calculateGlobalMetrics(new ArrayList<EventTimeMetrics>());
   }
 
   @Test
   public void calculateMetrics_MUST_extract_the_oldest_timestamp() {
-    GlobalTimeMetrics globalTimeMetrics = GlobalTimeMetrics.calculateMetrics(eventMetricsList);
+    GlobalTimeMetrics globalTimeMetrics = GlobalTimeMetrics.calculateGlobalMetrics(eventMetricsList);
     assertEquals(25, globalTimeMetrics.oldestTimestamp);
   }
 }
