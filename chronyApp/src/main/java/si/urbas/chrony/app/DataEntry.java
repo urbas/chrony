@@ -11,12 +11,14 @@ import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.analysis.SimpleAnalysis;
 import si.urbas.chrony.app.data.SqliteEventRepository;
+import si.urbas.chrony.app.io.EventRepositoryBackup;
 
 import java.util.Date;
 
 
 public class DataEntry extends Activity {
 
+  private static final String EVENT_REPOSITORY_BACKUP_FILE = "event_repository_backup";
   private EventRepository eventRepository;
   private ListView eventsListView;
   private EditText eventNameTextField;
@@ -45,13 +47,15 @@ public class DataEntry extends Activity {
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
     switch (id) {
+      case R.id.action_save_database:
+        saveRepositoryToFile();
+        return false;
       case R.id.action_clear_database:
         clearEventRepository();
         return false;
       default:
-        break;
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
-    return id == R.id.action_settings || super.onOptionsItemSelected(item);
   }
 
   private void setupEventRepository() {
@@ -63,6 +67,10 @@ public class DataEntry extends Activity {
     addEventButton = (Button) findViewById(R.id.addEventButton);
     eventsListView = (ListView) findViewById(R.id.eventsListView);
     eventNameTextField = (EditText) findViewById(R.id.eventNameTextField);
+  }
+
+  private void saveRepositoryToFile() {
+    EventRepositoryBackup.storeToFile(EVENT_REPOSITORY_BACKUP_FILE, eventRepository);
   }
 
   private void clearEventRepository() {
