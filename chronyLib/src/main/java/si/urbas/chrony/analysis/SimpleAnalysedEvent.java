@@ -1,4 +1,4 @@
-package si.urbas.chrony.impl;
+package si.urbas.chrony.analysis;
 
 import si.urbas.chrony.AnalysedEvent;
 

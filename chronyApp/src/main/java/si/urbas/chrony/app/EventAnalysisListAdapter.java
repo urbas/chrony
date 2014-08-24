@@ -3,7 +3,7 @@ package si.urbas.chrony.app;
 import android.content.Context;
 import android.widget.SimpleAdapter;
 import si.urbas.chrony.AnalysedEvent;
-import si.urbas.chrony.EventsAnalysis;
+import si.urbas.chrony.Analysis;
 
 import java.util.*;
 
@@ -15,8 +15,8 @@ public class EventAnalysisListAdapter extends SimpleAdapter {
   private static final int[] TO_VIEWS = new int[]{R.id.eventNameTextView, R.id.eventCountTextView};
   private final List<Map<String, String>> listViewItems;
 
-  public EventAnalysisListAdapter(Context context, EventsAnalysis eventsAnalysis) {
-    this(context, toSimpleForm(eventsAnalysis));
+  public EventAnalysisListAdapter(Context context, Analysis analysis) {
+    this(context, toSimpleForm(analysis));
   }
 
   private EventAnalysisListAdapter(Context context, List<Map<String, String>> listViewItems) {
@@ -28,9 +28,9 @@ public class EventAnalysisListAdapter extends SimpleAdapter {
     return listViewItems.get(i).get(EVENT_NAME_FIELD);
   }
 
-  private static List<Map<String, String>> toSimpleForm(EventsAnalysis eventsAnalysis) {
+  private static List<Map<String, String>> toSimpleForm(Analysis analysis) {
     ArrayList<Map<String, String>> eventListItems = new ArrayList<Map<String, String>>();
-    List<AnalysedEvent> analysedEvents = eventsAnalysis.getAnalysedEvents();
+    List<AnalysedEvent> analysedEvents = analysis.getAnalysedEvents();
     for (AnalysedEvent analysedEvent : analysedEvents) {
       HashMap<String, String> eventListItem = new HashMap<String, String>();
       eventListItem.put(EVENT_NAME_FIELD, analysedEvent.getEventName());

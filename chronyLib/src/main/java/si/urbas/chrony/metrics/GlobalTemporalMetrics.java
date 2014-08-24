@@ -1,27 +1,27 @@
-package si.urbas.chrony.analysis;
+package si.urbas.chrony.metrics;
 
 import java.util.List;
 
-public class GlobalTimeMetrics {
+public class GlobalTemporalMetrics {
 
   public final long oldestTimestamp;
   public final long newestTimestamp;
   public final long oldestEventRefreshTimestamp;
 
-  public GlobalTimeMetrics(long oldestTimestamp, long newestTimestamp, long oldestEventRefreshTimestamp) {
+  public GlobalTemporalMetrics(long oldestTimestamp, long newestTimestamp, long oldestEventRefreshTimestamp) {
     this.oldestTimestamp = oldestTimestamp;
     this.newestTimestamp = newestTimestamp;
     this.oldestEventRefreshTimestamp = oldestEventRefreshTimestamp;
   }
 
-  public static GlobalTimeMetrics calculateGlobalMetrics(List<EventTimeMetrics> eventMetricsList) {
+  public static GlobalTemporalMetrics calculate(List<EventTemporalMetrics> eventMetricsList) {
     if (eventMetricsList.size() == 0) {
       throw new IllegalArgumentException("Cannot calculate global statistics for an empty set of events.");
     }
     long oldestTimestamp = Long.MAX_VALUE;
     long newestTimestamp = Long.MIN_VALUE;
     long oldestEventRefreshTimestamp = Long.MAX_VALUE;
-    for (EventTimeMetrics perEventMetrics : eventMetricsList) {
+    for (EventTemporalMetrics perEventMetrics : eventMetricsList) {
       if (perEventMetrics.newestTimestamp > newestTimestamp) {
         newestTimestamp = perEventMetrics.newestTimestamp;
       }
@@ -32,6 +32,6 @@ public class GlobalTimeMetrics {
         oldestEventRefreshTimestamp = perEventMetrics.newestTimestamp;
       }
     }
-    return new GlobalTimeMetrics(oldestTimestamp, newestTimestamp, oldestEventRefreshTimestamp);
+    return new GlobalTemporalMetrics(oldestTimestamp, newestTimestamp, oldestEventRefreshTimestamp);
   }
 }

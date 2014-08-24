@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.*;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
-import si.urbas.chrony.impl.SimpleEventsAnalysis;
+import si.urbas.chrony.analysis.SimpleAnalysis;
 import si.urbas.chrony.app.data.SqliteEventRepository;
 
 import java.util.Date;
@@ -71,7 +71,7 @@ public class DataEntry extends Activity {
   }
 
   private void refreshEventListView() {
-    eventsListView.setAdapter(new EventAnalysisListAdapter(this, new SimpleEventsAnalysis(eventRepository)));
+    eventsListView.setAdapter(new EventAnalysisListAdapter(this, new SimpleAnalysis(eventRepository)));
   }
 
   private void registerUiEventHandlers() {
