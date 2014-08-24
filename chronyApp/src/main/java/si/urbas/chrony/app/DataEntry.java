@@ -50,6 +50,9 @@ public class DataEntry extends Activity {
       case R.id.action_save_database:
         saveRepositoryToFile();
         return false;
+      case R.id.action_load_database:
+        loadRepositoryFromFile();
+        return false;
       case R.id.action_clear_database:
         clearEventRepository();
         return false;
@@ -71,6 +74,11 @@ public class DataEntry extends Activity {
 
   private void saveRepositoryToFile() {
     EventRepositoryBackup.storeToFile(EVENT_REPOSITORY_BACKUP_FILE, eventRepository);
+  }
+
+  private void loadRepositoryFromFile() {
+    EventRepositoryBackup.restoreFromFile(EVENT_REPOSITORY_BACKUP_FILE, eventRepository);
+    refreshEventListView();
   }
 
   private void clearEventRepository() {

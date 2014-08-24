@@ -5,6 +5,10 @@
         android:title="@string/action_save_database"
         android:orderInCategory="100"
         android:showAsAction="never" />
+  <item android:id="@+id/action_load_database"
+        android:title="@string/action_load_database"
+        android:orderInCategory="110"
+        android:showAsAction="never" />
   <item android:id="@+id/action_clear_database"
         android:title="@string/action_clear_database"
         android:orderInCategory="150"
