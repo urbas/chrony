@@ -7,13 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
-import si.urbas.chrony.analysis.SimpleAnalysis;
+import si.urbas.chrony.analysis.SimpleAnalyser;
 import si.urbas.chrony.app.data.SqliteEventRepository;
 import si.urbas.chrony.app.io.EventRepositoryBackup;
-
-import java.util.Date;
 
 
 public class DataEntry extends Activity {
@@ -23,13 +20,14 @@ public class DataEntry extends Activity {
   private ListView eventsListView;
   private EditText eventNameTextField;
   private Button addEventButton;
+  private EventAnalysisListAdapter eventAnalysisListAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setupEventRepository();
     bindViewToFields();
-    refreshEventListView();
+    setupEventListView();
     registerUiEventHandlers();
   }
 
@@ -54,7 +52,7 @@ public class DataEntry extends Activity {
         loadRepositoryFromFile();
         return false;
       case R.id.action_clear_database:
-        clearEventRepository();
+        eventAnalysisListAdapter.clear();
         return false;
       default:
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
@@ -78,16 +76,12 @@ public class DataEntry extends Activity {
 
   private void loadRepositoryFromFile() {
     EventRepositoryBackup.restoreFromFile(EVENT_REPOSITORY_BACKUP_FILE, eventRepository);
-    refreshEventListView();
+    setupEventListView();
   }
 
-  private void clearEventRepository() {
-    eventRepository.clear();
-    refreshEventListView();
-  }
-
-  private void refreshEventListView() {
-    eventsListView.setAdapter(new EventAnalysisListAdapter(this, new SimpleAnalysis(eventRepository)));
+  private void setupEventListView() {
+    eventAnalysisListAdapter = new EventAnalysisListAdapter(this, new SimpleAnalyser(), eventRepository);
+    eventsListView.setAdapter(eventAnalysisListAdapter);
   }
 
   private void registerUiEventHandlers() {
@@ -102,10 +96,7 @@ public class DataEntry extends Activity {
   }
 
   private void addNewEvent(String eventName) {
-    long eventTimestamp = new Date().getTime();
-    Event newEvent = new Event(eventName, eventTimestamp);
-    eventRepository.addEvent(newEvent);
-    refreshEventListView();
+    eventAnalysisListAdapter.addEvent(eventName);
   }
 
   private class EventAddClickListener implements View.OnClickListener {

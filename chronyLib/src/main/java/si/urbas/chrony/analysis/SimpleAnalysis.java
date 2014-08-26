@@ -14,10 +14,10 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 import static si.urbas.chrony.metrics.GlobalTemporalMetrics.calculate;
 
-public class SimpleAnalysis implements Analysis {
+class SimpleAnalysis implements Analysis {
   private final List<AnalysedEvent> analysedEvents;
 
-  public SimpleAnalysis(EventRepository eventRepository) {
+  SimpleAnalysis(EventRepository eventRepository) {
     analysedEvents = Collections.unmodifiableList(analyseEvents(eventRepository));
   }
 

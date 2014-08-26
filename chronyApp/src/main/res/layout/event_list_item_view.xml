@@ -7,7 +7,6 @@
     style="?android:attr/buttonStyleSmall"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
-    android:textAppearance="?android:attr/textAppearanceMedium"
     android:text="ADD"
     android:id="@+id/addEventSampleTextView"
     android:layout_alignParentTop="true" android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
