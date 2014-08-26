@@ -1,43 +1,65 @@
 package si.urbas.chrony.app;
 
 import android.content.Context;
-import android.widget.SimpleAdapter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
 import si.urbas.chrony.AnalysedEvent;
 import si.urbas.chrony.Analysis;
 
 import java.util.*;
 
-public class EventAnalysisListAdapter extends SimpleAdapter {
+public class EventAnalysisListAdapter extends BaseAdapter {
 
-  private static final String EVENT_NAME_FIELD = "eventName";
-  private static final String EVENT_COUNT_FIELD = "eventCount";
-  private static final String[] FROM_FIELDS = new String[]{EVENT_NAME_FIELD, EVENT_COUNT_FIELD};
-  private static final int[] TO_VIEWS = new int[]{R.id.eventNameTextView, R.id.eventCountTextView};
-  private final List<Map<String, String>> listViewItems;
+  private final Context context;
+  private final List<AnalysedEvent> analysedEvents;
 
   public EventAnalysisListAdapter(Context context, Analysis analysis) {
-    this(context, toSimpleForm(analysis));
+    this.context = context;
+    this.analysedEvents = analysis.getAnalysedEvents();
   }
 
-  private EventAnalysisListAdapter(Context context, List<Map<String, String>> listViewItems) {
-    super(context, listViewItems, R.layout.event_list_item_view, FROM_FIELDS, TO_VIEWS);
-    this.listViewItems = listViewItems;
+  @Override
+  public int getCount() {
+    return analysedEvents.size();
+  }
+
+  @Override
+  public AnalysedEvent getItem(int position) {
+    return analysedEvents.get(position);
+  }
+
+  @Override
+  public long getItemId(int position) {
+    return position;
+  }
+
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
+    if (convertView == null) {
+      convertView = createEventItemView();
+    }
+    bindEventToItemView(position, convertView);
+    return convertView;
   }
 
   public String getEventName(int i) {
-    return listViewItems.get(i).get(EVENT_NAME_FIELD);
+    return analysedEvents.get(i).getEventName();
   }
 
-  private static List<Map<String, String>> toSimpleForm(Analysis analysis) {
-    ArrayList<Map<String, String>> eventListItems = new ArrayList<Map<String, String>>();
-    List<AnalysedEvent> analysedEvents = analysis.getAnalysedEvents();
-    for (AnalysedEvent analysedEvent : analysedEvents) {
-      HashMap<String, String> eventListItem = new HashMap<String, String>();
-      eventListItem.put(EVENT_NAME_FIELD, analysedEvent.getEventName());
-      eventListItem.put(EVENT_COUNT_FIELD, Integer.toString(analysedEvent.getCount()));
-      eventListItems.add(eventListItem);
-    }
-    return eventListItems;
+  private View createEventItemView() {
+    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    return inflater.inflate(R.layout.event_list_item_view, null);
+  }
+
+  private void bindEventToItemView(int position, View convertView) {
+    AnalysedEvent analysedEventToBind = analysedEvents.get(position);
+    TextView eventNameTextView = (TextView) convertView.findViewById(R.id.eventNameTextView);
+    eventNameTextView.setText(analysedEventToBind.getEventName());
+    TextView evenCountTextView = (TextView) convertView.findViewById(R.id.eventCountTextView);
+    evenCountTextView.setText(Integer.toString(analysedEventToBind.getCount()));
   }
 
 }
