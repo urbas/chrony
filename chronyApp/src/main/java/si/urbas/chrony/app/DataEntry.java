@@ -17,10 +17,10 @@ public class DataEntry extends Activity {
 
   private static final String EVENT_REPOSITORY_BACKUP_FILE = "event_repository_backup";
   private EventRepository eventRepository;
-  private ListView eventsListView;
   private EditText eventNameTextField;
   private Button addEventButton;
-  private EventAnalysisListAdapter eventAnalysisListAdapter;
+  private ExpandableListView analysedEventsListView;
+  private AnalysedEventsListAdapter analysedEventsListAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class DataEntry extends Activity {
         loadRepositoryFromFile();
         return false;
       case R.id.action_clear_database:
-        eventAnalysisListAdapter.clear();
+        analysedEventsListAdapter.clear();
         return false;
       default:
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
@@ -66,8 +66,8 @@ public class DataEntry extends Activity {
   private void bindViewToFields() {
     setContentView(R.layout.activity_data_entry);
     addEventButton = (Button) findViewById(R.id.addEventButton);
-    eventsListView = (ListView) findViewById(R.id.eventsListView);
     eventNameTextField = (EditText) findViewById(R.id.eventNameTextField);
+    analysedEventsListView = (ExpandableListView)findViewById(R.id.analysedEventsListView);
   }
 
   private void saveRepositoryToFile() {
@@ -80,14 +80,13 @@ public class DataEntry extends Activity {
   }
 
   private void setupEventListView() {
-    eventAnalysisListAdapter = new EventAnalysisListAdapter(this, new SimpleAnalyser(), eventRepository);
-    eventsListView.setAdapter(eventAnalysisListAdapter);
+    analysedEventsListAdapter = new AnalysedEventsListAdapter(this, new SimpleAnalyser(), eventRepository);
+    analysedEventsListView.setAdapter(analysedEventsListAdapter);
   }
 
   private void registerUiEventHandlers() {
     addEventButton.setOnClickListener(new EventAddClickListener());
     eventNameTextField.setOnEditorActionListener(new EventNameEditorActionListener());
-    eventsListView.setOnItemClickListener(new EventItemClickListener());
   }
 
   private void addNewEventFromEditField() {
@@ -96,7 +95,7 @@ public class DataEntry extends Activity {
   }
 
   private void addNewEvent(String eventName) {
-    eventAnalysisListAdapter.addEvent(eventName);
+    analysedEventsListAdapter.addEvent(eventName);
   }
 
   private class EventAddClickListener implements View.OnClickListener {
@@ -114,11 +113,4 @@ public class DataEntry extends Activity {
     }
   }
 
-  private class EventItemClickListener implements AdapterView.OnItemClickListener {
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-      EventAnalysisListAdapter eventListAdapter = (EventAnalysisListAdapter) adapterView.getAdapter();
-      addNewEvent(eventListAdapter.getEventName(i));
-    }
-  }
 }

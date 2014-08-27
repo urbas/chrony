@@ -21,9 +21,10 @@
     android:text="@string/new_event_button_text"
     android:id="@+id/addEventButton" android:layout_alignBottom="@+id/eventNameTextField" android:layout_alignParentRight="true"
     android:layout_alignParentEnd="true"/>
-  <ListView
+  <ExpandableListView
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/eventsListView" android:layout_alignParentLeft="true"
-    android:layout_alignParentStart="true" android:layout_below="@+id/addEventButton"/>
+    android:layout_height="200dp"
+    android:id="@+id/analysedEventsListView"
+    android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
+    android:layout_below="@+id/addEventButton" android:layout_alignParentBottom="true"/>
 </RelativeLayout>
