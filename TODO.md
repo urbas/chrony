@@ -1,4 +1,3 @@
-- I want an "Add" button on each event so that I can add a new sample for that event (instead of clicking anywhere on the item).
 - I want a drop-down on each event so that I can see all the timestamps for that event.
 - I want to be able to add events with an associated numerical value.
 - I want to see the frequency of an event (e.g.: 1/day, 1/week).
