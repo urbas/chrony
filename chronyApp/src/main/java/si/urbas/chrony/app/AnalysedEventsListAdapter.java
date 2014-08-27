@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import si.urbas.chrony.AnalysedEvent;
 import si.urbas.chrony.Analysis;
@@ -18,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
+
   private final Context context;
   private final SimpleAnalyser analyser;
   private final EventRepository eventRepository;
@@ -47,7 +47,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   @Override
   public List<Long> getChild(int groupPosition, int childPosition) {
-    String eventName = getGroup(0).getEventName();
+    String eventName = getGroup(groupPosition).getEventName();
     return eventRepository.timestampsOf(eventName);
   }
 
@@ -77,7 +77,10 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   @Override
   public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-    return convertView == null ? getTextView() : convertView;
+    System.out.println("Need a child view for: " + groupPosition + " :: " + childPosition);
+    View view = convertView == null ? createEventItemView() : convertView;
+    bindEventToItemView(groupPosition, view);
+    return view;
   }
 
   public void clear() {
@@ -85,17 +88,9 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     refreshAnalysedEvents();
   }
 
-  private RelativeLayout getTextView() {
-    TextView textView = new TextView(context);
-    textView.setText("Hello world!");
-    RelativeLayout relativeLayout = new RelativeLayout(context);
-    relativeLayout.addView(textView);
-    return relativeLayout;
-  }
-
   @Override
   public boolean isChildSelectable(int groupPosition, int childPosition) {
-    return false;
+    return true;
   }
 
   public void addEvent(String eventName) {
@@ -120,9 +115,11 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     eventNameTextView.setText(analysedEventToBind.getEventName());
     TextView evenCountTextView = (TextView) convertView.findViewById(R.id.eventCountTextView);
     evenCountTextView.setText(Integer.toString(analysedEventToBind.getCount()));
-    Button addEventSampleBtn = (Button) convertView.findViewById(R.id.addEventSampleTextView);
+    Button addEventSampleBtn = (Button) convertView.findViewById(R.id.addEventSampleButton);
+    // NOTE: we've got to make the button not focusable because otherwise it steals clicks from the expand button.
+    addEventSampleBtn.setFocusable(false);
     addEventSampleBtn.setOnClickListener(new AddEventButtonClickListener(position));
-    convertView.setPadding(36, 0, 0, 0);
+    convertView.setPadding(60, 0, 0, 0);
   }
 
   private void addEvent(int position) {
