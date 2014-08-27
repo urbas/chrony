@@ -12,7 +12,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
-import static si.urbas.chrony.metrics.GlobalTemporalMetrics.calculate;
 
 class SimpleAnalysis implements Analysis {
   private final List<AnalysedEvent> analysedEvents;
@@ -31,11 +30,11 @@ class SimpleAnalysis implements Analysis {
     if (eventTemporalMetrics.size() == 0) {
       return emptyList();
     } else {
-      return createAnalysis(eventTemporalMetrics, calculate(eventTemporalMetrics));
+      return analyseEvents(eventTemporalMetrics, GlobalTemporalMetrics.calculate(eventTemporalMetrics));
     }
   }
 
-  private static List<AnalysedEvent> createAnalysis(ArrayList<EventTemporalMetrics> perEventMetricsList, GlobalTemporalMetrics globalTemporalMetrics) {
+  private static List<AnalysedEvent> analyseEvents(ArrayList<EventTemporalMetrics> perEventMetricsList, GlobalTemporalMetrics globalTemporalMetrics) {
     ArrayList<AnalysedEvent> analysedEvents = new ArrayList<AnalysedEvent>();
     for (EventTemporalMetrics perEventMetrics : perEventMetricsList) {
       analysedEvents.add(new SimpleAnalysedEvent(perEventMetrics.name, perEventMetrics.count, calculateRelevanceOfEvent(perEventMetrics, globalTemporalMetrics)));
