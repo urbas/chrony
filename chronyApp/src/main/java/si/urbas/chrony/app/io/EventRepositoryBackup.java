@@ -20,7 +20,7 @@ public class EventRepositoryBackup {
     Writer fileWriter = null;
     try {
       fileWriter = new OutputStreamWriter(new FileOutputStream(backupFile));
-      appendEventsJsonArrayToFile(fileWriter, eventRepository);
+      appendEventsToWriter(eventRepository, fileWriter);
     } catch (Throwable e) {
       throw new RuntimeException("Could not write the event repository to file.", e);
     } finally {
@@ -42,7 +42,7 @@ public class EventRepositoryBackup {
       try {
         fileReader = new InputStreamReader(new FileInputStream(backupFile));
         eventRepository.clear();
-        appendEventsFromFileToEventRepository(fileReader, eventRepository);
+        appendEventsToRepository(fileReader, eventRepository);
       } catch (Throwable e) {
         throw new RuntimeException("Could not read the database from the backup file.", e);
       } finally {
@@ -57,39 +57,39 @@ public class EventRepositoryBackup {
     }
   }
 
-  private static void appendEventsFromFileToEventRepository(InputStreamReader fileReader, EventRepository eventRepository) throws IOException {
-    JsonReader jsonReader = new JsonReader(fileReader);
+  private static void appendEventsToRepository(Reader sourceReader, EventRepository targetEventRepository) throws IOException {
+    JsonReader jsonReader = new JsonReader(sourceReader);
     jsonReader.beginArray();
     while (jsonReader.hasNext()) {
       jsonReader.beginObject();
-      extractSingleEvent(eventRepository, jsonReader);
+      appendEventTimestampToRepository(jsonReader, targetEventRepository);
       jsonReader.endObject();
     }
     jsonReader.endArray();
   }
 
-  private static void extractSingleEvent(EventRepository eventRepository, JsonReader jsonReader) throws IOException {
+  private static void appendEventTimestampToRepository(JsonReader sourceJsonReader, EventRepository targetEventRepository) throws IOException {
     String eventName = null;
     Long eventTimestamp = null;
     while (eventName == null || eventTimestamp == null) {
-      if (!jsonReader.hasNext()) {
+      if (!sourceJsonReader.hasNext()) {
         throw new RuntimeException("The backup file is incorrectly formatted.");
       }
-      String eventField = jsonReader.nextName();
+      String eventField = sourceJsonReader.nextName();
       if (EVENT_JSON_FIELD_NAME.equals(eventField)) {
-        eventName = jsonReader.nextString();
+        eventName = sourceJsonReader.nextString();
       } else if (EVENT_JSON_FIELD_TIMESTAMP.equals(eventField)) {
-        eventTimestamp = jsonReader.nextLong();
+        eventTimestamp = sourceJsonReader.nextLong();
       }
     }
-    eventRepository.addEvent(new Event(eventName, eventTimestamp));
+    targetEventRepository.addEvent(new Event(eventName, eventTimestamp));
   }
 
-  private static void appendEventsJsonArrayToFile(Writer outputWriter, EventRepository eventRepository) throws IOException {
-    JsonWriter jsonWriter = new JsonWriter(outputWriter);
+  private static void appendEventsToWriter(EventRepository sourceEventRepository, Writer targetWriter) throws IOException {
+    JsonWriter jsonWriter = new JsonWriter(targetWriter);
     jsonWriter.beginArray();
-    for (String eventName : eventRepository.allEvents()) {
-      for (Long eventTimestamp : eventRepository.timestampsOf(eventName)) {
+    for (String eventName : sourceEventRepository.allEvents()) {
+      for (Long eventTimestamp : sourceEventRepository.timestampsOf(eventName)) {
         jsonWriter.beginObject()
                   .name(EVENT_JSON_FIELD_NAME).value(eventName)
                   .name(EVENT_JSON_FIELD_TIMESTAMP).value(eventTimestamp)
