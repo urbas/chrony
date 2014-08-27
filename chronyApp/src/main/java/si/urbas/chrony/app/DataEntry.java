@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.*;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.analysis.SimpleAnalyser;
-import si.urbas.chrony.app.data.SqliteEventRepository;
+import si.urbas.chrony.app.data.SQLiteEventRepository;
 import si.urbas.chrony.app.io.EventRepositoryBackup;
 
 
@@ -60,7 +60,7 @@ public class DataEntry extends Activity {
   }
 
   private void setupEventRepository() {
-    eventRepository = new SqliteEventRepository(this);
+    eventRepository = new SQLiteEventRepository(this);
   }
 
   private void bindViewToFields() {

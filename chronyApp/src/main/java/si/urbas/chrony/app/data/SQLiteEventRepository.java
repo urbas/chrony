@@ -11,7 +11,7 @@ import si.urbas.chrony.EventRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SqliteEventRepository extends SQLiteOpenHelper implements EventRepository {
+public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepository {
 
   private static final int EVENTS_DB_VERSION = 2;
   private static final String EVENTS_DB_NAME = "events";
@@ -19,7 +19,7 @@ public class SqliteEventRepository extends SQLiteOpenHelper implements EventRepo
   private static final String EVENTS_COLUMN_EVENT_NAME = "eventName";
   private static final String EVENTS_COLUMN_TIMESTAMP = "timestamp";
 
-  public SqliteEventRepository(Context context) {
+  public SQLiteEventRepository(Context context) {
     super(context, EVENTS_DB_NAME, null, EVENTS_DB_VERSION);
   }
 
