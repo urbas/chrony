@@ -1,4 +1,3 @@
-- I want a drop-down on each event so that I can see all the timestamps for that event.
 - I want to be able to remove a particular timestamp for an event.
 TECHNICAL: Add a `dataChanged` event to `EventRepository` and remove all event repository manipulation function from the adapters.
 - I want to be able to add events with an associated numerical value.
