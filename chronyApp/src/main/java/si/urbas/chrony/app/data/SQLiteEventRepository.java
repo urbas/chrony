@@ -79,6 +79,11 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
+  public void removeTimestamp(String eventName, Long timestamp) {
+
+  }
+
+  @Override
   public void clear() {
     SQLiteDatabase dbWriter = getWritableDatabase();
     dbWriter.execSQL("DELETE FROM " + EVENTS_TABLE_NAME);
