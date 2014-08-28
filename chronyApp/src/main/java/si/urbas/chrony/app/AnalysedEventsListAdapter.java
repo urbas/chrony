@@ -4,7 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
+import android.widget.TextView;
 import si.urbas.chrony.AnalysedEvent;
 import si.urbas.chrony.Analysis;
 import si.urbas.chrony.Event;
@@ -35,7 +37,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   @Override
   public int getChildrenCount(int groupPosition) {
-    return 1;
+    return eventRepository.timestampsOf(getGroup(groupPosition).getEventName()).size();
   }
 
   @Override
@@ -44,9 +46,9 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   }
 
   @Override
-  public List<Long> getChild(int groupPosition, int childPosition) {
+  public Long getChild(int groupPosition, int childPosition) {
     String eventName = getGroup(groupPosition).getEventName();
-    return eventRepository.timestampsOf(eventName);
+    return eventRepository.timestampsOf(eventName).get(childPosition);
   }
 
   @Override
@@ -76,7 +78,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   @Override
   public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
     View childView = convertView == null ? createChildView() : convertView;
-    bindTimestampsToView(groupPosition, childView);
+    bindTimestampToView(groupPosition, childPosition, childView);
     return childView;
   }
 
@@ -107,7 +109,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   }
 
   private View createEventItemView() {
-    return createView(R.layout.event_list_item_view);
+    return inflateViewFromId(R.layout.event_list_item_view);
   }
 
   private void bindEventToItemView(final int position, View convertView) {
@@ -125,12 +127,14 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   }
 
   private View createChildView() {
-    return createView(R.layout.event_timestamp_list_view);
+    return inflateViewFromId(R.layout.event_timesamp_list_item);
   }
 
-  private void bindTimestampsToView(int groupPosition, View childView) {
-    ListView timestampsListView = (ListView) childView.findViewById(R.id.eventTimestamps_listView);
-    timestampsListView.setAdapter(new EventTimestampsListAdapter(groupPosition));
+  private void bindTimestampToView(int groupPosition, int childPosition, View eventTimestampItemView) {
+    TextView eventTimestampTextView = (TextView) eventTimestampItemView.findViewById(R.id.eventTimestamp_timestampTextView);
+    eventTimestampTextView.setText(new Date(getChild(groupPosition, childPosition)).toString());
+    Button eventTimestampRemoveButton = (Button) eventTimestampItemView.findViewById(R.id.eventTimestamp_removeButton);
+    eventTimestampRemoveButton.setOnClickListener(new RemoveTimestampButtonClickListener(groupPosition, childPosition));
   }
 
   private void addEvent(int position) {
@@ -138,15 +142,21 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     addEvent(analysedEvent.getEventName());
   }
 
-  private View createView(int viewId) {
-    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    return inflater.inflate(viewId, null);
+  private void removeTimestamp(int groupPosition, int childPosition) {
+    removeTimestamp(getGroup(groupPosition).getEventName(), getChild(groupPosition, childPosition));
   }
+
+  private View inflateViewFromId(int layoutId) {
+    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    return inflater.inflate(layoutId, null);
+  }
+
   private class AddEventButtonClickListener implements View.OnClickListener {
 
     private final int position;
 
     public AddEventButtonClickListener(int position) {this.position = position;}
+
     @Override
     public void onClick(View v) {
       addEvent(position);
@@ -154,53 +164,20 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   }
 
-  private class EventTimestampsListAdapter extends BaseAdapter {
-    private final List<Long> eventTimestamps;
+  private class RemoveTimestampButtonClickListener implements View.OnClickListener {
 
-    private final String eventName;
+    private final int groupPosition;
+    private final int childPosition;
 
-    public EventTimestampsListAdapter(int groupPosition) {
-      eventName = getGroup(groupPosition).getEventName();
-      eventTimestamps = eventRepository.timestampsOf(eventName);
+    public RemoveTimestampButtonClickListener(int groupPosition, int childPosition) {
+      this.groupPosition = groupPosition;
+      this.childPosition = childPosition;
     }
 
     @Override
-    public int getCount() {
-      return eventTimestamps.size();
+    public void onClick(View v) {
+      removeTimestamp(groupPosition, childPosition);
     }
 
-    @Override
-    public Long getItem(int position) {
-      return eventTimestamps.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-      return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-      View eventTimestampItemView = convertView == null ? createView(R.layout.event_timesamp_list_item) : convertView;
-      bindTimestampToView(position, eventTimestampItemView);
-      return eventTimestampItemView;
-    }
-    private void bindTimestampToView(final int position, View eventTimestampItemView) {
-      TextView eventTimestampTextView = (TextView) eventTimestampItemView.findViewById(R.id.eventTimestamp_timestampTextView);
-      eventTimestampTextView.setText(new Date(getItem(position)).toString());
-      Button eventTimestampRemoveButton = (Button) eventTimestampItemView.findViewById(R.id.eventTimestamp_removeButton);
-      eventTimestampRemoveButton.setOnClickListener(new RemoveTimestampButtonClickListener(position));
-    }
-
-    private class RemoveTimestampButtonClickListener implements View.OnClickListener {
-      private final int position;
-
-      public RemoveTimestampButtonClickListener(int position) {this.position = position;}
-
-      @Override
-      public void onClick(View v) {
-        removeTimestamp(eventName, getItem(position));
-      }
-    }
   }
 }
