@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import si.urbas.chrony.ChangeListener;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 
@@ -18,6 +19,8 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   private static final String EVENTS_TABLE_NAME = "events";
   private static final String EVENTS_COLUMN_EVENT_NAME = "eventName";
   private static final String EVENTS_COLUMN_TIMESTAMP = "timestamp";
+
+  private final ConcurrentChangeListenersList concurrentChangeListenersList = new ConcurrentChangeListenersList();
 
   public SQLiteEventRepository(Context context) {
     super(context, EVENTS_DB_NAME, null, EVENTS_DB_VERSION);
@@ -46,6 +49,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     } finally {
       dbWriter.close();
     }
+    concurrentChangeListenersList.notifyChangeListeners();
   }
 
   @Override
@@ -81,8 +85,9 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   @Override
   public void removeTimestamp(String eventName, Long timestamp) {
     SQLiteDatabase dbWriter = getWritableDatabase();
-    dbWriter.execSQL("DELETE FROM " + EVENTS_TABLE_NAME + " WHERE " + EVENTS_COLUMN_EVENT_NAME + " = ? AND " + EVENTS_COLUMN_TIMESTAMP + " = ?", new Object[] {eventName, timestamp});
+    dbWriter.execSQL("DELETE FROM " + EVENTS_TABLE_NAME + " WHERE " + EVENTS_COLUMN_EVENT_NAME + " = ? AND " + EVENTS_COLUMN_TIMESTAMP + " = ?", new Object[]{eventName, timestamp});
     dbWriter.close();
+    concurrentChangeListenersList.notifyChangeListeners();
   }
 
   @Override
@@ -90,6 +95,12 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     SQLiteDatabase dbWriter = getWritableDatabase();
     dbWriter.execSQL("DELETE FROM " + EVENTS_TABLE_NAME);
     dbWriter.close();
+    concurrentChangeListenersList.notifyChangeListeners();
+  }
+
+  @Override
+  public void registerChangeListener(final ChangeListener changeListener) {
+    concurrentChangeListenersList.registerChangeListener(changeListener);
   }
 
   private static void closeDb(SQLiteDatabase dbReader, Cursor cursor) {
@@ -104,4 +115,5 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   private static void upgradeDbToVersion2(SQLiteDatabase db) {
     db.execSQL("CREATE INDEX idx_events_eventName ON " + EVENTS_TABLE_NAME + " (" + EVENTS_COLUMN_EVENT_NAME + " )");
   }
+
 }

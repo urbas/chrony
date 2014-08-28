@@ -8,4 +8,5 @@ public interface EventRepository {
   List<Long> timestampsOf(String eventName);
   void removeTimestamp(String eventName, Long timestamp);
   void clear();
+  void registerChangeListener(ChangeListener changeListener);
 }

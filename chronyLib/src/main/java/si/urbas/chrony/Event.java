@@ -1,5 +1,7 @@
 package si.urbas.chrony;
 
+import java.util.Date;
+
 public class Event {
   public final String name;
   public final long timestamp;
@@ -11,5 +13,11 @@ public class Event {
   public Event(String name, long timestamp) {
     this.name = name;
     this.timestamp = timestamp;
+  }
+  /**
+   * Initialises this event with the given name and the current timestamp.
+   */
+  public Event(String name) {
+    this(name, new Date().getTime());
   }
 }

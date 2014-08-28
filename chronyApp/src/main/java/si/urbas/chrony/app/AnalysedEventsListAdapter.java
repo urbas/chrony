@@ -7,10 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-import si.urbas.chrony.AnalysedEvent;
-import si.urbas.chrony.Analysis;
-import si.urbas.chrony.Event;
-import si.urbas.chrony.EventRepository;
+import si.urbas.chrony.*;
 import si.urbas.chrony.analysis.SimpleAnalyser;
 
 import java.util.Date;
@@ -27,6 +24,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     this.context = context;
     this.analyser = analyser;
     this.eventRepository = eventRepository;
+    this.eventRepository.registerChangeListener(new EventRepositoryChangeListener());
     refreshAnalysedEvents();
   }
 
@@ -87,21 +85,6 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     return true;
   }
 
-  public void addEvent(String eventName) {
-    eventRepository.addEvent(new Event(eventName, new Date().getTime()));
-    refreshAnalysedEvents();
-  }
-
-  public void removeTimestamp(String eventName, Long timestamp) {
-    eventRepository.removeTimestamp(eventName, timestamp);
-    refreshAnalysedEvents();
-  }
-
-  public void clear() {
-    eventRepository.clear();
-    refreshAnalysedEvents();
-  }
-
   private void refreshAnalysedEvents() {
     Analysis analysis = analyser.analyse(eventRepository);
     analysedEvents = analysis.getAnalysedEvents();
@@ -139,11 +122,13 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   private void addEvent(int position) {
     AnalysedEvent analysedEvent = getGroup(position);
-    addEvent(analysedEvent.getEventName());
+    eventRepository.addEvent(new Event(analysedEvent.getEventName()));
   }
 
   private void removeTimestamp(int groupPosition, int childPosition) {
-    removeTimestamp(getGroup(groupPosition).getEventName(), getChild(groupPosition, childPosition));
+    String eventName = getGroup(groupPosition).getEventName();
+    Long timestamp = getChild(groupPosition, childPosition);
+    eventRepository.removeTimestamp(eventName, timestamp);
   }
 
   private View inflateViewFromId(int layoutId) {
@@ -179,5 +164,12 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
       removeTimestamp(groupPosition, childPosition);
     }
 
+  }
+
+  private class EventRepositoryChangeListener implements ChangeListener {
+    @Override
+    public void changed() {
+      refreshAnalysedEvents();
+    }
   }
 }

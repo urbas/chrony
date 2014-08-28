@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.analysis.SimpleAnalyser;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
@@ -52,7 +53,7 @@ public class DataEntry extends Activity {
         loadRepositoryFromFile();
         return false;
       case R.id.action_clear_database:
-        analysedEventsListAdapter.clear();
+        eventRepository.clear();
         return false;
       default:
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
@@ -95,7 +96,7 @@ public class DataEntry extends Activity {
   }
 
   private void addNewEvent(String eventName) {
-    analysedEventsListAdapter.addEvent(eventName);
+    eventRepository.addEvent(new Event(eventName));
   }
 
   private class EventAddClickListener implements View.OnClickListener {
