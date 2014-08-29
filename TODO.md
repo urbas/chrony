@@ -1,3 +1,4 @@
+TECHNICAL: normalise the database (create a table for event names and a table for samples).
 - I want to be able to add events with an associated numerical value.
 - I want to see the frequency of an event (e.g.: 1/day, 1/week).
 - I want to see the recurrence pattern of an event (e.g.: every Tuesday, every 2nd Sunday at 6pm, every Monday and Wednesday at 10am, etc.).
