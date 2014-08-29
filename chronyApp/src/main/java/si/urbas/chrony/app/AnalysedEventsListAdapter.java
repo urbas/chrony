@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import si.urbas.chrony.*;
 import si.urbas.chrony.analysis.SimpleAnalyser;
+import si.urbas.chrony.util.ChangeListener;
 
 import java.util.Date;
 import java.util.List;

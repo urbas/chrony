@@ -1,4 +1,4 @@
-package si.urbas.chrony;
+package si.urbas.chrony.util;
 
 public interface ChangeListener {
   void changed();

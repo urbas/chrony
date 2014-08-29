@@ -1,5 +1,7 @@
 package si.urbas.chrony;
 
+import si.urbas.chrony.util.ChangeListener;
+
 import java.util.List;
 
 public interface EventRepository {

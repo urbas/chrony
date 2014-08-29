@@ -5,7 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import si.urbas.chrony.ChangeListener;
+import si.urbas.chrony.util.ChangeListener;
+import si.urbas.chrony.util.ConcurrentChangeListenersList;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 
