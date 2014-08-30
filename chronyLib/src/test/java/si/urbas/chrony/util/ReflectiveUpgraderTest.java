@@ -20,7 +20,7 @@ public class ReflectiveUpgraderTest {
   @Before
   public void setUp() throws Exception {
     testUpgradeScripts = mock(TestUpgradeScripts.class);
-    reflectiveUpgrader = new ReflectiveUpgrader<String>(UPGRADE_METHODS_NAME_PREFIX, testUpgradeScripts, String.class);
+    reflectiveUpgrader = new ReflectiveUpgrader<String>(UPGRADE_METHODS_NAME_PREFIX, testUpgradeScripts);
   }
 
   @Test

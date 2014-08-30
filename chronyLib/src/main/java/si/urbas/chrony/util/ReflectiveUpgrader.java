@@ -7,17 +7,15 @@ public class ReflectiveUpgrader<T> {
 
   private final String upgradeMethodsNamePrefix;
   private final Object instanceWithUpgradeMethods;
-  private final Class<T> upgradeMethodArgumentType;
 
-  public ReflectiveUpgrader(String upgradeMethodsNamePrefix, Object instanceWithUpgradeMethods, Class<T> upgradeMethodArgumentType) {
+  public ReflectiveUpgrader(String upgradeMethodsNamePrefix, Object instanceWithUpgradeMethods) {
     this.upgradeMethodsNamePrefix = upgradeMethodsNamePrefix;
     this.instanceWithUpgradeMethods = instanceWithUpgradeMethods;
-    this.upgradeMethodArgumentType = upgradeMethodArgumentType;
   }
 
   public void upgrade(T upgradeData, int currentVersion, int newVersion) {
     assertVersionsSane(currentVersion, newVersion);
-    invokeUpgradeMethods(upgradeData, getUpgradeMethods(currentVersion, newVersion));
+    invokeUpgradeMethods(upgradeData, getUpgradeMethods(currentVersion, newVersion, upgradeData));
   }
 
   private void invokeUpgradeMethods(T upgradeData, ArrayList<Method> upgradeMethods) {
@@ -34,11 +32,11 @@ public class ReflectiveUpgrader<T> {
     }
   }
 
-  private ArrayList<Method> getUpgradeMethods(int currentVersion, int newVersion) {
+  private ArrayList<Method> getUpgradeMethods(int currentVersion, int newVersion, T upgradeData) {
     ArrayList<Method> upgradeMethods = new ArrayList<Method>();
     for (int i = currentVersion; i < newVersion; i++) {
       try {
-        upgradeMethods.add(getUpgradeMethod(i + 1));
+        upgradeMethods.add(getUpgradeMethod(i + 1, upgradeData));
       } catch (NoSuchMethodException e) {
         throw new IllegalArgumentException("Could not upgrade. The upgrade method for version " + i + " does not exist.");
       }
@@ -46,8 +44,8 @@ public class ReflectiveUpgrader<T> {
     return upgradeMethods;
   }
 
-  private Method getUpgradeMethod(int versionNumber) throws NoSuchMethodException {
-    return instanceWithUpgradeMethods.getClass().getMethod(upgradeMethodsNamePrefix + versionNumber, upgradeMethodArgumentType);
+  private Method getUpgradeMethod(int versionNumber, T upgradeData) throws NoSuchMethodException {
+    return instanceWithUpgradeMethods.getClass().getMethod(upgradeMethodsNamePrefix + versionNumber, upgradeData.getClass());
   }
 
   static void assertVersionsSane(int currentVersion, int newVersion) {
