@@ -21,7 +21,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   private final SQLiteEventRepositorySchema sqliteEventRepositorySchema = new SQLiteEventRepositorySchema();
 
   public SQLiteEventRepository(Context context) {
-    super(context, EVENTS_DB_NAME, null, EVENTS_DB_VERSION);
+    super(context, DATABASE_EVENTS, null, DATABASE_EVENTS_VERSION);
   }
 
   @Override
@@ -36,12 +36,10 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
 
   @Override
   public void addEvent(Event event) {
-    ContentValues values = new ContentValues();
-    values.put(EVENTS_COLUMN_EVENT_NAME, event.name);
-    values.put(EVENTS_COLUMN_TIMESTAMP, event.timestamp);
     SQLiteDatabase dbWriter = getWritableDatabase();
     try {
-      dbWriter.insert(EVENTS_DB_NAME, null, values);
+      addEvent(event, dbWriter);
+      addTimestamp(event, dbWriter);
     } finally {
       dbWriter.close();
     }
@@ -51,7 +49,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   @Override
   public ArrayList<String> allEvents() {
     SQLiteDatabase dbReader = getReadableDatabase();
-    Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_EVENT_NAME + " FROM " + EVENTS_TABLE_NAME + " GROUP BY " + EVENTS_COLUMN_EVENT_NAME, null);
+    Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_EVENT_NAME + " FROM " + TABLE_EVENTS, null);
     try {
       ArrayList<String> allEVents = new ArrayList<String>();
       while (cursor.moveToNext()) {
@@ -66,7 +64,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   @Override
   public List<Long> timestampsOf(String eventName) {
     SQLiteDatabase dbReader = getReadableDatabase();
-    Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_TIMESTAMP + " FROM " + EVENTS_TABLE_NAME + " WHERE " + EVENTS_COLUMN_EVENT_NAME + " = ?", new String[]{eventName});
+    Cursor cursor = dbReader.rawQuery("SELECT " + EVENT_SAMPLES_COLUMN_TIMESTAMP + " FROM " + TABLE_EVENT_SAMPLES + " WHERE " + EVENT_SAMPLES_COLUMN_EVENT_NAME + " = ?", new String[]{eventName});
     try {
       ArrayList<Long> eventTimestamps = new ArrayList<Long>();
       while (cursor.moveToNext()) {
@@ -81,7 +79,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   @Override
   public void removeTimestamp(String eventName, Long timestamp) {
     SQLiteDatabase dbWriter = getWritableDatabase();
-    dbWriter.execSQL("DELETE FROM " + EVENTS_TABLE_NAME + " WHERE " + EVENTS_COLUMN_EVENT_NAME + " = ? AND " + EVENTS_COLUMN_TIMESTAMP + " = ?", new Object[]{eventName, timestamp});
+    dbWriter.execSQL("DELETE FROM " + TABLE_EVENT_SAMPLES + " WHERE " + EVENT_SAMPLES_COLUMN_EVENT_NAME + " = ? AND " + EVENT_SAMPLES_COLUMN_TIMESTAMP + " = ?", new Object[]{eventName, timestamp});
     dbWriter.close();
     concurrentChangeListenersList.notifyChangeListeners();
   }
@@ -89,7 +87,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   @Override
   public void clear() {
     SQLiteDatabase dbWriter = getWritableDatabase();
-    dbWriter.execSQL("DELETE FROM " + EVENTS_TABLE_NAME);
+    dbWriter.execSQL("DELETE FROM " + TABLE_EVENTS);
     dbWriter.close();
     concurrentChangeListenersList.notifyChangeListeners();
   }
@@ -97,6 +95,19 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   @Override
   public void registerChangeListener(final ChangeListener changeListener) {
     concurrentChangeListenersList.registerChangeListener(changeListener);
+  }
+
+  private void addEvent(Event event, SQLiteDatabase dbWriter) {
+    ContentValues values = new ContentValues();
+    values.put(EVENTS_COLUMN_EVENT_NAME, event.name);
+    dbWriter.insertWithOnConflict(TABLE_EVENTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+  }
+
+  private void addTimestamp(Event event, SQLiteDatabase dbWriter) {
+    ContentValues values = new ContentValues();
+    values.put(EVENT_SAMPLES_COLUMN_EVENT_NAME, event.name);
+    values.put(EVENT_SAMPLES_COLUMN_TIMESTAMP, event.timestamp);
+    dbWriter.insert(TABLE_EVENT_SAMPLES, null, values);
   }
 
   private static void closeDb(SQLiteDatabase dbReader, Cursor cursor) {
