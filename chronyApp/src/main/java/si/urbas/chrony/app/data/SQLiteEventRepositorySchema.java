@@ -23,11 +23,11 @@ public class SQLiteEventRepositorySchema {
 
   @SuppressWarnings("UnusedDeclaration")
   public void upgradeDbToVersion1(SQLiteDatabase db) {
-    db.execSQL("CREATE TABLE " + EVENTS_TABLE_NAME + " (" + EVENTS_COLUMN_EVENT_NAME + " TEXT, " + EVENTS_COLUMN_TIMESTAMP + " INTEGER)");
+    db.execSQL("CREATE TABLE events (eventName TEXT, timestamp INTEGER)");
   }
 
   @SuppressWarnings("UnusedDeclaration")
   public void upgradeDbToVersion2(SQLiteDatabase db) {
-    db.execSQL("CREATE INDEX idx_events_eventName ON " + EVENTS_TABLE_NAME + " (" + EVENTS_COLUMN_EVENT_NAME + " )");
+    db.execSQL("CREATE INDEX idx_events_eventName ON events (eventName)");
   }
 }
