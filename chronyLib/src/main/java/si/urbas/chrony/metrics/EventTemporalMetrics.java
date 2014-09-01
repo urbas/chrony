@@ -29,8 +29,8 @@ public class EventTemporalMetrics {
   }
 
   private static EventTemporalMetrics calculateStatistics(String eventName, List<Long> eventTimestamps) {
-    long latestTimestampForEvent = Collections.max(eventTimestamps);
-    long oldestTimestampForEvent = Collections.min(eventTimestamps);
+    long latestTimestampForEvent = eventTimestamps.size() == 0 ? Long.MIN_VALUE : Collections.max(eventTimestamps);
+    long oldestTimestampForEvent = eventTimestamps.size() == 0 ? Long.MIN_VALUE : Collections.min(eventTimestamps);
     return new EventTemporalMetrics(eventName, eventTimestamps.size(), latestTimestampForEvent, oldestTimestampForEvent);
   }
 

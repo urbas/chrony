@@ -7,11 +7,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.analysis.SimpleAnalyser;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
 import si.urbas.chrony.app.io.EventRepositoryBackup;
+
+import java.util.Date;
 
 
 public class DataEntry extends Activity {
@@ -96,7 +97,8 @@ public class DataEntry extends Activity {
   }
 
   private void addNewEvent(String eventName) {
-    eventRepository.addEvent(new Event(eventName));
+    eventRepository.addEvent(eventName);
+    eventRepository.addEventSample(eventName, new Date().getTime(), null);
   }
 
   private class EventAddClickListener implements View.OnClickListener {

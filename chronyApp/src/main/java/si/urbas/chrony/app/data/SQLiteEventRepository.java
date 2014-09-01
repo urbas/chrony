@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.util.ChangeListener;
 import si.urbas.chrony.util.ConcurrentChangeListenersList;
@@ -35,11 +34,21 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
-  public void addEvent(Event event) {
+  public void addEvent(String eventName) {
     SQLiteDatabase dbWriter = getWritableDatabase();
     try {
-      addEvent(event, dbWriter);
-      addTimestamp(event, dbWriter);
+      addEvent(eventName, dbWriter);
+    } finally {
+      dbWriter.close();
+    }
+    concurrentChangeListenersList.notifyChangeListeners();
+  }
+
+  @Override
+  public void addEventSample(String eventName, long timestamp, Object data) {
+    SQLiteDatabase dbWriter = getWritableDatabase();
+    try {
+      addTimestamp(eventName, timestamp, dbWriter);
     } finally {
       dbWriter.close();
     }
@@ -77,6 +86,14 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
+  public void removeEvent(String eventName) {
+    SQLiteDatabase dbWriter = getWritableDatabase();
+    dbWriter.execSQL("DELETE FROM " + TABLE_EVENTS + " WHERE " + EVENTS_COLUMN_EVENT_NAME + " = ?", new Object[]{eventName});
+    dbWriter.close();
+    concurrentChangeListenersList.notifyChangeListeners();
+  }
+
+  @Override
   public void removeTimestamp(String eventName, Long timestamp) {
     SQLiteDatabase dbWriter = getWritableDatabase();
     dbWriter.execSQL("DELETE FROM " + TABLE_EVENT_SAMPLES + " WHERE " + EVENT_SAMPLES_COLUMN_EVENT_NAME + " = ? AND " + EVENT_SAMPLES_COLUMN_TIMESTAMP + " = ?", new Object[]{eventName, timestamp});
@@ -97,16 +114,16 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     concurrentChangeListenersList.registerChangeListener(changeListener);
   }
 
-  private void addEvent(Event event, SQLiteDatabase dbWriter) {
+  private void addEvent(String eventName, SQLiteDatabase dbWriter) {
     ContentValues values = new ContentValues();
-    values.put(EVENTS_COLUMN_EVENT_NAME, event.name);
+    values.put(EVENTS_COLUMN_EVENT_NAME, eventName);
     dbWriter.insertWithOnConflict(TABLE_EVENTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
   }
 
-  private void addTimestamp(Event event, SQLiteDatabase dbWriter) {
+  private void addTimestamp(String eventName, long timestamp, SQLiteDatabase dbWriter) {
     ContentValues values = new ContentValues();
-    values.put(EVENT_SAMPLES_COLUMN_EVENT_NAME, event.name);
-    values.put(EVENT_SAMPLES_COLUMN_TIMESTAMP, event.timestamp);
+    values.put(EVENT_SAMPLES_COLUMN_EVENT_NAME, eventName);
+    values.put(EVENT_SAMPLES_COLUMN_TIMESTAMP, timestamp);
     dbWriter.insert(TABLE_EVENT_SAMPLES, null, values);
   }
 

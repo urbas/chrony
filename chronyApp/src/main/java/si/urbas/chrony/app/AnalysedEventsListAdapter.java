@@ -123,7 +123,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   private void addEvent(int position) {
     AnalysedEvent analysedEvent = getGroup(position);
-    eventRepository.addEvent(new Event(analysedEvent.getEventName()));
+    eventRepository.addEventSample(analysedEvent.getEventName(), new Date().getTime(), null);
   }
 
   private void removeTimestamp(int groupPosition, int childPosition) {
