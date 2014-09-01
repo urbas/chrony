@@ -6,10 +6,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ExpandableListView;
-import android.widget.TextView;
+import android.widget.*;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventSample;
@@ -28,6 +25,7 @@ public class DataEntry extends Activity {
   private Button addEventButton;
   private ExpandableListView analysedEventsListView;
   private AnalysedEventsListAdapter analysedEventsListAdapter;
+  private Spinner dataTypeChooser;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +73,14 @@ public class DataEntry extends Activity {
     addEventButton = (Button) findViewById(R.id.addEventButton);
     eventNameTextField = (EditText) findViewById(R.id.eventNameTextField);
     analysedEventsListView = (ExpandableListView) findViewById(R.id.analysedEventsListView);
+    setupDataTypeChooser();
+  }
+
+  private void setupDataTypeChooser() {
+    dataTypeChooser = (Spinner) findViewById(R.id.dataEntry_dataTYpeSpinner);
+    ArrayAdapter<CharSequence> dataTypeChooserAdapter = ArrayAdapter.createFromResource(this, R.array.event_DataTypes, android.R.layout.simple_spinner_item);
+    dataTypeChooserAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    dataTypeChooser.setAdapter(dataTypeChooserAdapter);
   }
 
   private void saveRepositoryToFile() {

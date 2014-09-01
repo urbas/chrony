@@ -8,4 +8,9 @@
   <string name="action_save_database">Save database</string>
   <string name="action_load_database">Load database</string>
 
+  <string-array name="event_DataTypes">
+      <item>No data</item>
+      <item>Number</item>
+  </string-array>
+
 </resources>

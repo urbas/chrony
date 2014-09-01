@@ -12,8 +12,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/eventNameTextField"
-    android:layout_toStartOf="@+id/addEventButton" android:layout_alignParentTop="true"
+    android:layout_toStartOf="@+id/dataEntry_dataTYpeSpinner" android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true" android:layout_alignParentStart="true" android:inputType="text"/>
+  <Spinner
+    android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:id="@+id/dataEntry_dataTYpeSpinner"
+    android:layout_toStartOf="@+id/addEventButton" android:layout_above="@+id/analysedEventsListView"
+    android:spinnerMode="dropdown"/>
   <Button
     style="?android:attr/buttonStyleSmall"
     android:layout_width="wrap_content"
