@@ -19,8 +19,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/new_event_button_text"
-    android:id="@+id/addEventButton" android:layout_alignBottom="@+id/eventNameTextField" android:layout_alignParentRight="true"
-    android:layout_alignParentEnd="true"/>
+    android:id="@+id/addEventButton"
+    android:layout_alignBaseline="@+id/eventNameTextField" android:layout_alignBottom="@+id/eventNameTextField"
+    android:layout_alignParentRight="true" android:layout_alignParentEnd="true"/>
   <ExpandableListView
     android:layout_width="wrap_content"
     android:layout_height="200dp"
