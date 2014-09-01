@@ -5,7 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
+import si.urbas.chrony.EventSample;
 import si.urbas.chrony.util.ChangeListener;
 import si.urbas.chrony.util.ConcurrentChangeListenersList;
 
@@ -34,10 +36,10 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
-  public void addEvent(String eventName) {
+  public void addEvent(Event event) {
     SQLiteDatabase dbWriter = getWritableDatabase();
     try {
-      addEvent(eventName, dbWriter);
+      addEvent(event.getEventName(), event.getDataType(), dbWriter);
     } finally {
       dbWriter.close();
     }
@@ -45,10 +47,10 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
-  public void addEventSample(String eventName, long timestamp, Object data) {
+  public void addEventSample(EventSample eventSample) {
     SQLiteDatabase dbWriter = getWritableDatabase();
     try {
-      addTimestamp(eventName, timestamp, dbWriter);
+      addTimestamp(eventSample.getEventName(), eventSample.getTimestamp(), dbWriter);
     } finally {
       dbWriter.close();
     }
@@ -114,9 +116,10 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     concurrentChangeListenersList.registerChangeListener(changeListener);
   }
 
-  private void addEvent(String eventName, SQLiteDatabase dbWriter) {
+  private void addEvent(String eventName, int dataType, SQLiteDatabase dbWriter) {
     ContentValues values = new ContentValues();
     values.put(EVENTS_COLUMN_EVENT_NAME, eventName);
+    values.put(EVENTS_COLUMN_DATA_TYPE, dataType);
     dbWriter.insertWithOnConflict(TABLE_EVENTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
   }
 

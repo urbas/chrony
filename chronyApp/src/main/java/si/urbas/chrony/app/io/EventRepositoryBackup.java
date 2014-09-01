@@ -4,9 +4,13 @@ import android.os.Environment;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.util.Log;
+import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
+import si.urbas.chrony.EventSample;
 
 import java.io.*;
+
+import static si.urbas.chrony.Event.NO_DATA_TYPE;
 
 public class EventRepositoryBackup {
 
@@ -81,8 +85,8 @@ public class EventRepositoryBackup {
         eventTimestamp = sourceJsonReader.nextLong();
       }
     }
-    targetEventRepository.addEvent(eventName);
-    targetEventRepository.addEventSample(eventName, eventTimestamp, null);
+    targetEventRepository.addEvent(new Event(eventName, NO_DATA_TYPE));
+    targetEventRepository.addEventSample(new EventSample(eventName, eventTimestamp, null));
   }
 
   private static void appendEventsToWriter(EventRepository sourceEventRepository, Writer targetWriter) throws IOException {

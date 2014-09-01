@@ -6,13 +6,18 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ExpandableListView;
+import android.widget.TextView;
+import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
+import si.urbas.chrony.EventSample;
 import si.urbas.chrony.analysis.SimpleAnalyser;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
 import si.urbas.chrony.app.io.EventRepositoryBackup;
 
-import java.util.Date;
+import static si.urbas.chrony.Event.NO_DATA_TYPE;
 
 
 public class DataEntry extends Activity {
@@ -69,7 +74,7 @@ public class DataEntry extends Activity {
     setContentView(R.layout.activity_data_entry);
     addEventButton = (Button) findViewById(R.id.addEventButton);
     eventNameTextField = (EditText) findViewById(R.id.eventNameTextField);
-    analysedEventsListView = (ExpandableListView)findViewById(R.id.analysedEventsListView);
+    analysedEventsListView = (ExpandableListView) findViewById(R.id.analysedEventsListView);
   }
 
   private void saveRepositoryToFile() {
@@ -97,8 +102,8 @@ public class DataEntry extends Activity {
   }
 
   private void addNewEvent(String eventName) {
-    eventRepository.addEvent(eventName);
-    eventRepository.addEventSample(eventName, new Date().getTime(), null);
+    eventRepository.addEvent(new Event(eventName, NO_DATA_TYPE));
+    eventRepository.addEventSample(new EventSample(eventName));
   }
 
   private class EventAddClickListener implements View.OnClickListener {

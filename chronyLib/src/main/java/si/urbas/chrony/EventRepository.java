@@ -5,8 +5,8 @@ import si.urbas.chrony.util.ChangeListener;
 import java.util.List;
 
 public interface EventRepository {
-  void addEvent(String eventName);
-  void addEventSample(String eventName, long timestamp, Object data);
+  void addEvent(Event event);
+  void addEventSample(EventSample eventSample);
   List<String> allEvents();
   List<Long> timestampsOf(String eventName);
   void removeEvent(String eventName);
