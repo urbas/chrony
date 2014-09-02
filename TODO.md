@@ -4,4 +4,4 @@
 - I want to see a graph of the event's value over time (a line graph will do).
 
 BUGS:
-- Events with no samples produce wrong statistics (the minimum and maximum timestamps are Long.MIN_VALUE), which makes the sort algorithm go crazy, because relevance is a float and the precision is to low for such high differences between current events' and MIN_VALUE timestamps.
+- Events with no samples are placed at the bottom of the list. They should be placed on top, or into a special region in the list.

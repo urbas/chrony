@@ -4,12 +4,8 @@ import si.urbas.chrony.AnalysedEvent;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.Analysis;
 import si.urbas.chrony.metrics.EventTemporalMetrics;
-import si.urbas.chrony.metrics.GlobalTemporalMetrics;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Collections.emptyList;
 
@@ -30,23 +26,22 @@ class SimpleAnalysis implements Analysis {
     if (eventTemporalMetrics.size() == 0) {
       return emptyList();
     } else {
-      return analyseEvents(eventTemporalMetrics, GlobalTemporalMetrics.calculate(eventTemporalMetrics));
+      return analyseEvents(eventTemporalMetrics);
     }
   }
 
-  private static List<AnalysedEvent> analyseEvents(ArrayList<EventTemporalMetrics> perEventMetricsList, GlobalTemporalMetrics globalTemporalMetrics) {
+  private static List<AnalysedEvent> analyseEvents(ArrayList<EventTemporalMetrics> perEventMetricsList) {
     ArrayList<AnalysedEvent> analysedEvents = new ArrayList<AnalysedEvent>();
     for (EventTemporalMetrics perEventMetrics : perEventMetricsList) {
-      analysedEvents.add(new SimpleAnalysedEvent(perEventMetrics.name, perEventMetrics.count, calculateRelevanceOfEvent(perEventMetrics, globalTemporalMetrics)));
+      analysedEvents.add(new SimpleAnalysedEvent(perEventMetrics.name, perEventMetrics.count, calculateRelevanceOfEvent(perEventMetrics)));
     }
     Collections.sort(analysedEvents, new MostRelevantAnalysedEventComparator());
     return analysedEvents;
   }
 
-  private static float calculateRelevanceOfEvent(EventTemporalMetrics perEventMetrics, GlobalTemporalMetrics globalTemporalMetrics) {
-    long oldestToNewestTimeSpan = globalTemporalMetrics.newestTimestamp - globalTemporalMetrics.oldestEventRefreshTimestamp;
-    long oldestToThisTimeSpan = perEventMetrics.newestTimestamp - globalTemporalMetrics.oldestEventRefreshTimestamp;
-    return (float) oldestToThisTimeSpan / (float) oldestToNewestTimeSpan;
+  private static float calculateRelevanceOfEvent(EventTemporalMetrics perEventMetrics) {
+    long now = new Date().getTime();
+    return -Math.abs(now - perEventMetrics.newestTimestamp);
   }
 
   private static class MostRelevantAnalysedEventComparator implements Comparator<AnalysedEvent> {
