@@ -9,6 +9,9 @@ public class Event {
   private final int dataType;
 
   public Event(String eventName, int dataType) {
+    if (eventName == null) {
+      throw new IllegalArgumentException("The event name must not be null.");
+    }
     if (dataType < NO_DATA_TYPE || dataType > NUMBER_DATA_TYPE) {
       throw new IllegalArgumentException("Unknown event data type.");
     }
@@ -22,5 +25,21 @@ public class Event {
 
   public int getDataType() {
     return dataType;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) { return true; }
+    if (o == null || getClass() != o.getClass()) { return false; }
+
+    Event event = (Event) o;
+
+    return eventName.equals(event.eventName);
+
+  }
+
+  @Override
+  public int hashCode() {
+    return eventName.hashCode();
   }
 }
