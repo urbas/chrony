@@ -9,12 +9,9 @@ import android.view.View;
 import android.widget.*;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
-import si.urbas.chrony.EventSample;
 import si.urbas.chrony.analysis.SimpleAnalyser;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
 import si.urbas.chrony.app.io.EventRepositoryBackup;
-
-import static si.urbas.chrony.Event.NO_DATA_TYPE;
 
 
 public class DataEntry extends Activity {
@@ -24,7 +21,6 @@ public class DataEntry extends Activity {
   private EditText eventNameTextField;
   private Button addEventButton;
   private ExpandableListView analysedEventsListView;
-  private AnalysedEventsListAdapter analysedEventsListAdapter;
   private Spinner dataTypeChooser;
 
   @Override
@@ -32,7 +28,7 @@ public class DataEntry extends Activity {
     super.onCreate(savedInstanceState);
     setupEventRepository();
     bindViewToFields();
-    setupEventListView();
+    bindEventsToListView();
     registerUiEventHandlers();
   }
 
@@ -89,11 +85,11 @@ public class DataEntry extends Activity {
 
   private void loadRepositoryFromFile() {
     EventRepositoryBackup.restoreFromFile(EVENT_REPOSITORY_BACKUP_FILE, eventRepository);
-    setupEventListView();
+    bindEventsToListView();
   }
 
-  private void setupEventListView() {
-    analysedEventsListAdapter = new AnalysedEventsListAdapter(this, new SimpleAnalyser(), eventRepository);
+  private void bindEventsToListView() {
+    AnalysedEventsListAdapter analysedEventsListAdapter = new AnalysedEventsListAdapter(this, new SimpleAnalyser(), eventRepository);
     analysedEventsListView.setAdapter(analysedEventsListAdapter);
   }
 
@@ -104,12 +100,16 @@ public class DataEntry extends Activity {
 
   private void addNewEventFromEditField() {
     String eventName = eventNameTextField.getText().toString();
-    addNewEvent(eventName);
+    int dataType = convertSelectedItemToDataTypeId(dataTypeChooser.getSelectedItemPosition());
+    addNewEvent(eventName, dataType);
   }
 
-  private void addNewEvent(String eventName) {
-    eventRepository.addEvent(new Event(eventName, NO_DATA_TYPE));
-    eventRepository.addEventSample(new EventSample(eventName));
+  private int convertSelectedItemToDataTypeId(int selectedItemPosition) {
+    return selectedItemPosition;
+  }
+
+  private void addNewEvent(String eventName, int dataType) {
+    eventRepository.addEvent(new Event(eventName, dataType));
   }
 
   private class EventAddClickListener implements View.OnClickListener {
