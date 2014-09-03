@@ -58,13 +58,13 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
-  public ArrayList<String> allEvents() {
+  public ArrayList<Event> allEvents() {
     SQLiteDatabase dbReader = getReadableDatabase();
-    Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_EVENT_NAME + " FROM " + TABLE_EVENTS, null);
+    Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_EVENT_NAME + ", " + EVENTS_COLUMN_DATA_TYPE + " FROM " + TABLE_EVENTS, null);
     try {
-      ArrayList<String> allEVents = new ArrayList<String>();
+      ArrayList<Event> allEVents = new ArrayList<Event>();
       while (cursor.moveToNext()) {
-        allEVents.add(cursor.getString(0));
+        allEVents.add(new Event(cursor.getString(0), cursor.getInt(1)));
       }
       return allEVents;
     } finally {

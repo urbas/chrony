@@ -39,8 +39,7 @@ public class SQLiteEventRepositorySchema {
   @SuppressWarnings("UnusedDeclaration")
   public void upgradeDbToVersion3(SQLiteDatabase db) {
     db.execSQL("ALTER TABLE events RENAME TO oldEvents");
-    db.execSQL("ALTER TABLE oldEvents ADD COLUMN data REAL DEFAULT NULL");
-    db.execSQL("CREATE TABLE events (eventName PRIMARY KEY, dataType INTEGER)");
+    db.execSQL("CREATE TABLE events (eventName PRIMARY KEY, dataType INTEGER NOT NULL DEFAULT 0)");
     db.execSQL("CREATE TABLE eventSamples (" +
                "eventName TEXT REFERENCES events (eventName) ON DELETE CASCADE ON UPDATE CASCADE, " +
                "timestamp INTEGER NOT NULL, " +

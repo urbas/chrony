@@ -33,7 +33,7 @@ class SimpleAnalysis implements Analysis {
   private static List<AnalysedEvent> analyseEvents(ArrayList<EventTemporalMetrics> perEventMetricsList) {
     ArrayList<AnalysedEvent> analysedEvents = new ArrayList<AnalysedEvent>();
     for (EventTemporalMetrics perEventMetrics : perEventMetricsList) {
-      analysedEvents.add(new SimpleAnalysedEvent(perEventMetrics.name, perEventMetrics.count, calculateRelevanceOfEvent(perEventMetrics)));
+      analysedEvents.add(new SimpleAnalysedEvent(perEventMetrics.event, perEventMetrics.count, calculateRelevanceOfEvent(perEventMetrics)));
     }
     Collections.sort(analysedEvents, new MostRelevantAnalysedEventComparator());
     return analysedEvents;

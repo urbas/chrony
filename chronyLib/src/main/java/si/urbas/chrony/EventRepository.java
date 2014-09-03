@@ -7,7 +7,7 @@ import java.util.List;
 public interface EventRepository {
   void addEvent(Event event);
   void addEventSample(EventSample eventSample);
-  List<String> allEvents();
+  List<Event> allEvents();
   List<Long> timestampsOf(String eventName);
   void removeEvent(String eventName);
   void removeTimestamp(String eventName, Long timestamp);

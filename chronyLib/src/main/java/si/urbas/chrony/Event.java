@@ -9,12 +9,8 @@ public class Event {
   private final int dataType;
 
   public Event(String eventName, int dataType) {
-    if (eventName == null) {
-      throw new IllegalArgumentException("The event name must not be null.");
-    }
-    if (dataType < NO_DATA_TYPE || dataType > NUMBER_DATA_TYPE) {
-      throw new IllegalArgumentException("Unknown event data type.");
-    }
+    assertEventNameValid(eventName);
+    assertDataTypeIsKnown(dataType);
     this.eventName = eventName;
     this.dataType = dataType;
   }
@@ -36,6 +32,18 @@ public class Event {
 
     return eventName.equals(event.eventName);
 
+  }
+
+  private static void assertEventNameValid(String eventName) {
+    if (eventName == null) {
+      throw new IllegalArgumentException("The event name must not be null.");
+    }
+  }
+
+  private static void assertDataTypeIsKnown(int dataType) {
+    if (dataType < NO_DATA_TYPE || dataType > NUMBER_DATA_TYPE) {
+      throw new IllegalArgumentException("Unknown event data type.");
+    }
   }
 
   @Override

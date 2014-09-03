@@ -1,6 +1,8 @@
 package si.urbas.chrony.app;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +38,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   @Override
   public int getChildrenCount(int groupPosition) {
-    return eventRepository.timestampsOf(getGroup(groupPosition).getEventName()).size();
+    return eventRepository.timestampsOf(getNameOfEventAtPosition(groupPosition)).size();
   }
 
   @Override
@@ -46,7 +48,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   @Override
   public Long getChild(int groupPosition, int childPosition) {
-    String eventName = getGroup(groupPosition).getEventName();
+    String eventName = getNameOfEventAtPosition(groupPosition);
     return eventRepository.timestampsOf(eventName).get(childPosition);
   }
 
@@ -99,7 +101,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   private void bindEventToItemView(final int position, View convertView) {
     AnalysedEvent analysedEventToBind = getGroup(position);
     TextView eventNameTextView = (TextView) convertView.findViewById(R.id.eventNameTextView);
-    eventNameTextView.setText(analysedEventToBind.getEventName());
+    eventNameTextView.setText(analysedEventToBind.getUnderlyingEvent().getEventName());
     TextView evenCountTextView = (TextView) convertView.findViewById(R.id.eventCountTextView);
     evenCountTextView.setText(Integer.toString(analysedEventToBind.getCount()));
     Button addEventSampleBtn = (Button) convertView.findViewById(R.id.addEventSampleButton);
@@ -121,20 +123,61 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     eventTimestampRemoveButton.setOnClickListener(new RemoveTimestampButtonClickListener(groupPosition, childPosition));
   }
 
-  private void addEvent(int position) {
-    AnalysedEvent analysedEvent = getGroup(position);
-    eventRepository.addEventSample(new EventSample(analysedEvent.getEventName()));
-  }
-
   private void removeTimestamp(int groupPosition, int childPosition) {
-    String eventName = getGroup(groupPosition).getEventName();
+    String eventName = getNameOfEventAtPosition(groupPosition);
     Long timestamp = getChild(groupPosition, childPosition);
     eventRepository.removeTimestamp(eventName, timestamp);
+  }
+
+  private String getNameOfEventAtPosition(int positionInList) {
+    return getGroup(positionInList).getUnderlyingEvent().getEventName();
   }
 
   private View inflateViewFromId(int layoutId) {
     LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     return inflater.inflate(layoutId, null);
+  }
+
+
+  private void addEventSample(AnalysedEvent analysedEvent) {
+    if (isEventWithoutData(analysedEvent)) {
+      addEventSampleWithoutData(analysedEvent.getUnderlyingEvent());
+    }
+    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+    dialogBuilder.setTitle("Fire missiles?")
+                 .setPositiveButton("FIRE ZE MISSILES!", new FireClickListener(analysedEvent))
+                 .setNegativeButton("No! Abort!", new AbortClickListener());
+    dialogBuilder.create().show();
+  }
+
+  private void addEventSampleWithoutData(Event event) {
+    eventRepository.addEventSample(new EventSample(event.getEventName()));
+  }
+
+  private static boolean isEventWithoutData(AnalysedEvent analysedEvent) {
+    return analysedEvent.getUnderlyingEvent().getDataType() == Event.NO_DATA_TYPE;
+  }
+
+  private class FireClickListener implements DialogInterface.OnClickListener {
+
+    private final AnalysedEvent analysedEvent;
+
+    public FireClickListener(AnalysedEvent analysedEvent) {
+
+      this.analysedEvent = analysedEvent;
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+      eventRepository.addEventSample(new EventSample(analysedEvent.getUnderlyingEvent().getEventName()));
+    }
+  }
+
+  private class AbortClickListener implements DialogInterface.OnClickListener {
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+
+    }
   }
 
   private class AddEventButtonClickListener implements View.OnClickListener {
@@ -145,7 +188,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public void onClick(View v) {
-      addEvent(position);
+      addEventSample(getGroup(position));
     }
 
   }

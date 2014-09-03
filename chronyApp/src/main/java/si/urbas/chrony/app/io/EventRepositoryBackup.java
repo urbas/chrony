@@ -92,10 +92,10 @@ public class EventRepositoryBackup {
   private static void appendEventsToWriter(EventRepository sourceEventRepository, Writer targetWriter) throws IOException {
     JsonWriter jsonWriter = new JsonWriter(targetWriter);
     jsonWriter.beginArray();
-    for (String eventName : sourceEventRepository.allEvents()) {
-      for (Long eventTimestamp : sourceEventRepository.timestampsOf(eventName)) {
+    for (Event event : sourceEventRepository.allEvents()) {
+      for (Long eventTimestamp : sourceEventRepository.timestampsOf(event.getEventName())) {
         jsonWriter.beginObject()
-                  .name(EVENT_JSON_FIELD_NAME).value(eventName)
+                  .name(EVENT_JSON_FIELD_NAME).value(event.getEventName())
                   .name(EVENT_JSON_FIELD_TIMESTAMP).value(eventTimestamp)
                   .endObject();
       }

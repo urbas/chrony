@@ -1,7 +1,8 @@
 package si.urbas.chrony;
 
 public interface AnalysedEvent {
-  String getEventName();
+
+  Event getUnderlyingEvent();
 
   int getCount();
 
