@@ -47,10 +47,23 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
+  public Event getEvent(String eventName) {
+    SQLiteDatabase dbReader = getReadableDatabase();
+    Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_EVENT_NAME + ", " + EVENTS_COLUMN_DATA_TYPE + " FROM " + TABLE_EVENTS, new String[]{eventName});
+    Event event = null;
+    if (cursor.moveToNext()) {
+      event = new Event(cursor.getString(0), cursor.getInt(1));
+    }
+    cursor.close();
+    dbReader.close();
+    return event;
+  }
+
+  @Override
   public void addEventSample(EventSample eventSample) {
     SQLiteDatabase dbWriter = getWritableDatabase();
     try {
-      addTimestamp(eventSample.getEventName(), eventSample.getTimestamp(), dbWriter);
+      addTimestamp(eventSample.getEventName(), eventSample.getTimestamp(), eventSample.getData(), dbWriter);
     } finally {
       dbWriter.close();
     }
@@ -123,11 +136,26 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     dbWriter.insertWithOnConflict(TABLE_EVENTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
   }
 
-  private void addTimestamp(String eventName, long timestamp, SQLiteDatabase dbWriter) {
+  private void addTimestamp(String eventName, long timestamp, Object data, SQLiteDatabase dbWriter) {
     ContentValues values = new ContentValues();
+    Event event = getEvent(eventName);
+    assertEventExists(event, eventName);
+    assertRightDataPresent(event, data);
     values.put(EVENT_SAMPLES_COLUMN_EVENT_NAME, eventName);
     values.put(EVENT_SAMPLES_COLUMN_TIMESTAMP, timestamp);
     dbWriter.insert(TABLE_EVENT_SAMPLES, null, values);
+  }
+
+  private void assertEventExists(Event event, String eventName) {
+    if (event == null) {
+      throw new IllegalArgumentException("Cannot add a sample for the event '" + eventName + "'. The event does not exist.");
+    }
+  }
+
+  private static void assertRightDataPresent(Event event, Object data) {
+    if (event.getDataType() != Event.NO_DATA_TYPE && data == null) {
+      throw new IllegalArgumentException("The event '" + event.getEventName() + "' requires data.");
+    }
   }
 
   private static void closeDb(SQLiteDatabase dbReader, Cursor cursor) {
