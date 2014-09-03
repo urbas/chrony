@@ -149,7 +149,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   private void openEventSampleDataEntryDialog(AnalysedEvent analysedEvent) {
     new AlertDialog.Builder(context).setTitle("Enter the number for '" + analysedEvent.getUnderlyingEvent().getEventName() + "'")
-                                    .setPositiveButton("Okay", new FireClickListener(analysedEvent))
+                                    .setPositiveButton("Okay", new AddEventSampleNumberClickListener(analysedEvent))
                                     .setNegativeButton("Cancel", new AbortClickListener())
                                     .create()
                                     .show();
@@ -163,11 +163,11 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     return analysedEvent.getUnderlyingEvent().getDataType() == Event.NO_DATA_TYPE;
   }
 
-  private class FireClickListener implements DialogInterface.OnClickListener {
+  private class AddEventSampleNumberClickListener implements DialogInterface.OnClickListener {
 
     private final AnalysedEvent analysedEvent;
 
-    public FireClickListener(AnalysedEvent analysedEvent) {
+    public AddEventSampleNumberClickListener(AnalysedEvent analysedEvent) {
 
       this.analysedEvent = analysedEvent;
     }
