@@ -142,12 +142,17 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   private void addEventSample(AnalysedEvent analysedEvent) {
     if (isEventWithoutData(analysedEvent)) {
       addEventSampleWithoutData(analysedEvent.getUnderlyingEvent());
+    } else {
+      openEventSampleDataEntryDialog(analysedEvent);
     }
-    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-    dialogBuilder.setTitle("Fire missiles?")
-                 .setPositiveButton("FIRE ZE MISSILES!", new FireClickListener(analysedEvent))
-                 .setNegativeButton("No! Abort!", new AbortClickListener());
-    dialogBuilder.create().show();
+  }
+
+  private void openEventSampleDataEntryDialog(AnalysedEvent analysedEvent) {
+    new AlertDialog.Builder(context).setTitle("Enter the number for '" + analysedEvent.getUnderlyingEvent().getEventName() + "'")
+                                    .setPositiveButton("Okay", new FireClickListener(analysedEvent))
+                                    .setNegativeButton("Cancel", new AbortClickListener())
+                                    .create()
+                                    .show();
   }
 
   private void addEventSampleWithoutData(Event event) {
