@@ -20,7 +20,6 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   private final Context context;
   private final SimpleAnalyser analyser;
   private final EventRepository eventRepository;
-  private final EventSampleNumberEntryDialog eventSampleNumberEntryDialog;
   private List<AnalysedEvent> analysedEvents;
 
   public AnalysedEventsListAdapter(Context context, SimpleAnalyser analyser, EventRepository eventRepository) {
@@ -28,7 +27,6 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     this.analyser = analyser;
     this.eventRepository = eventRepository;
     this.eventRepository.registerChangeListener(new EventRepositoryChangeListener());
-    eventSampleNumberEntryDialog = new EventSampleNumberEntryDialog(context, eventRepository);
     refreshAnalysedEvents();
   }
 
@@ -139,7 +137,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     if (isEventWithoutData(analysedEvent)) {
       addEventSampleWithoutData(analysedEvent.getUnderlyingEvent());
     } else {
-      eventSampleNumberEntryDialog.showFor(analysedEvent);
+      EventSampleNumberEntryDialog.show(context, eventRepository, analysedEvent);
     }
   }
 

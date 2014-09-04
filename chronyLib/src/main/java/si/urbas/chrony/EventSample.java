@@ -14,7 +14,11 @@ public class EventSample {
   }
 
   public EventSample(String eventName) {
-    this(eventName, new Date().getTime(), null);
+    this(eventName, null);
+  }
+
+  public EventSample(String eventName, Object data) {
+    this(eventName, new Date().getTime(), data);
   }
 
   public String getEventName() {
