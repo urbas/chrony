@@ -49,12 +49,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   @Override
   public Event getEvent(String eventName) {
     SQLiteDatabase dbReader = getReadableDatabase();
-    Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_EVENT_NAME + ", " + EVENTS_COLUMN_DATA_TYPE + " FROM " + TABLE_EVENTS + " WHERE " + EVENT_SAMPLES_COLUMN_EVENT_NAME + " = ?", new String[]{eventName});
-    Event event = null;
-    if (cursor.moveToNext()) {
-      event = new Event(cursor.getString(0), cursor.getInt(1));
-    }
-    cursor.close();
+    Event event = getEvent(eventName, dbReader);
     dbReader.close();
     return event;
   }
@@ -136,9 +131,19 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     dbWriter.insertWithOnConflict(TABLE_EVENTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
   }
 
+  private static Event getEvent(String eventName, SQLiteDatabase dbReader) {
+    Cursor cursor = dbReader.rawQuery("SELECT " + EVENTS_COLUMN_EVENT_NAME + ", " + EVENTS_COLUMN_DATA_TYPE + " FROM " + TABLE_EVENTS + " WHERE " + EVENT_SAMPLES_COLUMN_EVENT_NAME + " = ?", new String[]{eventName});
+    Event event = null;
+    if (cursor.moveToNext()) {
+      event = new Event(cursor.getString(0), cursor.getInt(1));
+    }
+    cursor.close();
+    return event;
+  }
+
   private void addTimestamp(String eventName, long timestamp, Object data, SQLiteDatabase dbWriter) {
     ContentValues values = new ContentValues();
-    Event event = getEvent(eventName);
+    Event event = getEvent(eventName, dbWriter);
     assertEventExists(event, eventName);
     assertRightDataPresent(event, data);
     values.put(EVENT_SAMPLES_COLUMN_EVENT_NAME, eventName);
@@ -146,7 +151,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     dbWriter.insert(TABLE_EVENT_SAMPLES, null, values);
   }
 
-  private void assertEventExists(Event event, String eventName) {
+  private static void assertEventExists(Event event, String eventName) {
     if (event == null) {
       throw new IllegalArgumentException("Cannot add a sample for the event '" + eventName + "'. The event does not exist.");
     }
