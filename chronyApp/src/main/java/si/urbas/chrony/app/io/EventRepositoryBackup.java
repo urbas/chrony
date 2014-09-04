@@ -16,6 +16,7 @@ public class EventRepositoryBackup {
 
   private static final String EVENT_JSON_FIELD_NAME = "name";
   private static final String EVENT_JSON_FIELD_TIMESTAMP = "timestamp";
+  private static final String EVENT_JSON_FIELD_DATA = "data";
 
   public static File storeToFile(String backupFileName, EventRepository eventRepository) {
     File backupFile = getBackupFilePath(backupFileName);
@@ -93,14 +94,28 @@ public class EventRepositoryBackup {
     JsonWriter jsonWriter = new JsonWriter(targetWriter);
     jsonWriter.beginArray();
     for (Event event : sourceEventRepository.allEvents()) {
-      for (Long eventTimestamp : sourceEventRepository.timestampsOf(event.getEventName())) {
-        jsonWriter.beginObject()
-                  .name(EVENT_JSON_FIELD_NAME).value(event.getEventName())
-                  .name(EVENT_JSON_FIELD_TIMESTAMP).value(eventTimestamp)
-                  .endObject();
+      for (EventSample eventTimestamp : sourceEventRepository.samplesOf(event.getEventName())) {
+        JsonWriter jsonObjectWriter = jsonWriter.beginObject();
+        writeEventName(event, jsonObjectWriter);
+        writeEventSampleTimestamp(eventTimestamp, jsonObjectWriter);
+        writeEventSampleData(eventTimestamp, jsonObjectWriter);
+        jsonObjectWriter.endObject();
       }
     }
     jsonWriter.endArray();
+  }
+
+  private static JsonWriter writeEventSampleTimestamp(EventSample eventTimestamp, JsonWriter jsonObjectWriter) throws IOException {return jsonObjectWriter.name(EVENT_JSON_FIELD_TIMESTAMP).value(eventTimestamp.getTimestamp());}
+
+  private static void writeEventName(Event event, JsonWriter jsonObjectWriter) throws IOException {jsonObjectWriter.name(EVENT_JSON_FIELD_NAME).value(event.getEventName());}
+
+  private static void writeEventSampleData(EventSample eventTimestamp, JsonWriter jsonObjectWriter) throws IOException {
+    Object eventSampleData = eventTimestamp.getData();
+    if (eventSampleData == null) {
+      jsonObjectWriter.name(EVENT_JSON_FIELD_DATA).nullValue();
+    } else {
+      jsonObjectWriter.name(EVENT_JSON_FIELD_DATA).value((Double) eventSampleData);
+    }
   }
 
   private static File getBackupFilePath(String backupFileName) {

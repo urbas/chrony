@@ -15,6 +15,7 @@ public class SQLiteEventRepositorySchema {
   public static final String EVENTS_COLUMN_DATA_TYPE = "dataType";
   public static final String EVENT_SAMPLES_COLUMN_EVENT_NAME = "eventName";
   public static final String EVENT_SAMPLES_COLUMN_TIMESTAMP = "timestamp";
+  public static final String EVENT_SAMPLES_COLUMN_DATA = "data";
   private static final String UPGRADE_METHOD_NAME_PREFIX = "upgradeDbToVersion";
   private final ReflectiveUpgrader<SQLiteDatabase> databaseUpgrader = new ReflectiveUpgrader<SQLiteDatabase>(UPGRADE_METHOD_NAME_PREFIX, this);
 

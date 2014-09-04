@@ -37,7 +37,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   @Override
   public int getChildrenCount(int groupPosition) {
-    return eventRepository.timestampsOf(getNameOfEventAtPosition(groupPosition)).size();
+    return eventRepository.samplesOf(getNameOfEventAtPosition(groupPosition)).size();
   }
 
   @Override
@@ -46,9 +46,9 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   }
 
   @Override
-  public Long getChild(int groupPosition, int childPosition) {
+  public EventSample getChild(int groupPosition, int childPosition) {
     String eventName = getNameOfEventAtPosition(groupPosition);
-    return eventRepository.timestampsOf(eventName).get(childPosition);
+    return eventRepository.samplesOf(eventName).get(childPosition);
   }
 
   @Override
@@ -117,14 +117,14 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   private void bindTimestampToView(int groupPosition, int childPosition, View eventTimestampItemView) {
     TextView eventTimestampTextView = (TextView) eventTimestampItemView.findViewById(R.id.eventTimestamp_timestampTextView);
-    eventTimestampTextView.setText(new Date(getChild(groupPosition, childPosition)).toString());
+    eventTimestampTextView.setText(new Date(getChild(groupPosition, childPosition).getTimestamp()).toString());
     Button eventTimestampRemoveButton = (Button) eventTimestampItemView.findViewById(R.id.eventTimestamp_removeButton);
     eventTimestampRemoveButton.setOnClickListener(new RemoveTimestampButtonClickListener(groupPosition, childPosition));
   }
 
   private void removeTimestamp(int groupPosition, int childPosition) {
     String eventName = getNameOfEventAtPosition(groupPosition);
-    Long timestamp = getChild(groupPosition, childPosition);
+    Long timestamp = getChild(groupPosition, childPosition).getTimestamp();
     eventRepository.removeTimestamp(eventName, timestamp);
   }
 

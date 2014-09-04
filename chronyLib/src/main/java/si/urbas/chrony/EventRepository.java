@@ -9,7 +9,7 @@ public interface EventRepository {
   void addEventSample(EventSample eventSample);
   Event getEvent(String eventName);
   List<Event> allEvents();
-  List<Long> timestampsOf(String eventName);
+  List<EventSample> samplesOf(String eventName);
   void removeEvent(String eventName);
   void removeTimestamp(String eventName, Long timestamp);
   void clear();

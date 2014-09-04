@@ -81,19 +81,23 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
-  public List<Long> timestampsOf(String eventName) {
+  public List<EventSample> samplesOf(String eventName) {
     SQLiteDatabase dbReader = getReadableDatabase();
-    Cursor cursor = dbReader.rawQuery("SELECT " + EVENT_SAMPLES_COLUMN_TIMESTAMP + " FROM " + TABLE_EVENT_SAMPLES + " WHERE " + EVENT_SAMPLES_COLUMN_EVENT_NAME + " = ?", new String[]{eventName});
+    Cursor cursor = dbReader.rawQuery("SELECT " + EVENT_SAMPLES_COLUMN_TIMESTAMP + ", " + EVENT_SAMPLES_COLUMN_DATA + " FROM " + TABLE_EVENT_SAMPLES + " WHERE " + EVENT_SAMPLES_COLUMN_EVENT_NAME + " = ?", new String[]{eventName});
     try {
-      ArrayList<Long> eventTimestamps = new ArrayList<Long>();
+      ArrayList<EventSample> eventSamples = new ArrayList<EventSample>();
       while (cursor.moveToNext()) {
-        eventTimestamps.add(cursor.getLong(0));
+        int indexOfSampleData = 1;
+        Double eventSampleDataAsNumber = getEventSampleDataAsNumber(cursor, indexOfSampleData);
+        eventSamples.add(new EventSample(eventName, cursor.getLong(0), eventSampleDataAsNumber));
       }
-      return eventTimestamps;
+      return eventSamples;
     } finally {
       closeDb(dbReader, cursor);
     }
   }
+
+  private static Double getEventSampleDataAsNumber(Cursor cursor, int indexOfSampleData) {return cursor.isNull(indexOfSampleData) ? null : cursor.getDouble(indexOfSampleData);}
 
   @Override
   public void removeEvent(String eventName) {
