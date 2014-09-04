@@ -1,9 +1,6 @@
 package si.urbas.chrony.app;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -16,11 +13,14 @@ import si.urbas.chrony.util.ChangeListener;
 import java.util.Date;
 import java.util.List;
 
+import static si.urbas.chrony.app.util.InflaterUtils.inflateLayout;
+
 public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   private final Context context;
   private final SimpleAnalyser analyser;
   private final EventRepository eventRepository;
+  private final EventSampleNumberEntryDialog eventSampleNumberEntryDialog;
   private List<AnalysedEvent> analysedEvents;
 
   public AnalysedEventsListAdapter(Context context, SimpleAnalyser analyser, EventRepository eventRepository) {
@@ -28,6 +28,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     this.analyser = analyser;
     this.eventRepository = eventRepository;
     this.eventRepository.registerChangeListener(new EventRepositoryChangeListener());
+    eventSampleNumberEntryDialog = new EventSampleNumberEntryDialog(context, eventRepository);
     refreshAnalysedEvents();
   }
 
@@ -95,7 +96,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   }
 
   private View createEventItemView() {
-    return inflateViewFromId(R.layout.event_list_item_view);
+    return inflateLayout(context, R.layout.event_list_item_view);
   }
 
   private void bindEventToItemView(final int position, View convertView) {
@@ -113,7 +114,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   }
 
   private View createChildView() {
-    return inflateViewFromId(R.layout.event_timesamp_list_item);
+    return inflateLayout(context, R.layout.event_timesamp_list_item);
   }
 
   private void bindTimestampToView(int groupPosition, int childPosition, View eventTimestampItemView) {
@@ -133,26 +134,13 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     return getGroup(positionInList).getUnderlyingEvent().getEventName();
   }
 
-  private View inflateViewFromId(int layoutId) {
-    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    return inflater.inflate(layoutId, null);
-  }
-
 
   private void addEventSample(AnalysedEvent analysedEvent) {
     if (isEventWithoutData(analysedEvent)) {
       addEventSampleWithoutData(analysedEvent.getUnderlyingEvent());
     } else {
-      openEventSampleDataEntryDialog(analysedEvent);
+      eventSampleNumberEntryDialog.showFor(analysedEvent);
     }
-  }
-
-  private void openEventSampleDataEntryDialog(AnalysedEvent analysedEvent) {
-    new AlertDialog.Builder(context).setTitle("Enter the number for '" + analysedEvent.getUnderlyingEvent().getEventName() + "'")
-                                    .setPositiveButton("Okay", new AddEventSampleNumberClickListener(analysedEvent))
-                                    .setNegativeButton("Cancel", new AbortClickListener())
-                                    .create()
-                                    .show();
   }
 
   private void addEventSampleWithoutData(Event event) {
@@ -161,28 +149,6 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   private static boolean isEventWithoutData(AnalysedEvent analysedEvent) {
     return analysedEvent.getUnderlyingEvent().getDataType() == Event.NO_DATA_TYPE;
-  }
-
-  private class AddEventSampleNumberClickListener implements DialogInterface.OnClickListener {
-
-    private final AnalysedEvent analysedEvent;
-
-    public AddEventSampleNumberClickListener(AnalysedEvent analysedEvent) {
-
-      this.analysedEvent = analysedEvent;
-    }
-
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-      eventRepository.addEventSample(new EventSample(analysedEvent.getUnderlyingEvent().getEventName()));
-    }
-  }
-
-  private class AbortClickListener implements DialogInterface.OnClickListener {
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-
-    }
   }
 
   private class AddEventButtonClickListener implements View.OnClickListener {
