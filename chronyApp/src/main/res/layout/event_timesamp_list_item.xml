@@ -9,11 +9,17 @@
     android:textAppearance="?android:attr/textAppearanceSmall"
     android:text="Timestamp"
     android:id="@+id/eventTimestamp_timestampTextView"
-    android:layout_toStartOf="@+id/eventTimestamp_removeButton"
+    android:layout_toStartOf="@+id/eventSampleListItem_dataTextView"
     android:layout_alignBaseline="@+id/eventTimestamp_removeButton"
     android:layout_alignBottom="@+id/eventTimestamp_removeButton" android:layout_alignParentLeft="true"
     android:layout_alignParentStart="true"/>
 
+  <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall" android:text="date with a longer text"
+            android:id="@+id/eventSampleListItem_dataTextView"
+            android:layout_toStartOf="@+id/eventTimestamp_removeButton"
+            android:layout_alignBaseline="@+id/eventTimestamp_removeButton"
+            android:layout_alignBottom="@+id/eventTimestamp_removeButton" android:gravity="end"/>
   <Button
     style="?android:attr/buttonStyleSmall"
     android:layout_width="wrap_content"

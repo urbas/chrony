@@ -80,7 +80,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   @Override
   public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
     View childView = convertView == null ? createChildView() : convertView;
-    bindTimestampToView(groupPosition, childPosition, childView);
+    bindEventSampleToView(groupPosition, childPosition, childView);
     return childView;
   }
 
@@ -117,12 +117,18 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     return inflateLayout(context, R.layout.event_timesamp_list_item);
   }
 
-  private void bindTimestampToView(int groupPosition, int childPosition, View eventTimestampItemView) {
+  private void bindEventSampleToView(int groupPosition, int childPosition, View eventTimestampItemView) {
     EventSample eventSample = getChild(groupPosition, childPosition);
     TextView eventTimestampTextView = (TextView) eventTimestampItemView.findViewById(R.id.eventTimestamp_timestampTextView);
     eventTimestampTextView.setText(getFormattedTimestamp(eventSample));
+    TextView eventSampleDataTextView = (TextView) eventTimestampItemView.findViewById(R.id.eventSampleListItem_dataTextView);
+    eventSampleDataTextView.setText(getFormattedData(eventSample));
     Button eventTimestampRemoveButton = (Button) eventTimestampItemView.findViewById(R.id.eventTimestamp_removeButton);
     eventTimestampRemoveButton.setOnClickListener(new RemoveTimestampButtonClickListener(groupPosition, childPosition));
+  }
+
+  private String getFormattedData(EventSample eventSample) {
+    return eventSample.getData() == null ? "" : eventSample.getData().toString();
   }
 
   private String getFormattedTimestamp(EventSample eventSample) {
@@ -133,7 +139,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   private void removeTimestamp(int groupPosition, int childPosition) {
     String eventName = getNameOfEventAtPosition(groupPosition);
     Long timestamp = getChild(groupPosition, childPosition).getTimestamp();
-    eventRepository.removeTimestamp(eventName, timestamp);
+    eventRepository.removeEventSample(eventName, timestamp);
   }
 
   private String getNameOfEventAtPosition(int positionInList) {

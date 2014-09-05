@@ -7,11 +7,9 @@ import java.util.List;
 public interface EventRepository {
   void addEvent(Event event);
   void addEventSample(EventSample eventSample);
-  Event getEvent(String eventName);
   List<Event> allEvents();
   List<EventSample> samplesOf(String eventName);
-  void removeEvent(String eventName);
-  void removeTimestamp(String eventName, Long timestamp);
+  void removeEventSample(String eventName, Long timestamp);
   void clear();
   void registerChangeListener(ChangeListener changeListener);
 }

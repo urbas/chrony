@@ -47,18 +47,10 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
-  public Event getEvent(String eventName) {
-    SQLiteDatabase dbReader = getReadableDatabase();
-    Event event = getEvent(eventName, dbReader);
-    dbReader.close();
-    return event;
-  }
-
-  @Override
   public void addEventSample(EventSample eventSample) {
     SQLiteDatabase dbWriter = getWritableDatabase();
     try {
-      addTimestamp(eventSample.getEventName(), eventSample.getTimestamp(), eventSample.getData(), dbWriter);
+      addEventSample(eventSample.getEventName(), eventSample.getTimestamp(), eventSample.getData(), dbWriter);
     } finally {
       dbWriter.close();
     }
@@ -100,15 +92,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   private static Double getEventSampleDataAsNumber(Cursor cursor, int indexOfSampleData) {return cursor.isNull(indexOfSampleData) ? null : cursor.getDouble(indexOfSampleData);}
 
   @Override
-  public void removeEvent(String eventName) {
-    SQLiteDatabase dbWriter = getWritableDatabase();
-    dbWriter.execSQL("DELETE FROM " + TABLE_EVENTS + " WHERE " + EVENTS_COLUMN_EVENT_NAME + " = ?", new Object[]{eventName});
-    dbWriter.close();
-    concurrentChangeListenersList.notifyChangeListeners();
-  }
-
-  @Override
-  public void removeTimestamp(String eventName, Long timestamp) {
+  public void removeEventSample(String eventName, Long timestamp) {
     SQLiteDatabase dbWriter = getWritableDatabase();
     dbWriter.execSQL("DELETE FROM " + TABLE_EVENT_SAMPLES + " WHERE " + EVENT_SAMPLES_COLUMN_EVENT_NAME + " = ? AND " + EVENT_SAMPLES_COLUMN_TIMESTAMP + " = ?", new Object[]{eventName, timestamp});
     dbWriter.close();
@@ -145,14 +129,25 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     return event;
   }
 
-  private void addTimestamp(String eventName, long timestamp, Object data, SQLiteDatabase dbWriter) {
+  private void addEventSample(String eventName, long timestamp, Object data, SQLiteDatabase dbWriter) {
     ContentValues values = new ContentValues();
     Event event = getEvent(eventName, dbWriter);
     assertEventExists(event, eventName);
-    assertRightDataPresent(event, data);
+    assertDataCorrespondsToEventDataType(event, data);
     values.put(EVENT_SAMPLES_COLUMN_EVENT_NAME, eventName);
     values.put(EVENT_SAMPLES_COLUMN_TIMESTAMP, timestamp);
+    putData(data, values);
     dbWriter.insert(TABLE_EVENT_SAMPLES, null, values);
+  }
+
+  private void putData(Object data, ContentValues values) {
+    if (data != null) {
+      if (data instanceof Double) {
+        values.put(EVENT_SAMPLES_COLUMN_DATA, (Double) data);
+      } else {
+        throw new IllegalArgumentException("Unsupported event sample data type '" + data.getClass().getSimpleName() + "'.");
+      }
+    }
   }
 
   private static void assertEventExists(Event event, String eventName) {
@@ -161,7 +156,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     }
   }
 
-  private static void assertRightDataPresent(Event event, Object data) {
+  private static void assertDataCorrespondsToEventDataType(Event event, Object data) {
     if (event.getDataType() != Event.NO_DATA_TYPE && data == null) {
       throw new IllegalArgumentException("The event '" + event.getEventName() + "' requires data.");
     }
