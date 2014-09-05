@@ -10,6 +10,7 @@ import si.urbas.chrony.*;
 import si.urbas.chrony.analysis.SimpleAnalyser;
 import si.urbas.chrony.util.ChangeListener;
 
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   private final SimpleAnalyser analyser;
   private final EventRepository eventRepository;
   private List<AnalysedEvent> analysedEvents;
+  private final DateFormat eventSampleTimestampFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
   public AnalysedEventsListAdapter(Context context, SimpleAnalyser analyser, EventRepository eventRepository) {
     this.context = context;
@@ -116,10 +118,16 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   }
 
   private void bindTimestampToView(int groupPosition, int childPosition, View eventTimestampItemView) {
+    EventSample eventSample = getChild(groupPosition, childPosition);
     TextView eventTimestampTextView = (TextView) eventTimestampItemView.findViewById(R.id.eventTimestamp_timestampTextView);
-    eventTimestampTextView.setText(new Date(getChild(groupPosition, childPosition).getTimestamp()).toString());
+    eventTimestampTextView.setText(getFormattedTimestamp(eventSample));
     Button eventTimestampRemoveButton = (Button) eventTimestampItemView.findViewById(R.id.eventTimestamp_removeButton);
     eventTimestampRemoveButton.setOnClickListener(new RemoveTimestampButtonClickListener(groupPosition, childPosition));
+  }
+
+  private String getFormattedTimestamp(EventSample eventSample) {
+    Date eventSampleDate = new Date(eventSample.getTimestamp());
+    return eventSampleTimestampFormat.format(eventSampleDate);
   }
 
   private void removeTimestamp(int groupPosition, int childPosition) {
