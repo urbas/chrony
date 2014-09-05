@@ -114,16 +114,16 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   }
 
   private View createChildView() {
-    return inflateLayout(context, R.layout.event_timesamp_list_item);
+    return inflateLayout(context, R.layout.event_sample_list_item);
   }
 
   private void bindEventSampleToView(int groupPosition, int childPosition, View eventTimestampItemView) {
     EventSample eventSample = getChild(groupPosition, childPosition);
-    TextView eventTimestampTextView = (TextView) eventTimestampItemView.findViewById(R.id.eventTimestamp_timestampTextView);
+    TextView eventTimestampTextView = (TextView) eventTimestampItemView.findViewById(R.id.eventSampleListItem_timestampTextView);
     eventTimestampTextView.setText(getFormattedTimestamp(eventSample));
     TextView eventSampleDataTextView = (TextView) eventTimestampItemView.findViewById(R.id.eventSampleListItem_dataTextView);
     eventSampleDataTextView.setText(getFormattedData(eventSample));
-    Button eventTimestampRemoveButton = (Button) eventTimestampItemView.findViewById(R.id.eventTimestamp_removeButton);
+    Button eventTimestampRemoveButton = (Button) eventTimestampItemView.findViewById(R.id.eventSampleListItem_removeButton);
     eventTimestampRemoveButton.setOnClickListener(new RemoveTimestampButtonClickListener(groupPosition, childPosition));
   }
 
