@@ -34,6 +34,10 @@ public class Event {
 
   }
 
+  public static boolean isDataTypeKnown(int dataType) {
+    return dataType == NO_DATA_TYPE || dataType == NUMBER_DATA_TYPE;
+  }
+
   private static void assertEventNameValid(String eventName) {
     if (eventName == null) {
       throw new IllegalArgumentException("The event name must not be null.");
@@ -41,7 +45,7 @@ public class Event {
   }
 
   private static void assertDataTypeIsKnown(int dataType) {
-    if (dataType < NO_DATA_TYPE || dataType > NUMBER_DATA_TYPE) {
+    if (!isDataTypeKnown(dataType)) {
       throw new IllegalArgumentException("Unknown event data type.");
     }
   }
