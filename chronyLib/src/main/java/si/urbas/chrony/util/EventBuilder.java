@@ -1,8 +1,14 @@
 package si.urbas.chrony.util;
 
 import si.urbas.chrony.Event;
+import si.urbas.chrony.EventSample;
 
+/**
+ * This class is not thread-safe.
+ */
 public class EventBuilder {
+
+  private final EventSampleBuilder eventSampleBuilder = new EventSampleBuilder();
   private String eventName;
   private int eventDataType;
   private boolean isEventDataSpecified = false;
@@ -14,10 +20,11 @@ public class EventBuilder {
   }
 
   public Event create() {
-    if (eventName == null || !isDataTypeSpecified()) {
+    if (eventName != null && isEventDataSpecified) {
+      return new Event(eventName, eventDataType);
+    } else {
       throw new UnsupportedOperationException();
     }
-    return new Event(eventName, eventDataType);
   }
 
   public EventBuilder withName(String eventName) {
@@ -31,11 +38,47 @@ public class EventBuilder {
     return this;
   }
 
-  public boolean isDataTypeSpecified() {
-    return isEventDataSpecified;
+  public EventSampleBuilder getEventSampleBuilder() {
+    return eventSampleBuilder;
   }
 
-  public boolean isNameSpecified() {
-    return eventName != null;
+  /**
+   * This class is not thread-safe.
+   */
+  public class EventSampleBuilder {
+
+    private long timestamp;
+    private Object data;
+    private boolean isDataSpecified;
+    private boolean isTimestampSpecified;
+
+    public EventSampleBuilder clear() {
+      isTimestampSpecified = false;
+      isDataSpecified = false;
+      return this;
+    }
+
+    public EventSampleBuilder withTimestamp(long timestamp) {
+      this.timestamp = timestamp;
+      isTimestampSpecified = true;
+      return this;
+    }
+
+    public EventSampleBuilder withData(Object data) {
+      this.data = data;
+      isDataSpecified = true;
+      return this;
+    }
+
+    public int getDataType() {
+      return EventBuilder.this.eventDataType;
+    }
+
+    public EventSample create() {
+      if (isTimestampSpecified && isDataSpecified && Event.isDataValid(eventDataType, data)) {
+        return new EventSample(eventName, timestamp, data);
+      }
+      throw new UnsupportedOperationException("Cannot create the event sample. Some data is missing or invalid.");
+    }
   }
 }

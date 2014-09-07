@@ -1,57 +1,69 @@
 package si.urbas.chrony.app.io;
 
 import android.util.JsonReader;
+import android.util.Log;
 import si.urbas.chrony.Event;
-import si.urbas.chrony.util.EventBuilder;
 import si.urbas.chrony.EventRepository;
-import si.urbas.chrony.EventSample;
+import si.urbas.chrony.util.EventBuilder;
 
 import java.io.IOException;
 import java.io.Reader;
-
-import static si.urbas.chrony.Event.NO_DATA_TYPE;
 
 public class EventsJsonReader {
 
   public static void loadJsonEventsToRepository(Reader sourceReader, EventRepository targetEventRepository) throws IOException {
     JsonReader jsonReader = new JsonReader(sourceReader);
-    jsonReader.beginArray();
     EventBuilder eventBuilder = new EventBuilder();
+    jsonReader.beginArray();
     while (jsonReader.hasNext()) {
-      loadJsonEventToRepository(targetEventRepository, jsonReader, eventBuilder);
+      readEvent(jsonReader, eventBuilder, targetEventRepository);
     }
     jsonReader.endArray();
   }
 
-  private static void loadJsonEventToRepository(EventRepository targetEventRepository, JsonReader jsonReader, EventBuilder eventBuilder) throws IOException {
-    jsonReader.beginObject();
+  private static void readEvent(JsonReader jsonReader, EventBuilder eventBuilder, EventRepository targetEventRepository) throws IOException {
     eventBuilder.clear();
-//    if (EventsJsonWriter.EVENT_JSON_FIELD_NAME.equals(eventNameField)) {
-//      // OK
-//      String eventName = jsonReader.nextString();
-//    } else {
-//      throw new IllegalArgumentException();
-//    }
-    loadJsonEventSamplesToRepository(jsonReader, targetEventRepository);
-    jsonReader.endObject();
+    jsonReader.beginArray();
+    String eventName = jsonReader.nextString();
+    eventBuilder.withName(eventName)
+                .withDataType(jsonReader.nextInt());
+    Log.w("EVENT", "" + eventName);
+    targetEventRepository.addEvent(eventBuilder.create());
+    readEventSamples(jsonReader, eventBuilder, targetEventRepository);
+    jsonReader.endArray();
   }
 
-  private static void loadJsonEventSamplesToRepository(JsonReader sourceJsonReader, EventRepository targetEventRepository) throws IOException {
-    String eventName = null;
-    Long eventTimestamp = null;
-    while (eventName == null || eventTimestamp == null) {
-      if (!sourceJsonReader.hasNext()) {
-        throw new RuntimeException("The backup file is incorrectly formatted.");
-      }
-      String eventField = sourceJsonReader.nextName();
-      if (EventsJsonWriter.EVENT_JSON_FIELD_NAME.equals(eventField)) {
-        eventName = sourceJsonReader.nextString();
-      } else if (EventsJsonWriter.EVENT_JSON_FIELD_TIMESTAMP.equals(eventField)) {
-        eventTimestamp = sourceJsonReader.nextLong();
-      }
+  private static void readEventSamples(JsonReader jsonReader, EventBuilder eventBuilder, EventRepository targetEventRepository) throws IOException {
+    jsonReader.beginArray();
+    while (jsonReader.hasNext()) {
+      readEventSample(jsonReader, eventBuilder.getEventSampleBuilder(), targetEventRepository);
     }
-    targetEventRepository.addEvent(new Event(eventName, NO_DATA_TYPE));
-    targetEventRepository.addEventSample(new EventSample(eventName, eventTimestamp, null));
+    jsonReader.endArray();
   }
+
+  private static void readEventSample(JsonReader jsonReader, EventBuilder.EventSampleBuilder eventSampleBuilder, EventRepository targetEventRepository) throws IOException {
+    eventSampleBuilder.clear();
+    jsonReader.beginArray();
+    long timestamp = jsonReader.nextLong();
+    Log.w("TIMESTAMP", ""+timestamp);
+    eventSampleBuilder.withTimestamp(timestamp);
+    readEventSampleData(jsonReader, eventSampleBuilder);
+    targetEventRepository.addEventSample(eventSampleBuilder.create());
+    jsonReader.endArray();
+  }
+
+  private static void readEventSampleData(JsonReader jsonReader, EventBuilder.EventSampleBuilder eventSampleBuilder) throws IOException {
+    switch (eventSampleBuilder.getDataType()) {
+      case Event.NO_DATA_TYPE:
+        eventSampleBuilder.withData(null);
+        break;
+      case Event.NUMBER_DATA_TYPE:
+        eventSampleBuilder.withData(jsonReader.nextDouble());
+        break;
+      default:
+        throw new IllegalArgumentException("Found an unknown event data type.");
+    }
+  }
+
 
 }

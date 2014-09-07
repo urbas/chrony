@@ -103,6 +103,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   public void clear() {
     SQLiteDatabase dbWriter = getWritableDatabase();
     dbWriter.execSQL("DELETE FROM " + TABLE_EVENTS);
+    dbWriter.execSQL("DELETE FROM " + TABLE_EVENT_SAMPLES);
     dbWriter.close();
     concurrentChangeListenersList.notifyChangeListeners();
   }

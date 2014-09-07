@@ -4,9 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import si.urbas.chrony.Event;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 
 public class EventBuilderTest {
 
@@ -24,42 +24,30 @@ public class EventBuilderTest {
   }
 
   @Test
-  public void creating_an_event_with_a_name_and_a_data_type_MUST_return_a_fully_specified_event() {
-    Event event = eventBuilder.withName(EVENT_NAME).withDataType(Event.NUMBER_DATA_TYPE).create();
-    assertEventEqualsTo(event, EVENT_NAME, Event.NUMBER_DATA_TYPE);
+  public void create_MUST_return_a_fully_specified_event_WHEN_given_a_name_and_a_data_type() {
+    assertEventHas(initialiseNumberEvent().create(), EVENT_NAME, Event.NUMBER_DATA_TYPE);
   }
 
   @Test(expected = UnsupportedOperationException.class)
   public void create_MUST_throw_an_exception_AFTER_clearing_the_builder() {
-    eventBuilder.withName(EVENT_NAME).withDataType(Event.NUMBER_DATA_TYPE).clear().create();
+    initialiseNumberEvent().clear().create();
   }
 
   @Test
-  public void isNameSpecified_MUST_return_true_AFTER_setting_the_name() {
-    assertTrue(eventBuilder.withName(EVENT_NAME).isNameSpecified());
+  public void getEventSampleBuilder_MUST_return_a_builder() {
+    assertThat(eventBuilder.getEventSampleBuilder(), is(instanceOf(EventBuilder.EventSampleBuilder.class)));
   }
 
   @Test
-  public void isNameSpecified_MUST_return_false_AFTER_clearing_the_builder() {
-    assertFalse(eventBuilder.withName(EVENT_NAME).clear().isNameSpecified());
+  public void getEventSampleBuilder_MUST_return_the_same_builder_WHEN_called_twice() {
+    assertSame(eventBuilder.getEventSampleBuilder(), eventBuilder.getEventSampleBuilder());
   }
 
-  @Test
-  public void isDataTypeSpecified_MUST_return_true_AFTER_setting_the_name() {
-    assertTrue(eventBuilder.withDataType(Event.NO_DATA_TYPE).isDataTypeSpecified());
+  private EventBuilder initialiseNumberEvent() {
+    return eventBuilder.withName(EVENT_NAME).withDataType(Event.NUMBER_DATA_TYPE);
   }
 
-  @Test
-  public void isDataTypeSpecified_MUST_return_false_AFTER_clearing_the_builder() {
-    assertFalse(eventBuilder.withDataType(Event.NO_DATA_TYPE).clear().isNameSpecified());
-  }
-
-  @Test(expected = UnsupportedOperationException.class)
-  public void creating_an_event_with_only_a_name_and_no_data_type_MUST_throw_an_exception() {
-    eventBuilder.withName(EVENT_NAME).create();
-  }
-
-  private static void assertEventEqualsTo(Event event, String expectedEventName, int expectedEventDataType) {
+  private static void assertEventHas(Event event, String expectedEventName, int expectedEventDataType) {
     assertEquals(expectedEventName, event.getEventName());
     assertEquals(expectedEventDataType, event.getDataType());
   }

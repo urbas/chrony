@@ -34,6 +34,17 @@ public class Event {
 
   }
 
+  public static boolean isDataValid(int dataType, Object data) {
+    switch (dataType) {
+      case NO_DATA_TYPE:
+        return data == null;
+      case NUMBER_DATA_TYPE:
+        return data instanceof Double;
+      default:
+        return false;
+    }
+  }
+
   public static boolean isDataTypeKnown(int dataType) {
     return dataType == NO_DATA_TYPE || dataType == NUMBER_DATA_TYPE;
   }

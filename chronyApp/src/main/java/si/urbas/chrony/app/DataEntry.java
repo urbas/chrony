@@ -16,7 +16,7 @@ import si.urbas.chrony.app.io.EventRepositoryBackup;
 
 public class DataEntry extends Activity {
 
-  private static final String EVENT_REPOSITORY_BACKUP_FILE = "event_repository_backup";
+  private static final String EVENT_REPOSITORY_BACKUP_FILE = "event_repository_backup_v2.corrected";
   private EventRepository eventRepository;
   private EditText eventNameTextField;
   private Button addEventButton;
