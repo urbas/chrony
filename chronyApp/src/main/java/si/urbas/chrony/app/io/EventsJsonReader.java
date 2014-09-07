@@ -1,7 +1,6 @@
 package si.urbas.chrony.app.io;
 
 import android.util.JsonReader;
-import android.util.Log;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.util.EventBuilder;
@@ -24,10 +23,8 @@ public class EventsJsonReader {
   private static void readEvent(JsonReader jsonReader, EventBuilder eventBuilder, EventRepository targetEventRepository) throws IOException {
     eventBuilder.clear();
     jsonReader.beginArray();
-    String eventName = jsonReader.nextString();
-    eventBuilder.withName(eventName)
+    eventBuilder.withName(jsonReader.nextString())
                 .withDataType(jsonReader.nextInt());
-    Log.w("EVENT", "" + eventName);
     targetEventRepository.addEvent(eventBuilder.create());
     readEventSamples(jsonReader, eventBuilder, targetEventRepository);
     jsonReader.endArray();
@@ -44,9 +41,7 @@ public class EventsJsonReader {
   private static void readEventSample(JsonReader jsonReader, EventBuilder.EventSampleBuilder eventSampleBuilder, EventRepository targetEventRepository) throws IOException {
     eventSampleBuilder.clear();
     jsonReader.beginArray();
-    long timestamp = jsonReader.nextLong();
-    Log.w("TIMESTAMP", ""+timestamp);
-    eventSampleBuilder.withTimestamp(timestamp);
+    eventSampleBuilder.withTimestamp(jsonReader.nextLong());
     readEventSampleData(jsonReader, eventSampleBuilder);
     targetEventRepository.addEventSample(eventSampleBuilder.create());
     jsonReader.endArray();
