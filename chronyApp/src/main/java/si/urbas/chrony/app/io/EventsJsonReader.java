@@ -10,7 +10,7 @@ import java.io.Reader;
 
 public class EventsJsonReader {
 
-  public static void loadJsonEventsToRepository(Reader sourceReader, EventRepository targetEventRepository) throws IOException {
+  public static void loadEvents(Reader sourceReader, EventRepository targetEventRepository) throws IOException {
     JsonReader jsonReader = new JsonReader(sourceReader);
     EventBuilder eventBuilder = new EventBuilder();
     jsonReader.beginArray();

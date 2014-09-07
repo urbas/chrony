@@ -16,7 +16,7 @@ public class EventRepositoryBackup {
       try {
         fileReader = new BufferedReader(new FileReader(backupFile));
         eventRepository.clear();
-        EventsJsonReader.loadJsonEventsToRepository(fileReader, eventRepository);
+        EventsJsonReader.loadEvents(fileReader, eventRepository);
       } catch (Throwable e) {
         throw new RuntimeException("Could not read the database from the backup file.", e);
       } finally {

@@ -4,3 +4,6 @@
 
 BUGS:
 - Events with no samples are placed at the bottom of the list. They should be placed on top, or into a special region in the list.
+
+TECH:
+- Improve the speed of loading frlm the JSON event repository backup. To do this, Mmove change notification out of the event repository interface and extract if from the SQLiteEventRepository (into a separate class).

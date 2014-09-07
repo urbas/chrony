@@ -22,6 +22,7 @@ public class DataEntry extends Activity {
   private Button addEventButton;
   private ExpandableListView analysedEventsListView;
   private Spinner dataTypeChooser;
+  private AnalysedEventsListAdapter analysedEventsListAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +86,10 @@ public class DataEntry extends Activity {
 
   private void loadRepositoryFromFile() {
     EventRepositoryBackup.restoreFromFile(EVENT_REPOSITORY_BACKUP_FILE, eventRepository);
-    bindEventsToListView();
   }
 
   private void bindEventsToListView() {
-    AnalysedEventsListAdapter analysedEventsListAdapter = new AnalysedEventsListAdapter(this, new SimpleAnalyser(), eventRepository);
+    analysedEventsListAdapter = new AnalysedEventsListAdapter(this, new SimpleAnalyser(), eventRepository);
     analysedEventsListView.setAdapter(analysedEventsListAdapter);
   }
 
