@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventSample;
-import si.urbas.chrony.util.ChangeListener;
-import si.urbas.chrony.util.ConcurrentChangeListenersList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,6 @@ import static si.urbas.chrony.app.data.SQLiteEventRepositorySchema.*;
 
 public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepository {
 
-  private final ConcurrentChangeListenersList concurrentChangeListenersList = new ConcurrentChangeListenersList();
   private final SQLiteEventRepositorySchema sqliteEventRepositorySchema = new SQLiteEventRepositorySchema();
 
   public SQLiteEventRepository(Context context) {
@@ -43,7 +40,6 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     } finally {
       dbWriter.close();
     }
-    concurrentChangeListenersList.notifyChangeListeners();
   }
 
   @Override
@@ -54,7 +50,6 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     } finally {
       dbWriter.close();
     }
-    concurrentChangeListenersList.notifyChangeListeners();
   }
 
   @Override
@@ -96,7 +91,6 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     SQLiteDatabase dbWriter = getWritableDatabase();
     dbWriter.execSQL("DELETE FROM " + TABLE_EVENT_SAMPLES + " WHERE " + EVENT_SAMPLES_COLUMN_EVENT_NAME + " = ? AND " + EVENT_SAMPLES_COLUMN_TIMESTAMP + " = ?", new Object[]{eventName, timestamp});
     dbWriter.close();
-    concurrentChangeListenersList.notifyChangeListeners();
   }
 
   @Override
@@ -105,12 +99,6 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
     dbWriter.execSQL("DELETE FROM " + TABLE_EVENTS);
     dbWriter.execSQL("DELETE FROM " + TABLE_EVENT_SAMPLES);
     dbWriter.close();
-    concurrentChangeListenersList.notifyChangeListeners();
-  }
-
-  @Override
-  public void registerChangeListener(final ChangeListener changeListener) {
-    concurrentChangeListenersList.registerChangeListener(changeListener);
   }
 
   private void addEvent(String eventName, int dataType, SQLiteDatabase dbWriter) {

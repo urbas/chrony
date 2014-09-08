@@ -9,6 +9,7 @@ import android.widget.TextView;
 import si.urbas.chrony.*;
 import si.urbas.chrony.analysis.SimpleAnalyser;
 import si.urbas.chrony.util.ChangeListener;
+import si.urbas.chrony.util.ChangeNotifier;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -21,14 +22,16 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   private final Context context;
   private final SimpleAnalyser analyser;
   private final EventRepository eventRepository;
+  private final ChangeNotifier eventRepositoryChangeNotifier;
   private List<AnalysedEvent> analysedEvents;
   private final DateFormat eventSampleTimestampFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
-  public AnalysedEventsListAdapter(Context context, SimpleAnalyser analyser, EventRepository eventRepository) {
+  public AnalysedEventsListAdapter(Context context, SimpleAnalyser analyser, EventRepository eventRepository, ChangeNotifier eventRepositoryChangeNotifier) {
     this.context = context;
     this.analyser = analyser;
     this.eventRepository = eventRepository;
-    this.eventRepository.registerChangeListener(new EventRepositoryChangeListener());
+    this.eventRepositoryChangeNotifier = eventRepositoryChangeNotifier;
+    this.eventRepositoryChangeNotifier.registerChangeListener(new EventRepositoryChangeListener());
     refreshAnalysedEvents();
   }
 
@@ -136,31 +139,37 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     return eventSampleTimestampFormat.format(eventSampleDate);
   }
 
-  private void removeTimestamp(int groupPosition, int childPosition) {
+  private void removeEventSample(int groupPosition, int childPosition) {
     String eventName = getNameOfEventAtPosition(groupPosition);
     Long timestamp = getChild(groupPosition, childPosition).getTimestamp();
-    eventRepository.removeEventSample(eventName, timestamp);
+    removeEventSample(eventName, timestamp);
   }
 
   private String getNameOfEventAtPosition(int positionInList) {
     return getGroup(positionInList).getUnderlyingEvent().getEventName();
   }
 
-
   private void addEventSample(AnalysedEvent analysedEvent) {
     if (isEventWithoutData(analysedEvent)) {
       addEventSampleWithoutData(analysedEvent.getUnderlyingEvent());
     } else {
-      EventSampleNumberEntryDialog.show(context, eventRepository, analysedEvent);
+      EventSampleNumberEntryDialog.show(context, eventRepository, eventRepositoryChangeNotifier, analysedEvent);
     }
+  }
+
+
+  private static boolean isEventWithoutData(AnalysedEvent analysedEvent) {
+    return analysedEvent.getUnderlyingEvent().getDataType() == Event.NO_DATA_TYPE;
+  }
+
+  private void removeEventSample(String eventName, Long timestamp) {
+    eventRepository.removeEventSample(eventName, timestamp);
+    eventRepositoryChangeNotifier.notifyChangeListeners();
   }
 
   private void addEventSampleWithoutData(Event event) {
     eventRepository.addEventSample(new EventSample(event.getEventName()));
-  }
-
-  private static boolean isEventWithoutData(AnalysedEvent analysedEvent) {
-    return analysedEvent.getUnderlyingEvent().getDataType() == Event.NO_DATA_TYPE;
+    eventRepositoryChangeNotifier.notifyChangeListeners();
   }
 
   private class AddEventButtonClickListener implements View.OnClickListener {
@@ -188,7 +197,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public void onClick(View v) {
-      removeTimestamp(groupPosition, childPosition);
+      removeEventSample(groupPosition, childPosition);
     }
 
   }

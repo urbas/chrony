@@ -10,14 +10,15 @@ import android.widget.TextView;
 import si.urbas.chrony.AnalysedEvent;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.util.ChangeNotifier;
 
 import static si.urbas.chrony.app.util.InflaterUtils.inflateLayout;
 
 public class EventSampleNumberEntryDialog {
 
-  public static void show(Context context, EventRepository eventRepository, AnalysedEvent analysedEvent) {
+  public static void show(Context context, EventRepository eventRepository, ChangeNotifier eventRepositoryChangeNotifier, AnalysedEvent analysedEvent) {
     View dialogView = inflateLayout(context, R.layout.event_sample_number_entry);
-    AddEventSampleNumberClickListener addEventSampleNumberClickListener = new AddEventSampleNumberClickListener(eventRepository, analysedEvent, context, dialogView);
+    AddEventSampleNumberClickListener addEventSampleNumberClickListener = new AddEventSampleNumberClickListener(eventRepository, eventRepositoryChangeNotifier, analysedEvent, context, dialogView);
     Dialog numberEntryDialog = createDialog(context, dialogView, addEventSampleNumberClickListener);
     setupView(dialogView, analysedEvent);
     numberEntryDialog.show();
@@ -40,12 +41,14 @@ public class EventSampleNumberEntryDialog {
   private static class AddEventSampleNumberClickListener implements DialogInterface.OnClickListener {
 
     private final EventRepository eventRepository;
+    private final ChangeNotifier eventRepositoryChangeNotifier;
     private final AnalysedEvent analysedEvent;
     private final Context context;
     private final View dialogView;
 
-    public AddEventSampleNumberClickListener(EventRepository eventRepository, AnalysedEvent analysedEvent, Context context, View dialogView) {
+    public AddEventSampleNumberClickListener(EventRepository eventRepository, ChangeNotifier eventRepositoryChangeNotifier, AnalysedEvent analysedEvent, Context context, View dialogView) {
       this.eventRepository = eventRepository;
+      this.eventRepositoryChangeNotifier = eventRepositoryChangeNotifier;
       this.analysedEvent = analysedEvent;
       this.context = context;
       this.dialogView = dialogView;
@@ -57,6 +60,7 @@ public class EventSampleNumberEntryDialog {
       try {
         double number = Double.parseDouble(numberAsText);
         eventRepository.addEventSample(new EventSample(analysedEvent.getUnderlyingEvent().getEventName(), number));
+        eventRepositoryChangeNotifier.notifyChangeListeners();
       } catch (NumberFormatException e) {
         new AlertDialog.Builder(context).setTitle("Invalid number format.").create().show();
       }

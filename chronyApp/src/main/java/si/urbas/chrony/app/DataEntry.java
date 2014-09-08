@@ -12,11 +12,13 @@ import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.analysis.SimpleAnalyser;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
 import si.urbas.chrony.app.io.EventRepositoryBackup;
+import si.urbas.chrony.util.ChangeNotifier;
 
 
 public class DataEntry extends Activity {
 
   private static final String EVENT_REPOSITORY_BACKUP_FILE = "event_repository_backup_v2.corrected";
+  private final ChangeNotifier eventRepositoryChangeNotifier = new ChangeNotifier();
   private EventRepository eventRepository;
   private EditText eventNameTextField;
   private Button addEventButton;
@@ -54,7 +56,7 @@ public class DataEntry extends Activity {
         loadRepositoryFromFile();
         return false;
       case R.id.action_clear_database:
-        eventRepository.clear();
+        clearEventRepository();
         return false;
       default:
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
@@ -73,6 +75,11 @@ public class DataEntry extends Activity {
     setupDataTypeChooser();
   }
 
+  private void clearEventRepository() {
+    eventRepository.clear();
+    eventRepositoryChangeNotifier.notifyChangeListeners();
+  }
+
   private void setupDataTypeChooser() {
     dataTypeChooser = (Spinner) findViewById(R.id.dataEntry_dataTYpeSpinner);
     ArrayAdapter<CharSequence> dataTypeChooserAdapter = ArrayAdapter.createFromResource(this, R.array.event_DataTypes, android.R.layout.simple_spinner_item);
@@ -86,10 +93,11 @@ public class DataEntry extends Activity {
 
   private void loadRepositoryFromFile() {
     EventRepositoryBackup.restoreFromFile(EVENT_REPOSITORY_BACKUP_FILE, eventRepository);
+    eventRepositoryChangeNotifier.notifyChangeListeners();
   }
 
   private void bindEventsToListView() {
-    analysedEventsListAdapter = new AnalysedEventsListAdapter(this, new SimpleAnalyser(), eventRepository);
+    analysedEventsListAdapter = new AnalysedEventsListAdapter(this, new SimpleAnalyser(), eventRepository, eventRepositoryChangeNotifier);
     analysedEventsListView.setAdapter(analysedEventsListAdapter);
   }
 
@@ -110,6 +118,7 @@ public class DataEntry extends Activity {
 
   private void addNewEvent(String eventName, int dataType) {
     eventRepository.addEvent(new Event(eventName, dataType));
+    eventRepositoryChangeNotifier.notifyChangeListeners();
   }
 
   private class EventAddClickListener implements View.OnClickListener {
