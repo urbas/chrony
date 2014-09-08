@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="app_name">Chrony</string>
-  <string name="action_settings">Settings</string>
-  <string name="new_event_button_text">Add</string>
-  <string name="action_clear_database">Clear database</string>
-  <string name="action_save_database">Save database</string>
-  <string name="action_load_database">Load database</string>
+    <string name="app_name">Chrony</string>
+    <string name="action_settings">Settings</string>
+    <string name="new_event_button_text">Add</string>
+    <string name="action_clear_database">Clear database</string>
+    <string name="action_save_database">Save database</string>
+    <string name="action_load_database">Load database</string>
 
-  <string-array name="event_DataTypes">
-      <item>No data</item>
-      <item>Number</item>
-  </string-array>
+    <string-array name="event_DataTypes">
+        <item>No data</item>
+        <item>Number</item>
+    </string-array>
+
+    <string name="title_activity_event_detail">Detail</string>
 
 </resources>
