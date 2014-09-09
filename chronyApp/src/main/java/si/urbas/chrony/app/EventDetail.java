@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
+import si.urbas.chrony.analysis.FrequencyAnalysis;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
 
 
@@ -17,14 +18,16 @@ public class EventDetail extends Activity {
   public static final String INTENT_PARAMETER_EVENT_NAME = "eventDetail.eventName";
   private EventRepository eventRepository;
   private TextView eventNameTextView;
+  private TextView frequencyTextView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setupEventRepository();
     Event eventToShow = getEventToShow();
+    FrequencyAnalysis eventFrequencyAnalysis = new FrequencyAnalysis(eventRepository, eventToShow.getEventName());
     bindViewsToFields();
-    showEventDetails(eventToShow);
+    showEventDetails(eventToShow, eventFrequencyAnalysis);
   }
 
   @Override
@@ -57,6 +60,7 @@ public class EventDetail extends Activity {
   private void bindViewsToFields() {
     setContentView(R.layout.activity_event_detail);
     eventNameTextView = (TextView) findViewById(R.id.eventDetail_eventNameTextView);
+    frequencyTextView = (TextView) findViewById(R.id.eventDetail_frequencyTextView);
   }
 
   private Event getEventToShow() {
@@ -64,7 +68,8 @@ public class EventDetail extends Activity {
     return eventRepository.getEvent(nameOfEventToShow);
   }
 
-  private void showEventDetails(Event eventToShow) {
+  private void showEventDetails(Event eventToShow, FrequencyAnalysis eventFrequencyAnalysis) {
     eventNameTextView.setText(eventToShow.getEventName());
+    frequencyTextView.setText((eventFrequencyAnalysis.allTimeFrequency() * 7) + " per week");
   }
 }
