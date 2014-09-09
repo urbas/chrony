@@ -8,19 +8,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import si.urbas.chrony.Event;
+import si.urbas.chrony.EventRepository;
+import si.urbas.chrony.app.data.SQLiteEventRepository;
 
 
 public class EventDetail extends Activity {
 
   public static final String INTENT_PARAMETER_EVENT_NAME = "eventDetail.eventName";
+  private EventRepository eventRepository;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_event_detail);
-    String eventName = getIntent().getStringExtra(INTENT_PARAMETER_EVENT_NAME);
-    TextView eventNameTextView = (TextView) findViewById(R.id.eventDetail_eventNameTextView);
-    eventNameTextView.setText(eventName);
+    setupEventRepository();
+    String nameOfEventToShow = getIntent().getStringExtra(INTENT_PARAMETER_EVENT_NAME);
+    bindUiElements(nameOfEventToShow);
   }
 
   @Override
@@ -29,7 +31,6 @@ public class EventDetail extends Activity {
     getMenuInflater().inflate(R.menu.event_detail, menu);
     return true;
   }
-
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
@@ -40,9 +41,20 @@ public class EventDetail extends Activity {
     return id == R.id.action_settings || super.onOptionsItemSelected(item);
   }
 
+
   public static void startEventDetailActivity(Context context, Event eventToDisplay) {
     Intent intent = new Intent(context, EventDetail.class);
     intent.putExtra(INTENT_PARAMETER_EVENT_NAME, eventToDisplay.getEventName());
     context.startActivity(intent);
+  }
+
+  private void setupEventRepository() {
+    eventRepository = new SQLiteEventRepository(this);
+  }
+
+  private void bindUiElements(String nameOfEventToShow) {
+    setContentView(R.layout.activity_event_detail);
+    TextView eventNameTextView = (TextView) findViewById(R.id.eventDetail_eventNameTextView);
+    eventNameTextView.setText(nameOfEventToShow);
   }
 }
