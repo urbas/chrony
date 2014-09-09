@@ -25,6 +25,7 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   private final ChangeNotifier eventRepositoryChangeNotifier;
   private List<AnalysedEvent> analysedEvents;
   private final DateFormat eventSampleTimestampFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+  private EventClickListener eventClickListener;
 
   public AnalysedEventsListAdapter(Context context, SimpleAnalyser analyser, EventRepository eventRepository, ChangeNotifier eventRepositoryChangeNotifier) {
     this.context = context;
@@ -92,6 +93,10 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
     return true;
   }
 
+  public void setEventClickListener(EventClickListener eventClickListener) {
+    this.eventClickListener = eventClickListener;
+  }
+
   private void refreshAnalysedEvents() {
     Analysis analysis = analyser.analyse(eventRepository);
     analysedEvents = analysis.getAnalysedEvents();
@@ -104,16 +109,30 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
 
   private void bindEventToItemView(final int position, View convertView) {
     AnalysedEvent analysedEventToBind = getGroup(position);
+
     TextView eventNameTextView = (TextView) convertView.findViewById(R.id.eventNameTextView);
     eventNameTextView.setText(analysedEventToBind.getUnderlyingEvent().getEventName());
+    eventNameTextView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        notifyEventClickListener(position);
+      }
+    });
+
     TextView evenCountTextView = (TextView) convertView.findViewById(R.id.eventCountTextView);
     evenCountTextView.setText(Integer.toString(analysedEventToBind.getCount()));
+
     Button addEventSampleBtn = (Button) convertView.findViewById(R.id.addEventSampleButton);
     // NOTE: we've got to make the button not focusable because otherwise the button steals clicks from the expand
     // button.
     addEventSampleBtn.setFocusable(false);
     addEventSampleBtn.setOnClickListener(new AddEventButtonClickListener(position));
     convertView.setPadding(60, 0, 0, 0);
+  }
+
+  private void notifyEventClickListener(int eventPosition) {
+    Event clickedEvent = getGroup(eventPosition).getUnderlyingEvent();
+    eventClickListener.eventClicked(clickedEvent);
   }
 
   private View createChildView() {

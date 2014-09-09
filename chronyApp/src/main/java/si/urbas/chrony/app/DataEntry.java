@@ -99,14 +99,7 @@ public class DataEntry extends Activity {
   private void bindEventsToListView() {
     analysedEventsListAdapter = new AnalysedEventsListAdapter(this, new SimpleAnalyser(), eventRepository, eventRepositoryChangeNotifier);
     analysedEventsListView.setAdapter(analysedEventsListAdapter);
-    analysedEventsListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-      @Override
-      public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-        Event eventToDisplay = analysedEventsListAdapter.getGroup(groupPosition).getUnderlyingEvent();
-        EventDetail.startEventDetailActivity(DataEntry.this, eventToDisplay);
-        return false;
-      }
-    });
+    analysedEventsListAdapter.setEventClickListener(new ShowEventDetailOnEventClickListener());
   }
 
   private void registerUiEventHandlers() {
@@ -144,4 +137,10 @@ public class DataEntry extends Activity {
     }
   }
 
+  private class ShowEventDetailOnEventClickListener implements EventClickListener {
+    @Override
+    public void eventClicked(Event clickedEvent) {
+      EventDetail.startEventDetailActivity(DataEntry.this, clickedEvent);
+    }
+  }
 }
