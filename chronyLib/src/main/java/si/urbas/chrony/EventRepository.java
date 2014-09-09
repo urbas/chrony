@@ -6,6 +6,8 @@ public interface EventRepository {
 
   void addEvent(Event event);
 
+  Event getEvent(String eventName);
+
   void addEventSample(EventSample eventSample);
 
   List<Event> allEvents();

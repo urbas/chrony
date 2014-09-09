@@ -16,13 +16,15 @@ public class EventDetail extends Activity {
 
   public static final String INTENT_PARAMETER_EVENT_NAME = "eventDetail.eventName";
   private EventRepository eventRepository;
+  private TextView eventNameTextView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setupEventRepository();
-    String nameOfEventToShow = getIntent().getStringExtra(INTENT_PARAMETER_EVENT_NAME);
-    bindUiElements(nameOfEventToShow);
+    Event eventToShow = getEventToShow();
+    bindViewsToFields();
+    showEventDetails(eventToShow);
   }
 
   @Override
@@ -41,20 +43,28 @@ public class EventDetail extends Activity {
     return id == R.id.action_settings || super.onOptionsItemSelected(item);
   }
 
-
   public static void startEventDetailActivity(Context context, Event eventToDisplay) {
     Intent intent = new Intent(context, EventDetail.class);
     intent.putExtra(INTENT_PARAMETER_EVENT_NAME, eventToDisplay.getEventName());
     context.startActivity(intent);
   }
 
+
   private void setupEventRepository() {
     eventRepository = new SQLiteEventRepository(this);
   }
 
-  private void bindUiElements(String nameOfEventToShow) {
+  private void bindViewsToFields() {
     setContentView(R.layout.activity_event_detail);
-    TextView eventNameTextView = (TextView) findViewById(R.id.eventDetail_eventNameTextView);
-    eventNameTextView.setText(nameOfEventToShow);
+    eventNameTextView = (TextView) findViewById(R.id.eventDetail_eventNameTextView);
+  }
+
+  private Event getEventToShow() {
+    String nameOfEventToShow = getIntent().getStringExtra(INTENT_PARAMETER_EVENT_NAME);
+    return eventRepository.getEvent(nameOfEventToShow);
+  }
+
+  private void showEventDetails(Event eventToShow) {
+    eventNameTextView.setText(eventToShow.getEventName());
   }
 }

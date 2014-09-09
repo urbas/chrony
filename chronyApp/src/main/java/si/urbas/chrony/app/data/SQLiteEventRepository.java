@@ -43,6 +43,14 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   }
 
   @Override
+  public Event getEvent(String eventName) {
+    SQLiteDatabase dbReader = getReadableDatabase();
+    Event event = getEvent(eventName, dbReader);
+    dbReader.close();
+    return event;
+  }
+
+  @Override
   public void addEventSample(EventSample eventSample) {
     SQLiteDatabase dbWriter = getWritableDatabase();
     try {
