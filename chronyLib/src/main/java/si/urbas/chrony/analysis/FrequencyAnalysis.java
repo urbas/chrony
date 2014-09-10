@@ -24,9 +24,13 @@ public class FrequencyAnalysis {
     return frequency(eventRepository.samplesOf(eventName), fromTime, untilTime);
   }
 
-  public double allTimeFrequency() {
+  public double allTimeFrequency(long untilTime) {
     Collection<EventSample> eventSamples = eventRepository.samplesOf(eventName);
-    return frequency(eventSamples, getMinimumTimestamp(eventSamples), getMaximumTimestamp(eventSamples));
+    if (eventSamples.isEmpty()) {
+      return 0;
+    } else {
+      return frequency(eventSamples, getMinimumTimestamp(eventSamples), untilTime);
+    }
   }
 
   private static double frequency(Collection<EventSample> eventSamples, long fromTime, long untilTime) {
@@ -34,7 +38,11 @@ public class FrequencyAnalysis {
       return 0;
     } else {
       int numberOfOccurrencesInPeriod = countSamplesWithinTime(eventSamples, fromTime, untilTime);
-      return (double) numberOfOccurrencesInPeriod / (untilTime - fromTime) * ONE_DAY_IN_MILLIS;
+      if (fromTime == untilTime) {
+        return numberOfOccurrencesInPeriod;
+      } else {
+        return (double) numberOfOccurrencesInPeriod / (untilTime - fromTime) * ONE_DAY_IN_MILLIS;
+      }
     }
   }
 }

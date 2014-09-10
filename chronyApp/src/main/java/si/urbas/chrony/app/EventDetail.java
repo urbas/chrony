@@ -12,6 +12,8 @@ import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.analysis.FrequencyAnalysis;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
 
+import java.util.Date;
+
 
 public class EventDetail extends Activity {
 
@@ -70,6 +72,6 @@ public class EventDetail extends Activity {
 
   private void showEventDetails(Event eventToShow, FrequencyAnalysis eventFrequencyAnalysis) {
     eventNameTextView.setText(eventToShow.getEventName());
-    frequencyTextView.setText((eventFrequencyAnalysis.allTimeFrequency() * 7) + " per week");
+    frequencyTextView.setText((eventFrequencyAnalysis.allTimeFrequency(new Date().getTime()) * 7) + " per week");
   }
 }

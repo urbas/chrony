@@ -5,7 +5,10 @@ import org.junit.Test;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventSample;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -31,21 +34,59 @@ public class FrequencyAnalysisTest {
   }
 
   @Test
+  public void frequency_MUST_return_0_WHEN_there_are_no_occurrences_of_the_event_at_all() {
+    addSamplesToEventRepository(new ArrayList<EventSample>());
+    assertEquals(0d, frequencyAnalysis.frequency(TIME_0, TIME_1_DAY), TWO_DECIMAL_ACCURACY);
+  }
+
+  @Test
+  public void frequency_MUST_return_0_WHEN_there_are_no_occurrences_of_the_event_in_the_interval() {
+    addSamplesToEventRepository(Arrays.asList(eventSampleAtTime10d));
+    assertEquals(0d, frequencyAnalysis.frequency(TIME_0, TIME_1_DAY), TWO_DECIMAL_ACCURACY);
+  }
+
+  @Test
   public void frequency_MUST_return_1_WHEN_the_event_occurred_once_exactly_24_hours_ago() {
-    when(eventRepository.samplesOf(EVENT_NAME)).thenReturn(Arrays.asList(eventSampleAtTime0));
+    addSamplesToEventRepository(Arrays.asList(eventSampleAtTime0));
     assertEquals(1d, frequencyAnalysis.frequency(TIME_0, TIME_1_DAY), TWO_DECIMAL_ACCURACY);
   }
 
   @Test
   public void frequency_MUST_return_2_WHEN_the_event_occurred_twice_in_the_given_period() {
-    when(eventRepository.samplesOf(EVENT_NAME)).thenReturn(Arrays.asList(eventSampleAtTime0, eventSampleAtTime1d));
+    addSamplesToEventRepository(Arrays.asList(eventSampleAtTime0, eventSampleAtTime1d));
     assertEquals(2d, frequencyAnalysis.frequency(TIME_0, TIME_1_DAY), TWO_DECIMAL_ACCURACY);
   }
 
   @Test
+  public void frequency_MUST_return_1_WHEN_the_event_occurred_once_in_a_zero_interval() {
+    addSamplesToEventRepository(Arrays.asList(eventSampleAtTime1d));
+    assertEquals(1d, frequencyAnalysis.frequency(TIME_1_DAY, TIME_1_DAY), TWO_DECIMAL_ACCURACY);
+  }
+
+  @Test
   public void allTimeFrequency_MUST_return_the_three_tenth_WHEN_three_events_occurred_in_ten_days() {
-    when(eventRepository.samplesOf(EVENT_NAME)).thenReturn(Arrays.asList(eventSampleAtTime0, eventSampleAtTime1d, eventSampleAtTime10d));
-    assertEquals(3.0 / 10.0, frequencyAnalysis.allTimeFrequency(), TWO_DECIMAL_ACCURACY);
+    addSamplesToEventRepository(Arrays.asList(eventSampleAtTime0, eventSampleAtTime1d, eventSampleAtTime10d));
+    assertEquals(3.0 / 10.0, frequencyAnalysis.allTimeFrequency(TIME_10_DAY), TWO_DECIMAL_ACCURACY);
+  }
+
+  @Test
+  public void allTimeFrequency_MUST_return_0_WHEN_there_are_no_occurrences_of_the_event_at_all() {
+    addSamplesToEventRepository(new ArrayList<EventSample>());
+    assertEquals(0d, frequencyAnalysis.allTimeFrequency(now()), TWO_DECIMAL_ACCURACY);
+  }
+
+  @Test
+  public void allTimeFrequency_MUST_return_1_WHEN_there_is_just_one_occurrence_of_the_event() {
+    addSamplesToEventRepository(Arrays.asList(eventSampleAtTime10d));
+    assertEquals(1d, frequencyAnalysis.allTimeFrequency(TIME_10_DAY), TWO_DECIMAL_ACCURACY);
+  }
+
+  private void addSamplesToEventRepository(List<EventSample> eventSamples) {
+    when(eventRepository.samplesOf(EVENT_NAME)).thenReturn(eventSamples);
+  }
+
+  private static long now() {
+    return new Date().getTime();
   }
 
 }
