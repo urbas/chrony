@@ -76,7 +76,7 @@ public class EventDetail extends Activity {
   private void showEventDetails(Event eventToShow, FrequencyAnalysis eventFrequencyAnalysis) {
     eventNameTextView.setText(eventToShow.getEventName());
     long now = new Date().getTime();
-    frequencyTextView.setText(Double.toString(eventFrequencyAnalysis.allTimeFrequency(now)));
-    frequencyLastWeekTextView.setText(Double.toString(eventFrequencyAnalysis.frequency(now - WEEK_IN_MILLIS, now) * 7));
+    frequencyTextView.setText(Integer.toString(eventFrequencyAnalysis.occurrencesUntil(now)));
+    frequencyLastWeekTextView.setText(Integer.toString(eventFrequencyAnalysis.occurrencesWithin(now - WEEK_IN_MILLIS, now)));
   }
 }

@@ -35,7 +35,7 @@ public class FrequencyAnalysisTest {
 
   @Test
   public void frequency_MUST_return_0_WHEN_there_are_no_occurrences_of_the_event_at_all() {
-    addSamplesToEventRepository(new ArrayList<EventSample>());
+    noSamplesInRepository();
     assertEquals(0d, frequencyAnalysis.frequency(TIME_0, TIME_1_DAY), TWO_DECIMAL_ACCURACY);
   }
 
@@ -64,25 +64,63 @@ public class FrequencyAnalysisTest {
   }
 
   @Test
-  public void allTimeFrequency_MUST_return_the_three_tenth_WHEN_three_events_occurred_in_ten_days() {
-    addSamplesToEventRepository(Arrays.asList(eventSampleAtTime0, eventSampleAtTime1d, eventSampleAtTime10d));
-    assertEquals(3.0 / 10.0, frequencyAnalysis.allTimeFrequency(TIME_10_DAY), TWO_DECIMAL_ACCURACY);
+  public void frequencyUntil_MUST_return_the_three_tenth_WHEN_three_events_occurred_in_ten_days() {
+    threeSamplesInRepository();
+    assertEquals(3.0 / 10.0, frequencyAnalysis.frequencyUntil(TIME_10_DAY), TWO_DECIMAL_ACCURACY);
   }
 
   @Test
-  public void allTimeFrequency_MUST_return_0_WHEN_there_are_no_occurrences_of_the_event_at_all() {
-    addSamplesToEventRepository(new ArrayList<EventSample>());
-    assertEquals(0d, frequencyAnalysis.allTimeFrequency(now()), TWO_DECIMAL_ACCURACY);
+  public void frequencyUntil_MUST_return_0_WHEN_there_are_no_occurrences_of_the_event_at_all() {
+    noSamplesInRepository();
+    assertEquals(0d, frequencyAnalysis.frequencyUntil(now()), TWO_DECIMAL_ACCURACY);
   }
 
   @Test
-  public void allTimeFrequency_MUST_return_1_WHEN_there_is_just_one_occurrence_of_the_event() {
+  public void frequencyUntil_MUST_return_1_WHEN_there_is_just_one_occurrence_of_the_event() {
     addSamplesToEventRepository(Arrays.asList(eventSampleAtTime10d));
-    assertEquals(1d, frequencyAnalysis.allTimeFrequency(TIME_10_DAY), TWO_DECIMAL_ACCURACY);
+    assertEquals(1d, frequencyAnalysis.frequencyUntil(TIME_10_DAY), TWO_DECIMAL_ACCURACY);
+  }
+
+  @Test
+  public void occurrencesUntil_MUST_return_0_WHEN_there_are_no_events() {
+    noSamplesInRepository();
+    assertEquals(0, frequencyAnalysis.occurrencesUntil(now()));
+  }
+
+  @Test
+  public void occurrencesUntil_MUST_return_3_WHEN_there_are_three_events_in_the_repo() {
+    threeSamplesInRepository();
+    assertEquals(3, frequencyAnalysis.occurrencesUntil(now()));
+  }
+
+  @Test
+  public void occurrencesUntil_MUST_return_1_WHEN_there_is_only_one_event_that_falls_within_the_time_span() {
+    threeSamplesInRepository();
+    assertEquals(1, frequencyAnalysis.occurrencesUntil(TIME_1_DAY - 1));
+  }
+
+  @Test
+  public void occurrencesWithin_MUST_return_0_WHEN_there_are_no_events() {
+    noSamplesInRepository();
+    assertEquals(0, frequencyAnalysis.occurrencesWithin(TIME_0, now()));
+  }
+
+  @Test
+  public void occurrencesWithin_MUST_return_2_WHEN_there_are_two_events_within_the_interval() {
+    threeSamplesInRepository();
+    assertEquals(2, frequencyAnalysis.occurrencesWithin(TIME_1_DAY, TIME_10_DAY));
   }
 
   private void addSamplesToEventRepository(List<EventSample> eventSamples) {
     when(eventRepository.samplesOf(EVENT_NAME)).thenReturn(eventSamples);
+  }
+
+  private void noSamplesInRepository() {
+    addSamplesToEventRepository(new ArrayList<EventSample>());
+  }
+
+  private void threeSamplesInRepository() {
+    addSamplesToEventRepository(Arrays.asList(eventSampleAtTime0, eventSampleAtTime1d, eventSampleAtTime10d));
   }
 
   private static long now() {

@@ -2,6 +2,7 @@ package si.urbas.chrony.analysis;
 
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.util.EventSampleUtils;
 
 import java.util.Collection;
 
@@ -24,13 +25,22 @@ public class FrequencyAnalysis {
     return frequency(eventRepository.samplesOf(eventName), fromTime, untilTime);
   }
 
-  public double allTimeFrequency(long untilTime) {
+  public double frequencyUntil(long untilTime) {
     Collection<EventSample> eventSamples = eventRepository.samplesOf(eventName);
     if (eventSamples.isEmpty()) {
       return 0;
     } else {
       return frequency(eventSamples, getMinimumTimestamp(eventSamples), untilTime);
     }
+  }
+
+  public int occurrencesUntil(long untilTime) {
+    return occurrencesWithin(0, untilTime);
+  }
+
+  public int occurrencesWithin(long fromTime, long untilTime) {
+    Collection<EventSample> eventSamples = eventRepository.samplesOf(eventName);
+    return EventSampleUtils.countSamplesWithinTime(eventSamples, fromTime, untilTime);
   }
 
   private static double frequency(Collection<EventSample> eventSamples, long fromTime, long untilTime) {
