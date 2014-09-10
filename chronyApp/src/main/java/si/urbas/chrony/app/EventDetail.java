@@ -18,9 +18,11 @@ import java.util.Date;
 public class EventDetail extends Activity {
 
   public static final String INTENT_PARAMETER_EVENT_NAME = "eventDetail.eventName";
+  private static final long WEEK_IN_MILLIS = 7 * 24 * 3600 * 1000;
   private EventRepository eventRepository;
   private TextView eventNameTextView;
   private TextView frequencyTextView;
+  private TextView frequencyLastWeekTextView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class EventDetail extends Activity {
     setContentView(R.layout.activity_event_detail);
     eventNameTextView = (TextView) findViewById(R.id.eventDetail_eventNameTextView);
     frequencyTextView = (TextView) findViewById(R.id.eventDetail_frequencyTextView);
+    frequencyLastWeekTextView = (TextView) findViewById(R.id.eventDetail_frequencyLastWeekTextView);
   }
 
   private Event getEventToShow() {
@@ -72,6 +75,8 @@ public class EventDetail extends Activity {
 
   private void showEventDetails(Event eventToShow, FrequencyAnalysis eventFrequencyAnalysis) {
     eventNameTextView.setText(eventToShow.getEventName());
-    frequencyTextView.setText((eventFrequencyAnalysis.allTimeFrequency(new Date().getTime()) * 7) + " per week");
+    long now = new Date().getTime();
+    frequencyTextView.setText(Double.toString(eventFrequencyAnalysis.allTimeFrequency(now)));
+    frequencyLastWeekTextView.setText(Double.toString(eventFrequencyAnalysis.frequency(now - WEEK_IN_MILLIS, now) * 7));
   }
 }
