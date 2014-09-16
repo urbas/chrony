@@ -22,6 +22,7 @@ public class DayRecurrenceAnalyserTest {
   private final EventSample eventSampleAtTime1d = new EventSample(EVENT_NAME, MILLIS_1_DAY, null);
   private final EventSample eventSampleAtTime2d = new EventSample(EVENT_NAME, 2 * MILLIS_1_DAY, null);
   private final EventSample eventSampleAtTime1w = new EventSample(EVENT_NAME, MILLIS_1_WEEK, null);
+  private final EventSample eventSampleAtTime9d = new EventSample(EVENT_NAME, 9 * MILLIS_1_DAY, null);
   private final Matcher<DailyRecurrencePattern> isDailyPattern = isDailyPattern(1);
   private final Matcher<DailyRecurrencePattern> isWeeklyPattern = isDailyPattern(7);
 
@@ -58,6 +59,13 @@ public class DayRecurrenceAnalyserTest {
   public void foundPatterns_MUST_return_a_bidaily_pattern_WHEN_given_two_events_that_are_two_days_apart() {
     DayRecurrenceAnalyser dayRecurrenceAnalyser = new DayRecurrenceAnalyser(asList(eventSampleAtTime0, eventSampleAtTime2d));
     assertThat(dayRecurrenceAnalyser.foundPatterns(), contains(isDailyPattern(TWO_DAYS)));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void foundPatterns_MUST_return_two_daily_patterns_WHEN_given_a_four_events() {
+    DayRecurrenceAnalyser dayRecurrenceAnalyser = new DayRecurrenceAnalyser(asList(eventSampleAtTime0, eventSampleAtTime2d, eventSampleAtTime1w, eventSampleAtTime9d));
+    assertThat(dayRecurrenceAnalyser.foundPatterns(), contains(isWeeklyPattern, isWeeklyPattern));
   }
 
   private Matcher<DailyRecurrencePattern> isDailyPattern(final int daysApart) {
