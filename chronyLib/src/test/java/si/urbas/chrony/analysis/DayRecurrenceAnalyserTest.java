@@ -65,14 +65,14 @@ public class DayRecurrenceAnalyserTest {
   @Test
   public void foundPatterns_MUST_return_two_daily_patterns_WHEN_given_a_four_events() {
     DayRecurrenceAnalyser dayRecurrenceAnalyser = new DayRecurrenceAnalyser(asList(eventSampleAtTime0, eventSampleAtTime2d, eventSampleAtTime1w, eventSampleAtTime9d));
-    assertThat(dayRecurrenceAnalyser.foundPatterns(), contains(isWeeklyPattern, isWeeklyPattern));
+    assertThat(dayRecurrenceAnalyser.foundPatterns(), hasItems(isWeeklyPattern, isWeeklyPattern));
   }
 
   private Matcher<DailyRecurrencePattern> isDailyPattern(final int daysApart) {
     return new BaseMatcher<DailyRecurrencePattern>() {
       @Override
       public boolean matches(Object item) {
-        return item instanceof DailyRecurrencePattern && matches((DailyRecurrencePattern)item);
+        return item instanceof DailyRecurrencePattern && matches((DailyRecurrencePattern) item);
       }
 
       public boolean matches(DailyRecurrencePattern recurrencePattern) {
