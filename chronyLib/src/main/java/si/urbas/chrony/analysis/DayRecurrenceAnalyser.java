@@ -49,28 +49,28 @@ public class DayRecurrenceAnalyser {
 
   private ArrayList<DailyRecurrencePattern> findWeeklyPatterns() {
     ArrayList<DailyRecurrencePattern> dailyRecurrencePatterns = new ArrayList<DailyRecurrencePattern>();
-    WeeklyOccurrancesTable weeklyOccurrancesTable = new WeeklyOccurrancesTable(eventSamples);
+    WeeklyOccurrencesTable weeklyOccurrencesTable = new WeeklyOccurrencesTable(eventSamples);
     for (int dayIndex = 0; dayIndex < 7; dayIndex++) {
-      if (weeklyOccurrancesTable.getOccurrancesOnDay(dayIndex) >= MIN_RECURRENCE_THRESHOLD) {
+      if (weeklyOccurrencesTable.getOccurrancesOnDay(dayIndex) >= MIN_RECURRENCE_THRESHOLD) {
         dailyRecurrencePatterns.add(new DailyRecurrencePattern(WEEKLY_RECURRENCE_PERIOD));
       }
     }
     return dailyRecurrencePatterns;
   }
 
-  private static class WeeklyOccurrancesTable {
+  private static class WeeklyOccurrencesTable {
 
     private final int[] dayOfWeekOccurrances = new int[7];
 
-    public WeeklyOccurrancesTable(List<EventSample> eventSamples) {
-      extractWeeklyOccurrances(eventSamples);
+    public WeeklyOccurrencesTable(List<EventSample> eventSamples) {
+      extractWeeklyOccurrences(eventSamples);
     }
 
     public int getOccurrancesOnDay(int i) {
       return dayOfWeekOccurrances[i];
     }
 
-    private void extractWeeklyOccurrances(List<EventSample> eventSamples) {
+    private void extractWeeklyOccurrences(List<EventSample> eventSamples) {
       Calendar calendar = Calendar.getInstance();
       for (EventSample eventSample : eventSamples) {
         calendar.setTimeInMillis(eventSample.getTimestamp());

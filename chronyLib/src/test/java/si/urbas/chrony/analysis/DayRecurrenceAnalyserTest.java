@@ -15,7 +15,6 @@ import static si.urbas.chrony.util.TimeUtils.*;
 
 public class DayRecurrenceAnalyserTest {
 
-
   private static final String EVENT_NAME = "event name";
   private static final int TWO_DAYS = 2;
   private final EventSample eventSampleAtTime0 = new EventSample(EVENT_NAME, TIME_0, null);
@@ -63,7 +62,7 @@ public class DayRecurrenceAnalyserTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void foundPatterns_MUST_return_two_daily_patterns_WHEN_given_a_four_events() {
+  public void foundPatterns_MUST_return_two_weekly_patterns_WHEN_given_four_events() {
     DayRecurrenceAnalyser dayRecurrenceAnalyser = new DayRecurrenceAnalyser(asList(eventSampleAtTime0, eventSampleAtTime2d, eventSampleAtTime1w, eventSampleAtTime9d));
     assertThat(dayRecurrenceAnalyser.foundPatterns(), hasItems(isWeeklyPattern, isWeeklyPattern));
   }
