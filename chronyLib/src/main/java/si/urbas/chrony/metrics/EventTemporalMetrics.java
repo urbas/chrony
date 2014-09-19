@@ -25,12 +25,12 @@ public class EventTemporalMetrics {
   public static ArrayList<EventTemporalMetrics> calculate(EventRepository eventRepository) {
     ArrayList<EventTemporalMetrics> analysedEvents = new ArrayList<EventTemporalMetrics>();
     for (Event event : eventRepository.allEvents()) {
-      analysedEvents.add(calculateStatistics(event, eventRepository.samplesOf(event.getEventName())));
+      analysedEvents.add(calculate(event, eventRepository.samplesOf(event.getEventName())));
     }
     return analysedEvents;
   }
 
-  private static EventTemporalMetrics calculateStatistics(Event event, List<EventSample> eventSamples) {
+  public static EventTemporalMetrics calculate(Event event, List<EventSample> eventSamples) {
     long latestTimestampForEvent = eventSamples.size() == 0 ? Long.MIN_VALUE : EventSampleUtils.getMaximumTimestamp(eventSamples);
     long oldestTimestampForEvent = eventSamples.size() == 0 ? Long.MIN_VALUE : EventSampleUtils.getMinimumTimestamp(eventSamples);
     return new EventTemporalMetrics(event, eventSamples.size(), latestTimestampForEvent, oldestTimestampForEvent);

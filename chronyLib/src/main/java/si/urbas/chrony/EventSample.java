@@ -3,6 +3,7 @@ package si.urbas.chrony;
 import java.util.Date;
 
 public class EventSample {
+
   private final String eventName;
   private final long timestamp;
   private final Object data;
@@ -32,4 +33,5 @@ public class EventSample {
   public Object getData() {
     return data;
   }
+
 }
