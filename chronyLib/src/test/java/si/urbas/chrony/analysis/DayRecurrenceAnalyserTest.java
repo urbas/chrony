@@ -22,10 +22,10 @@ public class DayRecurrenceAnalyserTest {
   private static final String EVENT_NAME = "event name";
   private static final int TWO_DAYS = 2;
   private final EventSample eventSampleAtTime0 = new EventSample(EVENT_NAME, TIME_0, null);
-  private final EventSample eventSampleAtTime1d = new EventSample(EVENT_NAME, MILLIS_1_DAY, null);
-  private final EventSample eventSampleAtTime2d = new EventSample(EVENT_NAME, 2 * MILLIS_1_DAY, null);
-  private final EventSample eventSampleAtTime1w = new EventSample(EVENT_NAME, MILLIS_1_WEEK, null);
-  private final EventSample eventSampleAtTime9d = new EventSample(EVENT_NAME, 9 * MILLIS_1_DAY, null);
+  private final EventSample eventSampleAtTime1d = new EventSample(EVENT_NAME, DAY_IN_MILLIS, null);
+  private final EventSample eventSampleAtTime2d = new EventSample(EVENT_NAME, 2 * DAY_IN_MILLIS, null);
+  private final EventSample eventSampleAtTime1w = new EventSample(EVENT_NAME, WEEK_IN_MILLIS, null);
+  private final EventSample eventSampleAtTime9d = new EventSample(EVENT_NAME, 9 * DAY_IN_MILLIS, null);
   private final Matcher<DailyRecurrencePattern> isDailyPattern = isDailyPattern(1);
   private final Matcher<DailyRecurrencePattern> isWeeklyPattern = isDailyPattern(7);
   private Event event = new Event(EVENT_NAME, Event.NO_DATA_TYPE);

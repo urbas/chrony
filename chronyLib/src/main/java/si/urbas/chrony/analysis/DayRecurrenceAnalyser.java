@@ -86,8 +86,8 @@ public class DayRecurrenceAnalyser {
       EventSample firstEventSample = eventSamples.get(0);
       EventSample secondEventSample = eventSamples.get(1);
       long timeSpanBetweenFirstTwoSamples = secondEventSample.getTimestamp() - firstEventSample.getTimestamp();
-      if (timeSpanBetweenFirstTwoSamples < TimeUtils.MILLIS_1_WEEK) {
-        DailyRecurrencePattern foundRecurrencePattern = new DailyRecurrencePattern(Math.round(timeSpanBetweenFirstTwoSamples / TimeUtils.MILLIS_1_DAY));
+      if (timeSpanBetweenFirstTwoSamples < TimeUtils.WEEK_IN_MILLIS) {
+        DailyRecurrencePattern foundRecurrencePattern = new DailyRecurrencePattern(Math.round(timeSpanBetweenFirstTwoSamples / TimeUtils.DAY_IN_MILLIS));
         foundPatterns.add(foundRecurrencePattern);
       }
     }

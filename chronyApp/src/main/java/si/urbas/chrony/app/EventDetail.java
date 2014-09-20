@@ -19,11 +19,11 @@ import si.urbas.chrony.descriptions.RecurrenceDescriptions;
 import java.util.Date;
 import java.util.List;
 
+import static si.urbas.chrony.util.TimeUtils.WEEK_IN_MILLIS;
 
 public class EventDetail extends Activity {
 
   public static final String INTENT_PARAMETER_EVENT_NAME = "eventDetail.eventName";
-  private static final long WEEK_IN_MILLIS = 7 * 24 * 3600 * 1000;
   private EventRepository eventRepository;
   private TextView eventNameTextView;
   private TextView frequencyTextView;
@@ -86,7 +86,9 @@ public class EventDetail extends Activity {
     return eventRepository.getEvent(nameOfEventToShow);
   }
 
-  private void showEventDetails(Event eventToShow, FrequencyAnalysis frequencyAnalysis, RecurrenceAnalysis recurrenceAnalysis) {
+  private void showEventDetails(Event eventToShow,
+                                FrequencyAnalysis frequencyAnalysis,
+                                RecurrenceAnalysis recurrenceAnalysis) {
     eventNameTextView.setText(eventToShow.getEventName());
     long now = new Date().getTime();
     frequencyTextView.setText(Integer.toString(frequencyAnalysis.occurrencesUntil(now)));
