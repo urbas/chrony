@@ -9,10 +9,15 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
+import si.urbas.chrony.EventSample;
 import si.urbas.chrony.analysis.FrequencyAnalysis;
+import si.urbas.chrony.analysis.GeneticRecurrenceAnalyser;
+import si.urbas.chrony.analysis.RecurrenceAnalysis;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
+import si.urbas.chrony.descriptions.RecurrenceDescriptions;
 
 import java.util.Date;
+import java.util.List;
 
 
 public class EventDetail extends Activity {
@@ -23,15 +28,14 @@ public class EventDetail extends Activity {
   private TextView eventNameTextView;
   private TextView frequencyTextView;
   private TextView frequencyLastWeekTextView;
+  private TextView recurrenceTextView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setupEventRepository();
-    Event eventToShow = getEventToShow();
-    FrequencyAnalysis eventFrequencyAnalysis = new FrequencyAnalysis(eventRepository, eventToShow.getEventName());
     bindViewsToFields();
-    showEventDetails(eventToShow, eventFrequencyAnalysis);
+    analyseAndVisualize();
   }
 
   @Override
@@ -56,16 +60,25 @@ public class EventDetail extends Activity {
     context.startActivity(intent);
   }
 
-
   private void setupEventRepository() {
     eventRepository = new SQLiteEventRepository(this);
   }
+
 
   private void bindViewsToFields() {
     setContentView(R.layout.activity_event_detail);
     eventNameTextView = (TextView) findViewById(R.id.eventDetail_eventNameTextView);
     frequencyTextView = (TextView) findViewById(R.id.eventDetail_frequencyTextView);
     frequencyLastWeekTextView = (TextView) findViewById(R.id.eventDetail_frequencyLastWeekTextView);
+    recurrenceTextView = (TextView) findViewById(R.id.eventDetail_recurrenceTextView);
+  }
+
+  private void analyseAndVisualize() {
+    Event eventToShow = getEventToShow();
+    List<EventSample> eventSamples = eventRepository.samplesOf(eventToShow.getEventName());
+    FrequencyAnalysis frequencyAnalysis = new FrequencyAnalysis(eventSamples);
+    RecurrenceAnalysis recurrenceAnalysis = GeneticRecurrenceAnalyser.analyse(eventSamples);
+    showEventDetails(eventToShow, frequencyAnalysis, recurrenceAnalysis);
   }
 
   private Event getEventToShow() {
@@ -73,10 +86,11 @@ public class EventDetail extends Activity {
     return eventRepository.getEvent(nameOfEventToShow);
   }
 
-  private void showEventDetails(Event eventToShow, FrequencyAnalysis eventFrequencyAnalysis) {
+  private void showEventDetails(Event eventToShow, FrequencyAnalysis frequencyAnalysis, RecurrenceAnalysis recurrenceAnalysis) {
     eventNameTextView.setText(eventToShow.getEventName());
     long now = new Date().getTime();
-    frequencyTextView.setText(Integer.toString(eventFrequencyAnalysis.occurrencesUntil(now)));
-    frequencyLastWeekTextView.setText(Integer.toString(eventFrequencyAnalysis.occurrencesWithin(now - WEEK_IN_MILLIS, now)));
+    frequencyTextView.setText(Integer.toString(frequencyAnalysis.occurrencesUntil(now)));
+    frequencyLastWeekTextView.setText(Integer.toString(frequencyAnalysis.occurrencesWithin(now - WEEK_IN_MILLIS, now)));
+    recurrenceTextView.setText(RecurrenceDescriptions.getShortDescriptionOf(recurrenceAnalysis));
   }
 }

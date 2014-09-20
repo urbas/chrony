@@ -1,32 +1,30 @@
 package si.urbas.chrony.analysis;
 
-import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.util.EventSampleUtils;
 
 import java.util.Collection;
+import java.util.List;
 
 import static si.urbas.chrony.util.EventSampleUtils.*;
 
 public class FrequencyAnalysis {
-  private static final int ONE_DAY_IN_MILLIS = 24 * 3600 * 1000;
-  private final EventRepository eventRepository;
-  private final String eventName;
 
-  public FrequencyAnalysis(EventRepository eventRepository, String eventName) {
-    this.eventRepository = eventRepository;
-    this.eventName = eventName;
+  private static final int ONE_DAY_IN_MILLIS = 24 * 3600 * 1000;
+  private final List<EventSample> eventSamples;
+
+  public FrequencyAnalysis(List<EventSample> eventSamples) {
+    this.eventSamples = eventSamples;
   }
 
   /**
    * @return the number of occurrences divided by the given timespan (in occurrences per day).
    */
   public double frequency(long fromTime, long untilTime) {
-    return frequency(eventRepository.samplesOf(eventName), fromTime, untilTime);
+    return frequency(eventSamples, fromTime, untilTime);
   }
 
   public double frequencyUntil(long untilTime) {
-    Collection<EventSample> eventSamples = eventRepository.samplesOf(eventName);
     if (eventSamples.isEmpty()) {
       return 0;
     } else {
@@ -39,7 +37,6 @@ public class FrequencyAnalysis {
   }
 
   public int occurrencesWithin(long fromTime, long untilTime) {
-    Collection<EventSample> eventSamples = eventRepository.samplesOf(eventName);
     return EventSampleUtils.countSamplesWithinTime(eventSamples, fromTime, untilTime);
   }
 

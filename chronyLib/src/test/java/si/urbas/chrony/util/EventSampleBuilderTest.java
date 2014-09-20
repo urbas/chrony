@@ -33,7 +33,7 @@ public class EventSampleBuilderTest {
   }
 
   @Test(expected = UnsupportedOperationException.class)
-  public void create_MUST_throw_an_exception_AFTER_clearing() {
+  public void create_MUST_throw_an_exception_WHEN_called_just_after_clearing() {
     initialiseNumberEvent();
     initialiseNumberEventSample().clear().create();
   }
