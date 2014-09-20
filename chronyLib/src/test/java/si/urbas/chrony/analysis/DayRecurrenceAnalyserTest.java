@@ -9,7 +9,6 @@ import si.urbas.chrony.EventSample;
 
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -63,9 +62,6 @@ public class DayRecurrenceAnalyserTest {
   @Test
   public void foundPatterns_MUST_return_a_weekly_pattern_WHEN_given_two_events_a_week_apart() {
     DayRecurrenceAnalyser dayRecurrenceAnalyser = new DayRecurrenceAnalyser(event, asList(eventSampleAtTime0, eventSampleAtTime1w));
-    for (DailyRecurrencePattern recurrencePattern : dayRecurrenceAnalyser.foundPatterns()) {
-      System.out.println("Me pattern: " recurrencePattern);
-    }
     assertThat(dayRecurrenceAnalyser.foundPatterns(), contains(isWeeklyPattern));
   }
 
@@ -85,12 +81,6 @@ public class DayRecurrenceAnalyserTest {
   public void foundPatterns_MUST_return_two_weekly_patterns_WHEN_they_pairwise_happen_on_same_weekday_but_at_different_time() {
     List<EventSample> eventSamples = asList(eventSampleAtTime(1, 9), eventSampleAtTime(1, 20), eventSampleAtTime(8, 9), eventSampleAtTime(8, 20));
     DayRecurrenceAnalyser dayRecurrenceAnalyser = new DayRecurrenceAnalyser(event, eventSamples);
-    for (EventSample eventSample : eventSamples) {
-      System.out.println("Event sample: " + new Date(eventSample.getTimestamp()));
-    }
-    for (DailyRecurrencePattern recurrencePattern : dayRecurrenceAnalyser.foundPatterns()) {
-      System.out.println("Found rec pattern: " + recurrencePattern.getPeriod());
-    }
     assertThat(dayRecurrenceAnalyser.foundPatterns(), contains(isWeeklyPattern, isWeeklyPattern));
   }
 

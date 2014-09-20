@@ -34,4 +34,13 @@ public class EventSample {
     return data;
   }
 
+  @Override
+  public String toString() {
+    return "EventSample{" +
+           "eventName='" + eventName + '\'' +
+           ", timestamp=" + timestamp +
+           ", data=" + data +
+           '}';
+  }
+
 }
