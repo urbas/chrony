@@ -1,9 +1,9 @@
 package si.urbas.chrony.analysis;
 
-public class DailyRecurrencePattern {
+public class PeriodicRecurrencePattern {
   private final int periodInDays;
 
-  public DailyRecurrencePattern(int periodInDays) {
+  public PeriodicRecurrencePattern(int periodInDays) {
     this.periodInDays = periodInDays;
   }
 

@@ -15,7 +15,7 @@ public class DayRecurrenceAnalyser {
   private static final int WEEKLY_RECURRENCE_PERIOD = 7;
   private static final int MIN_EVENT_SAMPLES_FOR_RECURRENCE = 2;
   private static final int HOURS_IN_A_DAY = 24;
-  private final List<DailyRecurrencePattern> foundPatterns;
+  private final List<PeriodicRecurrencePattern> foundPatterns;
   private EventTemporalMetrics eventTemporalMetrics;
 
   /**
@@ -31,9 +31,9 @@ public class DayRecurrenceAnalyser {
     this.foundPatterns = findPatterns(new ArrayList<EventSample>(eventSamples));
   }
 
-  private List<DailyRecurrencePattern> findPatterns(ArrayList<EventSample> eventSamples) {
+  private List<PeriodicRecurrencePattern> findPatterns(ArrayList<EventSample> eventSamples) {
     if (eventSamples.size() >= MIN_EVENT_SAMPLES_FOR_RECURRENCE && isEventTimeSpanNonZero()) {
-      ArrayList<DailyRecurrencePattern> foundPatterns = new ArrayList<DailyRecurrencePattern>();
+      ArrayList<PeriodicRecurrencePattern> foundPatterns = new ArrayList<PeriodicRecurrencePattern>();
       findWeeklyPatterns(eventSamples, foundPatterns);
       findSubWeekPatterns(eventSamples, foundPatterns);
       return foundPatterns;
@@ -41,7 +41,7 @@ public class DayRecurrenceAnalyser {
     return Collections.emptyList();
   }
 
-  public List<DailyRecurrencePattern> foundPatterns() {
+  public List<PeriodicRecurrencePattern> foundPatterns() {
     return foundPatterns;
   }
 
@@ -49,14 +49,14 @@ public class DayRecurrenceAnalyser {
     return eventTemporalMetrics.newestTimestamp - eventTemporalMetrics.oldestTimestamp > 0;
   }
 
-  private void findWeeklyPatterns(ArrayList<EventSample> eventSamples, ArrayList<DailyRecurrencePattern> foundPatterns) {
+  private void findWeeklyPatterns(ArrayList<EventSample> eventSamples, ArrayList<PeriodicRecurrencePattern> foundPatterns) {
     WeeklyOccurrencesTable weeklyOccurrencesTable = new WeeklyOccurrencesTable(eventSamples);
     for (int dayIndex = 0; dayIndex < 7; dayIndex++) {
       Collection<EventSample> eventSamplesOfWeeklyPattern = weeklyOccurrencesTable.getEventSamplesOfWeeklyPattern(dayIndex);
       if (eventSamplesOfWeeklyPattern.size() >= MIN_EVENT_SAMPLES_FOR_RECURRENCE) {
         for (HourBasedRecurrenceCluster hourBasedRecurrenceCluster : hourlyClusters(eventSamplesOfWeeklyPattern)) {
           if (isRecurrenceConfident(hourBasedRecurrenceCluster.getEventSamplesInCluster())) {
-            foundPatterns.add(new DailyRecurrencePattern(WEEKLY_RECURRENCE_PERIOD));
+            foundPatterns.add(new PeriodicRecurrencePattern(WEEKLY_RECURRENCE_PERIOD));
             eventSamples.removeAll(hourBasedRecurrenceCluster.getEventSamplesInCluster());
           }
         }
@@ -81,13 +81,13 @@ public class DayRecurrenceAnalyser {
     return lastSample.getTimestamp() - firstSample.getTimestamp();
   }
 
-  private void findSubWeekPatterns(ArrayList<EventSample> eventSamples, ArrayList<DailyRecurrencePattern> foundPatterns) {
+  private void findSubWeekPatterns(ArrayList<EventSample> eventSamples, ArrayList<PeriodicRecurrencePattern> foundPatterns) {
     if (eventSamples.size() >= MIN_EVENT_SAMPLES_FOR_RECURRENCE) {
       EventSample firstEventSample = eventSamples.get(0);
       EventSample secondEventSample = eventSamples.get(1);
       long timeSpanBetweenFirstTwoSamples = secondEventSample.getTimestamp() - firstEventSample.getTimestamp();
       if (timeSpanBetweenFirstTwoSamples < TimeUtils.WEEK_IN_MILLIS) {
-        DailyRecurrencePattern foundRecurrencePattern = new DailyRecurrencePattern(Math.round(timeSpanBetweenFirstTwoSamples / TimeUtils.DAY_IN_MILLIS));
+        PeriodicRecurrencePattern foundRecurrencePattern = new PeriodicRecurrencePattern(Math.round(timeSpanBetweenFirstTwoSamples / TimeUtils.DAY_IN_MILLIS));
         foundPatterns.add(foundRecurrencePattern);
       }
     }

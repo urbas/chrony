@@ -12,9 +12,9 @@ import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.analysis.FrequencyAnalysis;
 import si.urbas.chrony.analysis.GeneticRecurrenceAnalyser;
-import si.urbas.chrony.analysis.RecurrenceAnalysis;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
 import si.urbas.chrony.descriptions.RecurrenceDescriptions;
+import si.urbas.chrony.recurrence.Recurrence;
 
 import java.util.Date;
 import java.util.List;
@@ -77,7 +77,7 @@ public class EventDetail extends Activity {
     Event eventToShow = getEventToShow();
     List<EventSample> eventSamples = eventRepository.samplesOf(eventToShow.getEventName());
     FrequencyAnalysis frequencyAnalysis = new FrequencyAnalysis(eventSamples);
-    RecurrenceAnalysis recurrenceAnalysis = GeneticRecurrenceAnalyser.analyse(eventSamples);
+    List<Recurrence> recurrenceAnalysis = GeneticRecurrenceAnalyser.analyse(eventSamples);
     showEventDetails(eventToShow, frequencyAnalysis, recurrenceAnalysis);
   }
 
@@ -88,7 +88,7 @@ public class EventDetail extends Activity {
 
   private void showEventDetails(Event eventToShow,
                                 FrequencyAnalysis frequencyAnalysis,
-                                RecurrenceAnalysis recurrenceAnalysis) {
+                                List<Recurrence> recurrenceAnalysis) {
     eventNameTextView.setText(eventToShow.getEventName());
     long now = new Date().getTime();
     frequencyTextView.setText(Integer.toString(frequencyAnalysis.occurrencesUntil(now)));

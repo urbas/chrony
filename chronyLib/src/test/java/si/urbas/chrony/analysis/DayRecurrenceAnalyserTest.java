@@ -26,8 +26,8 @@ public class DayRecurrenceAnalyserTest {
   private final EventSample eventSampleAtTime2d = new EventSample(EVENT_NAME, 2 * DAY_IN_MILLIS, null);
   private final EventSample eventSampleAtTime1w = new EventSample(EVENT_NAME, WEEK_IN_MILLIS, null);
   private final EventSample eventSampleAtTime9d = new EventSample(EVENT_NAME, 9 * DAY_IN_MILLIS, null);
-  private final Matcher<DailyRecurrencePattern> isDailyPattern = isDailyPattern(1);
-  private final Matcher<DailyRecurrencePattern> isWeeklyPattern = isDailyPattern(7);
+  private final Matcher<PeriodicRecurrencePattern> isDailyPattern = isDailyPattern(1);
+  private final Matcher<PeriodicRecurrencePattern> isWeeklyPattern = isDailyPattern(7);
   private Event event = new Event(EVENT_NAME, Event.NO_DATA_TYPE);
 
   @Test
@@ -91,11 +91,11 @@ public class DayRecurrenceAnalyserTest {
     return new EventSample(EVENT_NAME, calendar.getTimeInMillis(), null);
   }
 
-  private Matcher<DailyRecurrencePattern> isDailyPattern(final int daysApart) {
+  private Matcher<PeriodicRecurrencePattern> isDailyPattern(final int daysApart) {
     return new DailyRecurrencePatternMatcher(daysApart);
   }
 
-  private static class DailyRecurrencePatternMatcher extends BaseMatcher<DailyRecurrencePattern> {
+  private static class DailyRecurrencePatternMatcher extends BaseMatcher<PeriodicRecurrencePattern> {
 
     private final int daysApart;
 
@@ -103,10 +103,10 @@ public class DayRecurrenceAnalyserTest {
 
     @Override
     public boolean matches(Object item) {
-      return item instanceof DailyRecurrencePattern && matches((DailyRecurrencePattern) item);
+      return item instanceof PeriodicRecurrencePattern && matches((PeriodicRecurrencePattern) item);
     }
 
-    public boolean matches(DailyRecurrencePattern recurrencePattern) {
+    public boolean matches(PeriodicRecurrencePattern recurrencePattern) {
       int period = recurrencePattern.getPeriod();
       return period == daysApart;
     }
