@@ -1,6 +1,7 @@
 package si.urbas.chrony.recurrence;
 
 public class DailyPeriodRecurrence implements Recurrence {
+
   private final int periodInDays;
   private final int hourOfDay;
   private final int minutesPastHour;
