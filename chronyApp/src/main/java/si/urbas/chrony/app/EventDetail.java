@@ -14,8 +14,10 @@ import si.urbas.chrony.analysis.FrequencyAnalysis;
 import si.urbas.chrony.analysis.GeneticRecurrenceAnalyser;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
 import si.urbas.chrony.descriptions.RecurrenceDescriptions;
+import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -93,6 +95,7 @@ public class EventDetail extends Activity {
     long now = new Date().getTime();
     frequencyTextView.setText(Integer.toString(frequencyAnalysis.occurrencesUntil(now)));
     frequencyLastWeekTextView.setText(Integer.toString(frequencyAnalysis.occurrencesWithin(now - WEEK_IN_MILLIS, now)));
+    recurrenceAnalysis = Arrays.<Recurrence>asList(new DailyPeriodRecurrence(7, 13, 54));
     recurrenceTextView.setText(RecurrenceDescriptions.toShortDescriptionOf(recurrenceAnalysis));
   }
 }
