@@ -20,4 +20,9 @@ public class ConstantPeriodRecurrence implements Recurrence {
   public int getMinutesPastHour() {
     return minutesPastHour;
   }
+
+  @Override
+  public int getPeriodInDays() {
+    return periodInDays;
+  }
 }
