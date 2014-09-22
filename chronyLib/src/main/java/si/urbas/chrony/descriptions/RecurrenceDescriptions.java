@@ -9,13 +9,21 @@ import static si.urbas.chrony.util.Ordinals.toNumericOrdinal;
 public class RecurrenceDescriptions {
   static final String DESCRIPTION_OF_EMPTY_RECURRENCE_ANALYSIS = "No recurrence pattern discovered.";
 
-  public static String getShortDescriptionOf(List<? extends Recurrence> recurrenceAnalysis) {
+  public static String toShortDescriptionOf(List<? extends Recurrence> recurrenceAnalysis) {
     if (recurrenceAnalysis.size() == 1) {
       Recurrence recurrence = recurrenceAnalysis.get(0);
-      String ordinal = toNumericOrdinal(recurrence.getPeriodInDays());
-      return "at " + formatTime(recurrence) + " every"+ordinal+" day";
+      return "every " + toOrdinalDay(recurrence) + " at " + formatTime(recurrence);
     } else {
       return DESCRIPTION_OF_EMPTY_RECURRENCE_ANALYSIS;
+    }
+  }
+
+  private static String toOrdinalDay(Recurrence recurrence) {
+    int periodInDays = recurrence.getPeriodInDays();
+    if (periodInDays > 1) {
+      return toNumericOrdinal(periodInDays) + " day";
+    } else {
+      return "day";
     }
   }
 

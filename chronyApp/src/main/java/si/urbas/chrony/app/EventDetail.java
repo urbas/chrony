@@ -93,6 +93,6 @@ public class EventDetail extends Activity {
     long now = new Date().getTime();
     frequencyTextView.setText(Integer.toString(frequencyAnalysis.occurrencesUntil(now)));
     frequencyLastWeekTextView.setText(Integer.toString(frequencyAnalysis.occurrencesWithin(now - WEEK_IN_MILLIS, now)));
-    recurrenceTextView.setText(RecurrenceDescriptions.getShortDescriptionOf(recurrenceAnalysis));
+    recurrenceTextView.setText(RecurrenceDescriptions.toShortDescriptionOf(recurrenceAnalysis));
   }
 }

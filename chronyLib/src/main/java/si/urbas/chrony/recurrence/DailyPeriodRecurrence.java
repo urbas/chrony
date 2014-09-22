@@ -1,11 +1,11 @@
 package si.urbas.chrony.recurrence;
 
-public class ConstantPeriodRecurrence implements Recurrence {
+public class DailyPeriodRecurrence implements Recurrence {
   private final int periodInDays;
   private final int hourOfDay;
   private final int minutesPastHour;
 
-  public ConstantPeriodRecurrence(int periodInDays, int hourOfDay, int minutesPastHour) {
+  public DailyPeriodRecurrence(int periodInDays, int hourOfDay, int minutesPastHour) {
     this.periodInDays = periodInDays;
     this.hourOfDay = hourOfDay;
     this.minutesPastHour = minutesPastHour;

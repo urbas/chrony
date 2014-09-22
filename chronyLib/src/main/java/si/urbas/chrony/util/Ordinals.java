@@ -1,6 +1,7 @@
 package si.urbas.chrony.util;
 
 public class Ordinals {
+
   public static String toNumericOrdinal(int number) {
     if (number < 1) {
       throw new IllegalArgumentException("Given number must be positive.");
