@@ -6,6 +6,7 @@ import org.hamcrest.Matcher;
 import org.junit.Test;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.recurrence.Recurrence;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -26,8 +27,8 @@ public class DayRecurrenceAnalyserTest {
   private final EventSample eventSampleAtTime2d = new EventSample(EVENT_NAME, 2 * DAY_IN_MILLIS, null);
   private final EventSample eventSampleAtTime1w = new EventSample(EVENT_NAME, WEEK_IN_MILLIS, null);
   private final EventSample eventSampleAtTime9d = new EventSample(EVENT_NAME, 9 * DAY_IN_MILLIS, null);
-  private final Matcher<PeriodicRecurrencePattern> isDailyPattern = isDailyPattern(1);
-  private final Matcher<PeriodicRecurrencePattern> isWeeklyPattern = isDailyPattern(7);
+  private final Matcher<Recurrence> isDailyPattern = isDailyPattern(1);
+  private final Matcher<Recurrence> isWeeklyPattern = isDailyPattern(7);
   private Event event = new Event(EVENT_NAME, Event.NO_DATA_TYPE);
 
   @Test
@@ -95,11 +96,11 @@ public class DayRecurrenceAnalyserTest {
     return new EventSample(EVENT_NAME, calendar.getTimeInMillis(), null);
   }
 
-  private Matcher<PeriodicRecurrencePattern> isDailyPattern(final int daysApart) {
+  private Matcher<Recurrence> isDailyPattern(final int daysApart) {
     return new DailyRecurrencePatternMatcher(daysApart);
   }
 
-  private static class DailyRecurrencePatternMatcher extends BaseMatcher<PeriodicRecurrencePattern> {
+  private static class DailyRecurrencePatternMatcher extends BaseMatcher<Recurrence> {
 
     private final int daysApart;
 

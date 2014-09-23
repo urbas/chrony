@@ -3,6 +3,7 @@ package si.urbas.chrony.analysis;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.metrics.EventTemporalMetrics;
+import si.urbas.chrony.recurrence.Recurrence;
 import si.urbas.chrony.util.TimeUtils;
 
 import java.util.*;
@@ -15,7 +16,7 @@ public class DayRecurrenceAnalyser extends RecurrenceAnalyser {
   private static final int WEEKLY_RECURRENCE_PERIOD = 7;
   private static final int MIN_EVENT_SAMPLES_FOR_RECURRENCE = 2;
   private static final int HOURS_IN_A_DAY = 24;
-  private final List<PeriodicRecurrencePattern> foundPatterns;
+  private final List<Recurrence> foundPatterns;
   private EventTemporalMetrics eventTemporalMetrics;
 
   /**
@@ -31,9 +32,9 @@ public class DayRecurrenceAnalyser extends RecurrenceAnalyser {
     this.foundPatterns = findPatterns(new ArrayList<EventSample>(eventSamples));
   }
 
-  private List<PeriodicRecurrencePattern> findPatterns(ArrayList<EventSample> eventSamples) {
+  private List<Recurrence> findPatterns(ArrayList<EventSample> eventSamples) {
     if (eventSamples.size() >= MIN_EVENT_SAMPLES_FOR_RECURRENCE && isEventTimeSpanNonZero()) {
-      ArrayList<PeriodicRecurrencePattern> foundPatterns = new ArrayList<PeriodicRecurrencePattern>();
+      ArrayList<Recurrence> foundPatterns = new ArrayList<Recurrence>();
       findWeeklyPatterns(eventSamples, foundPatterns);
       findSubWeekPatterns(eventSamples, foundPatterns);
       return foundPatterns;
@@ -42,7 +43,7 @@ public class DayRecurrenceAnalyser extends RecurrenceAnalyser {
   }
 
   @Override
-  public List<PeriodicRecurrencePattern> foundPatterns() {
+  public List<Recurrence> foundPatterns() {
     return foundPatterns;
   }
 
@@ -50,7 +51,7 @@ public class DayRecurrenceAnalyser extends RecurrenceAnalyser {
     return eventTemporalMetrics.newestTimestamp - eventTemporalMetrics.oldestTimestamp > 0;
   }
 
-  private void findWeeklyPatterns(ArrayList<EventSample> eventSamples, ArrayList<PeriodicRecurrencePattern> foundPatterns) {
+  private void findWeeklyPatterns(ArrayList<EventSample> eventSamples, ArrayList<Recurrence> foundPatterns) {
     WeeklyOccurrencesTable weeklyOccurrencesTable = new WeeklyOccurrencesTable(eventSamples);
     for (int dayIndex = 0; dayIndex < 7; dayIndex++) {
       Collection<EventSample> eventSamplesOfWeeklyPattern = weeklyOccurrencesTable.getEventSamplesOfWeeklyPattern(dayIndex);
@@ -82,7 +83,7 @@ public class DayRecurrenceAnalyser extends RecurrenceAnalyser {
     return lastSample.getTimestamp() - firstSample.getTimestamp();
   }
 
-  private void findSubWeekPatterns(ArrayList<EventSample> eventSamples, ArrayList<PeriodicRecurrencePattern> foundPatterns) {
+  private void findSubWeekPatterns(ArrayList<EventSample> eventSamples, ArrayList<Recurrence> foundPatterns) {
     if (eventSamples.size() >= MIN_EVENT_SAMPLES_FOR_RECURRENCE) {
       EventSample firstEventSample = eventSamples.get(0);
       EventSample secondEventSample = eventSamples.get(1);

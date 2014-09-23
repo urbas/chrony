@@ -1,6 +1,9 @@
 package si.urbas.chrony.analysis;
 
-public class PeriodicRecurrencePattern {
+import si.urbas.chrony.recurrence.Recurrence;
+
+public class PeriodicRecurrencePattern implements Recurrence {
+
   private final int periodInDays;
 
   public PeriodicRecurrencePattern(int periodInDays) {
