@@ -6,5 +6,5 @@ import si.urbas.chrony.EventSample;
 import java.util.List;
 
 public abstract class RecurrenceAnalyserTest {
-  protected abstract DayRecurrenceAnalyser createRecurrenceAnalyser(Event event, List<EventSample> eventSamples);
+  protected abstract DayRecurrenceAnalyser createRecurrenceAnalyser(List<EventSample> eventSamples);
 }

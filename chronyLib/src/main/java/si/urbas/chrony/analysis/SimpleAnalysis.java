@@ -1,6 +1,7 @@
 package si.urbas.chrony.analysis;
 
 import si.urbas.chrony.AnalysedEvent;
+import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.Analysis;
 import si.urbas.chrony.metrics.EventTemporalMetrics;
@@ -22,7 +23,7 @@ class SimpleAnalysis implements Analysis {
   }
 
   private static List<AnalysedEvent> analyseEvents(EventRepository eventRepository) {
-    ArrayList<EventTemporalMetrics> eventTemporalMetrics = EventTemporalMetrics.calculate(eventRepository);
+    Map<Event, EventTemporalMetrics> eventTemporalMetrics = EventTemporalMetrics.calculate(eventRepository);
     if (eventTemporalMetrics.size() == 0) {
       return emptyList();
     } else {
@@ -30,10 +31,12 @@ class SimpleAnalysis implements Analysis {
     }
   }
 
-  private static List<AnalysedEvent> analyseEvents(ArrayList<EventTemporalMetrics> perEventMetricsList) {
+  private static List<AnalysedEvent> analyseEvents(Map<Event, EventTemporalMetrics> perEventMetricsList) {
     ArrayList<AnalysedEvent> analysedEvents = new ArrayList<AnalysedEvent>();
-    for (EventTemporalMetrics perEventMetrics : perEventMetricsList) {
-      analysedEvents.add(new SimpleAnalysedEvent(perEventMetrics.event, perEventMetrics.count, calculateRelevanceOfEvent(perEventMetrics)));
+    for (Map.Entry<Event, EventTemporalMetrics> eventWithMetric : perEventMetricsList.entrySet()) {
+      Event event = eventWithMetric.getKey();
+      EventTemporalMetrics metrics = eventWithMetric.getValue();
+      analysedEvents.add(new SimpleAnalysedEvent(event, metrics.count, calculateRelevanceOfEvent(metrics)));
     }
     Collections.sort(analysedEvents, new MostRelevantAnalysedEventComparator());
     return analysedEvents;

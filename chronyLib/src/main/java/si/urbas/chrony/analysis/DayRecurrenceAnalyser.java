@@ -1,6 +1,5 @@
 package si.urbas.chrony.analysis;
 
-import si.urbas.chrony.Event;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.metrics.EventTemporalMetrics;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
@@ -23,8 +22,8 @@ public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
   /**
    * @param eventSamples this list must be ordered by the timestamp of the event samples (increasing order).
    */
-  public DayRecurrenceAnalyser(Event event, List<EventSample> eventSamples) {
-    this(eventSamples, EventTemporalMetrics.calculate(event, eventSamples));
+  public DayRecurrenceAnalyser(List<EventSample> eventSamples) {
+    this(eventSamples, EventTemporalMetrics.calculate(eventSamples));
   }
 
   private DayRecurrenceAnalyser(List<EventSample> eventSamples, EventTemporalMetrics temporalMetrics) {

@@ -6,34 +6,34 @@ import si.urbas.chrony.EventSample;
 import si.urbas.chrony.util.EventSampleUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EventTemporalMetrics {
 
   public final int count;
   public final long newestTimestamp;
   public final long oldestTimestamp;
-  public final Event event;
 
-  public EventTemporalMetrics(Event event, int count, long newestTimestamp, long oldestTimestamp) {
-    this.event = event;
+  public EventTemporalMetrics(int count, long newestTimestamp, long oldestTimestamp) {
     this.count = count;
     this.newestTimestamp = newestTimestamp;
     this.oldestTimestamp = oldestTimestamp;
   }
 
-  public static ArrayList<EventTemporalMetrics> calculate(EventRepository eventRepository) {
-    ArrayList<EventTemporalMetrics> analysedEvents = new ArrayList<EventTemporalMetrics>();
+  public static Map<Event, EventTemporalMetrics> calculate(EventRepository eventRepository) {
+    Map<Event, EventTemporalMetrics> analysedEvents = new HashMap<Event, EventTemporalMetrics>();
     for (Event event : eventRepository.allEvents()) {
-      analysedEvents.add(calculate(event, eventRepository.samplesOf(event.getEventName())));
+      analysedEvents.put(event, calculate(eventRepository.samplesOf(event.getEventName())));
     }
     return analysedEvents;
   }
 
-  public static EventTemporalMetrics calculate(Event event, List<EventSample> eventSamples) {
+  public static EventTemporalMetrics calculate(List<EventSample> eventSamples) {
     long latestTimestampForEvent = eventSamples.size() == 0 ? Long.MIN_VALUE : EventSampleUtils.getMaximumTimestamp(eventSamples);
     long oldestTimestampForEvent = eventSamples.size() == 0 ? Long.MIN_VALUE : EventSampleUtils.getMinimumTimestamp(eventSamples);
-    return new EventTemporalMetrics(event, eventSamples.size(), latestTimestampForEvent, oldestTimestampForEvent);
+    return new EventTemporalMetrics(eventSamples.size(), latestTimestampForEvent, oldestTimestampForEvent);
   }
 
 }

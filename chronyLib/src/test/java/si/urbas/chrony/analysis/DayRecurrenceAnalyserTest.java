@@ -33,61 +33,61 @@ public class DayRecurrenceAnalyserTest extends RecurrenceAnalyserTest {
   private Event event = new Event(EVENT_NAME, Event.NO_DATA_TYPE);
 
   @Override
-  protected DayRecurrenceAnalyser createRecurrenceAnalyser(Event event, List<EventSample> eventSamples) {
-    return new DayRecurrenceAnalyser(event, eventSamples);
+  protected DayRecurrenceAnalyser createRecurrenceAnalyser(List<EventSample> eventSamples) {
+    return new DayRecurrenceAnalyser(eventSamples);
   }
 
   @Test
   public void foundPatterns_MUST_return_an_empty_list_WHEN_given_no_event_samples() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(event, Collections.<EventSample>emptyList());
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(Collections.<EventSample>emptyList());
     assertThat(recurrenceAnalyser.foundPatterns(), is(empty()));
   }
 
   @Test
   public void constructor_MUST_return_an_empty_list_WHEN_the_entire_time_span_of_the_event_is_0() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(event, asList(eventSampleAtTime9d, eventSampleAtTime9d));
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime9d, eventSampleAtTime9d));
     assertThat(recurrenceAnalyser.foundPatterns(), is(empty()));
   }
 
   @Test
   public void foundPatterns_MUST_return_an_empty_list_WHEN_given_a_single_event_sample() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(event, asList(eventSampleAtTime0));
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime0));
     assertThat(recurrenceAnalyser.foundPatterns(), is(empty()));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructor_MUST_throw_an_exception_WHEN_the_list_of_event_samples_is_not_sorted() {
-    createRecurrenceAnalyser(event, asList(eventSampleAtTime1d, eventSampleAtTime0));
+    createRecurrenceAnalyser(asList(eventSampleAtTime1d, eventSampleAtTime0));
   }
 
   @Test
   public void foundPatterns_MUST_return_a_daily_pattern_WHEN_given_two_events_a_day_apart() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(event, asList(eventSampleAtTime0, eventSampleAtTime1d));
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime0, eventSampleAtTime1d));
     assertThat(recurrenceAnalyser.foundPatterns(), contains(isDailyPattern));
   }
 
   @Test
   public void foundPatterns_MUST_return_a_weekly_pattern_WHEN_given_two_events_a_week_apart() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(event, asList(eventSampleAtTime0, eventSampleAtTime1w));
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime0, eventSampleAtTime1w));
     assertThat(recurrenceAnalyser.foundPatterns(), contains(isWeeklyPattern));
   }
 
   @Test
   public void foundPatterns_MUST_return_a_bidaily_pattern_WHEN_given_two_events_that_are_two_days_apart() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(event, asList(eventSampleAtTime0, eventSampleAtTime2d));
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime0, eventSampleAtTime2d));
     assertThat(recurrenceAnalyser.foundPatterns(), contains(isDailyPattern(TWO_DAYS)));
   }
 
   @Test
   public void foundPatterns_MUST_return_two_weekly_patterns_WHEN_given_four_events() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(event, asList(eventSampleAtTime0, eventSampleAtTime2d, eventSampleAtTime1w, eventSampleAtTime9d));
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime0, eventSampleAtTime2d, eventSampleAtTime1w, eventSampleAtTime9d));
     assertThat(recurrenceAnalyser.foundPatterns(), contains(isWeeklyPattern, isWeeklyPattern));
   }
 
   @Test
   public void foundPatterns_MUST_return_two_weekly_patterns_WHEN_they_pairwise_happen_on_same_weekday_but_at_different_time() {
     List<EventSample> eventSamples = asList(eventSampleAtTime(1, 9), eventSampleAtTime(1, 20), eventSampleAtTime(8, 9), eventSampleAtTime(8, 20));
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(event, eventSamples);
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(eventSamples);
     assertThat(recurrenceAnalyser.foundPatterns(), contains(isWeeklyPattern, isWeeklyPattern));
   }
 
