@@ -9,7 +9,7 @@ import java.util.*;
 
 import static si.urbas.chrony.util.EventSampleAssertions.assertEventSamplesOrdered;
 
-public class DayRecurrenceAnalyser {
+public class DayRecurrenceAnalyser extends RecurrenceAnalyser {
 
   private static final double MIN_TIME_SPAN_PERCENTAGE = 0.75;
   private static final int WEEKLY_RECURRENCE_PERIOD = 7;
@@ -41,6 +41,7 @@ public class DayRecurrenceAnalyser {
     return Collections.emptyList();
   }
 
+  @Override
   public List<PeriodicRecurrencePattern> foundPatterns() {
     return foundPatterns;
   }

@@ -12,17 +12,14 @@ public class DailyPeriodRecurrence implements Recurrence {
     this.minutesPastHour = minutesPastHour;
   }
 
-  @Override
   public int getHourOfDay() {
     return hourOfDay;
   }
 
-  @Override
   public int getMinutesPastHour() {
     return minutesPastHour;
   }
 
-  @Override
   public int getPeriodInDays() {
     return periodInDays;
   }
