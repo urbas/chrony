@@ -19,7 +19,7 @@ import static org.junit.Assert.assertThat;
 import static si.urbas.chrony.util.TimeUtils.*;
 
 @SuppressWarnings("unchecked")
-public class DayRecurrenceAnalyserTest {
+public class DayRecurrenceAnalyserTest extends RecurrenceAnalyserTest {
 
   private static final String EVENT_NAME = "event name";
   private static final int TWO_DAYS = 2;
@@ -32,14 +32,15 @@ public class DayRecurrenceAnalyserTest {
   private final Matcher<Recurrence> isWeeklyPattern = isDailyPattern(7);
   private Event event = new Event(EVENT_NAME, Event.NO_DATA_TYPE);
 
+  @Override
+  protected DayRecurrenceAnalyser createRecurrenceAnalyser(Event event, List<EventSample> eventSamples) {
+    return new DayRecurrenceAnalyser(event, eventSamples);
+  }
+
   @Test
   public void foundPatterns_MUST_return_an_empty_list_WHEN_given_no_event_samples() {
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(event, Collections.<EventSample>emptyList());
     assertThat(recurrenceAnalyser.foundPatterns(), is(empty()));
-  }
-
-  protected DayRecurrenceAnalyser createRecurrenceAnalyser(Event event, List<EventSample> eventSamples) {
-    return new DayRecurrenceAnalyser(event, eventSamples);
   }
 
   @Test

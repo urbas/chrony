@@ -10,14 +10,12 @@ import android.widget.TextView;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.analysis.DayRecurrenceAnalyser;
 import si.urbas.chrony.analysis.FrequencyAnalysis;
-import si.urbas.chrony.analysis.GeneticRecurrenceAnalyser;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
 import si.urbas.chrony.descriptions.RecurrenceDescriptions;
-import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -79,7 +77,7 @@ public class EventDetail extends Activity {
     Event eventToShow = getEventToShow();
     List<EventSample> eventSamples = eventRepository.samplesOf(eventToShow.getEventName());
     FrequencyAnalysis frequencyAnalysis = new FrequencyAnalysis(eventSamples);
-    List<Recurrence> recurrenceAnalysis = GeneticRecurrenceAnalyser.analyse(eventSamples);
+    List<Recurrence> recurrenceAnalysis = new DayRecurrenceAnalyser(eventToShow, eventSamples).foundPatterns();
     showEventDetails(eventToShow, frequencyAnalysis, recurrenceAnalysis);
   }
 
@@ -95,7 +93,6 @@ public class EventDetail extends Activity {
     long now = new Date().getTime();
     frequencyTextView.setText(Integer.toString(frequencyAnalysis.occurrencesUntil(now)));
     frequencyLastWeekTextView.setText(Integer.toString(frequencyAnalysis.occurrencesWithin(now - WEEK_IN_MILLIS, now)));
-    recurrenceAnalysis = Arrays.<Recurrence>asList(new DailyPeriodRecurrence(7, 13, 54));
     recurrenceTextView.setText(RecurrenceDescriptions.toShortDescriptionOf(recurrenceAnalysis));
   }
 }
