@@ -4,55 +4,32 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
-import si.urbas.chrony.Event;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
-import static si.urbas.chrony.util.TimeUtils.*;
+import static si.urbas.chrony.util.TimeUtils.DAY_IN_MILLIS;
+import static si.urbas.chrony.util.TimeUtils.WEEK_IN_MILLIS;
 
 @SuppressWarnings("unchecked")
 public class DayRecurrenceAnalyserTest extends RecurrenceAnalyserTest {
 
-  private static final String EVENT_NAME = "event name";
   private static final int TWO_DAYS = 2;
-  private final EventSample eventSampleAtTime0 = new EventSample(EVENT_NAME, TIME_0, null);
   private final EventSample eventSampleAtTime1d = new EventSample(EVENT_NAME, DAY_IN_MILLIS, null);
   private final EventSample eventSampleAtTime2d = new EventSample(EVENT_NAME, 2 * DAY_IN_MILLIS, null);
   private final EventSample eventSampleAtTime1w = new EventSample(EVENT_NAME, WEEK_IN_MILLIS, null);
-  private final EventSample eventSampleAtTime9d = new EventSample(EVENT_NAME, 9 * DAY_IN_MILLIS, null);
   private final Matcher<Recurrence> isDailyPattern = isDailyPattern(1);
   private final Matcher<Recurrence> isWeeklyPattern = isDailyPattern(7);
-  private Event event = new Event(EVENT_NAME, Event.NO_DATA_TYPE);
 
   @Override
-  protected DayRecurrenceAnalyser createRecurrenceAnalyser(List<EventSample> eventSamples) {
+  protected RecurrenceAnalyser createRecurrenceAnalyser(List<EventSample> eventSamples) {
     return new DayRecurrenceAnalyser(eventSamples);
-  }
-
-  @Test
-  public void foundPatterns_MUST_return_an_empty_list_WHEN_given_no_event_samples() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(Collections.<EventSample>emptyList());
-    assertThat(recurrenceAnalyser.foundPatterns(), is(empty()));
-  }
-
-  @Test
-  public void constructor_MUST_return_an_empty_list_WHEN_the_entire_time_span_of_the_event_is_0() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime9d, eventSampleAtTime9d));
-    assertThat(recurrenceAnalyser.foundPatterns(), is(empty()));
-  }
-
-  @Test
-  public void foundPatterns_MUST_return_an_empty_list_WHEN_given_a_single_event_sample() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime0));
-    assertThat(recurrenceAnalyser.foundPatterns(), is(empty()));
   }
 
   @Test(expected = IllegalArgumentException.class)

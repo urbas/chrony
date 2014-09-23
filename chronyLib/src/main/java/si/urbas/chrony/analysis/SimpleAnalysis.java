@@ -1,9 +1,9 @@
 package si.urbas.chrony.analysis;
 
 import si.urbas.chrony.AnalysedEvent;
+import si.urbas.chrony.Analysis;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
-import si.urbas.chrony.Analysis;
 import si.urbas.chrony.metrics.EventTemporalMetrics;
 
 import java.util.*;
@@ -11,6 +11,7 @@ import java.util.*;
 import static java.util.Collections.emptyList;
 
 class SimpleAnalysis implements Analysis {
+
   private final List<AnalysedEvent> analysedEvents;
 
   SimpleAnalysis(EventRepository eventRepository) {

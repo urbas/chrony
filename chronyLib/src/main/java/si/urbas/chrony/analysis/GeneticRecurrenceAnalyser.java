@@ -1,22 +1,19 @@
 package si.urbas.chrony.analysis;
 
-import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.Recurrence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
 
-  public GeneticRecurrenceAnalyser(List<EventSample> eventSamples) {
+  public GeneticRecurrenceAnalyser() {
 
   }
 
   @Override
   public List<Recurrence> foundPatterns() {
-    return null;
+    return new ArrayList<Recurrence>();
   }
 
-  public static List<Recurrence> analyse(List<EventSample> eventSamples) {
-    return new GeneticRecurrenceAnalyser(eventSamples).foundPatterns();
-  }
 }

@@ -1,9 +1,14 @@
 package si.urbas.chrony.analysis;
 
-import org.junit.Test;
+import si.urbas.chrony.EventSample;
 
-import static org.junit.Assert.*;
+import java.util.List;
 
-public class GeneticRecurrenceAnalyserTest {
+public class GeneticRecurrenceAnalyserTest extends RecurrenceAnalyserTest {
+
+  @Override
+  protected RecurrenceAnalyser createRecurrenceAnalyser(List<EventSample> eventSamples) {
+    return new GeneticRecurrenceAnalyser();
+  }
 
 }
