@@ -3,6 +3,7 @@ package si.urbas.chrony.analysis;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.metrics.EventTemporalMetrics;
+import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 import si.urbas.chrony.util.TimeUtils;
 
@@ -10,7 +11,7 @@ import java.util.*;
 
 import static si.urbas.chrony.util.EventSampleAssertions.assertEventSamplesOrdered;
 
-public class DayRecurrenceAnalyser extends RecurrenceAnalyser {
+public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
 
   private static final double MIN_TIME_SPAN_PERCENTAGE = 0.75;
   private static final int WEEKLY_RECURRENCE_PERIOD = 7;
@@ -58,7 +59,7 @@ public class DayRecurrenceAnalyser extends RecurrenceAnalyser {
       if (eventSamplesOfWeeklyPattern.size() >= MIN_EVENT_SAMPLES_FOR_RECURRENCE) {
         for (HourBasedRecurrenceCluster hourBasedRecurrenceCluster : hourlyClusters(eventSamplesOfWeeklyPattern)) {
           if (isRecurrenceConfident(hourBasedRecurrenceCluster.getEventSamplesInCluster())) {
-            foundPatterns.add(new PeriodicRecurrencePattern(WEEKLY_RECURRENCE_PERIOD));
+            foundPatterns.add(new DailyPeriodRecurrence(WEEKLY_RECURRENCE_PERIOD, 0, 0));
             eventSamples.removeAll(hourBasedRecurrenceCluster.getEventSamplesInCluster());
           }
         }
@@ -89,7 +90,7 @@ public class DayRecurrenceAnalyser extends RecurrenceAnalyser {
       EventSample secondEventSample = eventSamples.get(1);
       long timeSpanBetweenFirstTwoSamples = secondEventSample.getTimestamp() - firstEventSample.getTimestamp();
       if (timeSpanBetweenFirstTwoSamples < TimeUtils.WEEK_IN_MILLIS) {
-        PeriodicRecurrencePattern foundRecurrencePattern = new PeriodicRecurrencePattern(Math.round(timeSpanBetweenFirstTwoSamples / TimeUtils.DAY_IN_MILLIS));
+        DailyPeriodRecurrence foundRecurrencePattern = new DailyPeriodRecurrence(Math.round(timeSpanBetweenFirstTwoSamples / TimeUtils.DAY_IN_MILLIS), 0, 0);
         foundPatterns.add(foundRecurrencePattern);
       }
     }

@@ -5,8 +5,18 @@ import si.urbas.chrony.recurrence.Recurrence;
 
 import java.util.List;
 
-public class GeneticRecurrenceAnalyser {
-  public static List<Recurrence> analyse(List<EventSample> eventSamples) {
+public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
+
+  public GeneticRecurrenceAnalyser(List<EventSample> eventSamples) {
+
+  }
+
+  @Override
+  public List<Recurrence> foundPatterns() {
     return null;
+  }
+
+  public static List<Recurrence> analyse(List<EventSample> eventSamples) {
+    return new GeneticRecurrenceAnalyser(eventSamples).foundPatterns();
   }
 }

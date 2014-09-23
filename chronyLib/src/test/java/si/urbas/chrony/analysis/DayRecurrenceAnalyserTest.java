@@ -6,6 +6,7 @@ import org.hamcrest.Matcher;
 import org.junit.Test;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 
 import java.util.Calendar;
@@ -108,11 +109,11 @@ public class DayRecurrenceAnalyserTest {
 
     @Override
     public boolean matches(Object item) {
-      return item instanceof PeriodicRecurrencePattern && matches((PeriodicRecurrencePattern) item);
+      return item instanceof DailyPeriodRecurrence && matches((DailyPeriodRecurrence) item);
     }
 
-    public boolean matches(PeriodicRecurrencePattern recurrencePattern) {
-      int period = recurrencePattern.getPeriod();
+    public boolean matches(DailyPeriodRecurrence recurrencePattern) {
+      int period = recurrencePattern.getPeriodInDays();
       return period == daysApart;
     }
 
