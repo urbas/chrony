@@ -8,7 +8,7 @@ public class GeneticRecurrenceAnalyserTest extends RecurrenceAnalyserTest {
 
   @Override
   protected RecurrenceAnalyser createRecurrenceAnalyser(List<EventSample> eventSamples) {
-    return new GeneticRecurrenceAnalyser();
+    return new GeneticRecurrenceAnalyser(eventSamples);
   }
 
 }

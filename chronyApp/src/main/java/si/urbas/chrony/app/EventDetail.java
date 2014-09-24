@@ -77,7 +77,7 @@ public class EventDetail extends Activity {
     Event eventToShow = getEventToShow();
     List<EventSample> eventSamples = eventRepository.samplesOf(eventToShow.getEventName());
     FrequencyAnalysis frequencyAnalysis = new FrequencyAnalysis(eventSamples);
-    List<Recurrence> recurrenceAnalysis = new DayRecurrenceAnalyser(eventSamples).foundPatterns();
+    List<Recurrence> recurrenceAnalysis = new DayRecurrenceAnalyser(eventSamples).foundRecurrences();
     showEventDetails(eventToShow, frequencyAnalysis, recurrenceAnalysis);
   }
 

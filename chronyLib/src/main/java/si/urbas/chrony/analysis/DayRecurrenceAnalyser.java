@@ -43,7 +43,7 @@ public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
   }
 
   @Override
-  public List<Recurrence> foundPatterns() {
+  public List<Recurrence> foundRecurrences() {
     return foundPatterns;
   }
 
