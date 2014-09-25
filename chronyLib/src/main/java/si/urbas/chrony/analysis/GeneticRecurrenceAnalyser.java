@@ -19,21 +19,14 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
   private static final double ELITISM_RATE = 0.15;
   private static final int MAX_GENERATIONS = 25;
   private static final double RATE_OF_GUESSED_RECURRENCE = 0.1;
+  private static final double CROSSOVER_RATIO = 0.1;
   private final List<Recurrence> foundRecurrences;
 
   public GeneticRecurrenceAnalyser(List<EventSample> eventSamples) {
-    List<? extends Recurrence> guessedRecurrences = guessPossibleRecurrences(eventSamples);
-    GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(
-      new OnePointCrossover<Integer>(),
-      CROSSOVER_RATE,
-      new BinaryMutation(),
-      MUTATION_RATE,
-      new TournamentSelection(TOURNAMENT_SELECTION_ARITY)
-    );
-    Population evolvedPopulation = geneticAlgorithm.evolve(
-      new ElitisticListPopulation(getInitialPopulation(guessedRecurrences, eventSamples, new Random()), POPULATION_LIMIT, ELITISM_RATE),
-      new FixedGenerationCount(MAX_GENERATIONS)
-    );
+    List<Recurrence> guessedRecurrences = guessPossibleRecurrences(eventSamples);
+    GeneticAlgorithm geneticAlgorithm = createBinaryGeneticAlgorithm();
+    ElitisticListPopulation initialPopulation = createInitialPopulation(eventSamples, guessedRecurrences);
+    Population evolvedPopulation = geneticAlgorithm.evolve(initialPopulation, new FixedGenerationCount(MAX_GENERATIONS));
     RecurrenceChromosome fittestChromosome = (RecurrenceChromosome) evolvedPopulation.getFittestChromosome();
     foundRecurrences = new ArrayList<Recurrence>();
   }
@@ -43,20 +36,35 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
     return foundRecurrences;
   }
 
-  private List<? extends Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples) {
-    return Arrays.asList(new DailyPeriodRecurrence(1, 0, 0));
+  private static List<Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples) {
+    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(1, 0, 0));
   }
 
-  private static List<Chromosome> getInitialPopulation(List<? extends Recurrence> guessedRecurrences, List<EventSample> eventSamples, Random randomnessSource) {
+  private static ElitisticListPopulation createInitialPopulation(List<EventSample> eventSamples, List<Recurrence> guessedRecurrences) {
+    return new ElitisticListPopulation(createRandomPopulation(guessedRecurrences, eventSamples, new Random()), POPULATION_LIMIT, ELITISM_RATE);
+  }
+
+  private static GeneticAlgorithm createBinaryGeneticAlgorithm() {
+    return new GeneticAlgorithm(
+      new UniformCrossover<Integer>(CROSSOVER_RATIO),
+      CROSSOVER_RATE,
+      new BinaryMutation(),
+      MUTATION_RATE,
+      new TournamentSelection(TOURNAMENT_SELECTION_ARITY)
+    );
+  }
+
+  private static List<Chromosome> createRandomPopulation(List<Recurrence> guessedRecurrences, List<EventSample> eventSamples, Random randomnessSource) {
     ArrayList<Chromosome> population = new ArrayList<Chromosome>();
+    RecurrenceFitnessPolicy recurrenceFitnessPolicy = new RecurrenceFitnessPolicy();
     for (int i = 0; i < POPULATION_LIMIT; i++) {
       List<Integer> randomListOfRecurrences = getRandomListOfRecurrences(guessedRecurrences, RATE_OF_GUESSED_RECURRENCE, randomnessSource);
-      population.add(new RecurrenceChromosome(randomListOfRecurrences, eventSamples));
+      population.add(new RecurrenceChromosome(guessedRecurrences, eventSamples, randomListOfRecurrences, recurrenceFitnessPolicy));
     }
     return population;
   }
 
-  private static List<Integer> getRandomListOfRecurrences(List<? extends Recurrence> guessedRecurrences, double rateOfInclusion, Random randomnessSource) {
+  private static List<Integer> getRandomListOfRecurrences(List<Recurrence> guessedRecurrences, double rateOfInclusion, Random randomnessSource) {
     ArrayList<Integer> includedRecurrences = new ArrayList<Integer>(guessedRecurrences.size());
     for (Recurrence ignored : guessedRecurrences) {
       int shouldIncludeRecurrence = randomnessSource.nextFloat() < rateOfInclusion ? 1 : 0;
@@ -65,28 +73,30 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
     return includedRecurrences;
   }
 
-  private static class RecurrenceChromosome extends BinaryChromosome {
+  private static class RecurrenceChromosome extends BinaryChromosome implements Recurrences {
 
     private final List<EventSample> eventSamples;
+    private final List<Recurrence> availableRecurrences;
+    private final RecurrenceFitnessPolicy recurrenceFitnessPolicy;
 
-    public RecurrenceChromosome(List<Integer> includedRecurrences, List<EventSample> eventSamples) {
+    public RecurrenceChromosome(List<Recurrence> availableRecurrences, List<EventSample> eventSamples, List<Integer> includedRecurrences, RecurrenceFitnessPolicy recurrenceFitnessPolicy) {
       super(includedRecurrences);
+      this.availableRecurrences = availableRecurrences;
       this.eventSamples = eventSamples;
+      this.recurrenceFitnessPolicy = recurrenceFitnessPolicy;
     }
 
     @Override
     public AbstractListChromosome<Integer> newFixedLengthChromosome(List<Integer> chromosomeRepresentation) {
-      return new RecurrenceChromosome(chromosomeRepresentation, eventSamples);
+      return new RecurrenceChromosome(availableRecurrences, eventSamples, chromosomeRepresentation, recurrenceFitnessPolicy);
     }
 
     @Override
     public double fitness() {
-      double fitness = 0;
-
-      return fitness;
+      return recurrenceFitnessPolicy.calculateFitness(this);
     }
 
-    public List<Recurrence> getRecurrences(List<? extends Recurrence> guessedRecurrences) {
+    public List<Recurrence> getRecurrences(List<Recurrence> guessedRecurrences) {
       ArrayList<Recurrence> recurrences = new ArrayList<Recurrence>();
       List<Integer> representation = getRepresentation();
       for (int i = 0; i < representation.size(); i++) {
@@ -97,5 +107,6 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
       }
       return recurrences;
     }
+
   }
 }
