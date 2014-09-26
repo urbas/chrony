@@ -1,13 +1,12 @@
-package si.urbas.chrony.analysis;
+package si.urbas.chrony.recurrence.analysis;
 
 import org.junit.Test;
 import si.urbas.chrony.recurrence.*;
-import si.urbas.chrony.recurrence.analysis.RecurrenceFitnessPolicy;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.*;
-import static si.urbas.chrony.analysis.EventSamplesTestUtils.emptyEventSamples;
+import static si.urbas.chrony.EventSamplesTestUtils.emptyEventSamples;
 import static si.urbas.chrony.recurrence.RecurrencesTestUtils.emptyRecurrences;
 import static si.urbas.chrony.recurrence.RecurrencesTestUtils.recurrences;
 

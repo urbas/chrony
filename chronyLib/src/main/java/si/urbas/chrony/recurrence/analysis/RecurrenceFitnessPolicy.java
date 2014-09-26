@@ -14,6 +14,6 @@ public class RecurrenceFitnessPolicy {
   }
 
   public double fitness(Recurrences recurrences) {
-    return recurrences.size() * SIZE_PENALTY;
+    return recurrences.getRecurrencesCount() * SIZE_PENALTY;
   }
 }

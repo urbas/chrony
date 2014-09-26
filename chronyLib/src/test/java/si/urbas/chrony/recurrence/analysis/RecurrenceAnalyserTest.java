@@ -1,4 +1,4 @@
-package si.urbas.chrony.analysis;
+package si.urbas.chrony.recurrence.analysis;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -7,25 +7,16 @@ import org.junit.Test;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
-import si.urbas.chrony.recurrence.analysis.RecurrenceAnalyser;
 
-import java.util.Calendar;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static si.urbas.chrony.analysis.EventSamplesTestUtils.emptyEventSamples;
+import static si.urbas.chrony.EventSamplesTestUtils.*;
 
 public abstract class RecurrenceAnalyserTest {
 
-  protected static final String EVENT_NAME = "event name";
-  protected static final int HOUR_17 = 16;
-  protected static final int DAY_1 = 0;
-  protected static final int DAY_2 = 1;
-  protected static final int DAY_3 = 2;
-  protected static final int DAY_8 = 7;
-  protected static final int DAY_10 = 9;
   private static final int TWO_DAYS = 2;
   protected final EventSample eventSampleAtTime1d17h = eventSampleAtTime(DAY_1, HOUR_17);
   protected final EventSample eventSampleAtTime2d17h = eventSampleAtTime(DAY_2, HOUR_17);
@@ -73,15 +64,7 @@ public abstract class RecurrenceAnalyserTest {
 
   protected abstract RecurrenceAnalyser createRecurrenceAnalyser(List<EventSample> eventSamples);
 
-  protected EventSample eventSampleAtTime(int day, int hour) {
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis(0);
-    calendar.add(Calendar.HOUR, day * 24 + hour);
-    System.out.println(calendar.getTime());
-    return new EventSample(EVENT_NAME, calendar.getTimeInMillis(), null);
-  }
-
-  protected Matcher<Recurrence> recurrenceWithPeriodOf(final int daysApart) {
+  public static Matcher<Recurrence> recurrenceWithPeriodOf(final int daysApart) {
     return new RecurrenceWithDailyPeriodMatcher(daysApart);
   }
 

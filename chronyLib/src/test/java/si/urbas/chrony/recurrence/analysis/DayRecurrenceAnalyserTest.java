@@ -1,9 +1,8 @@
-package si.urbas.chrony.analysis;
+package si.urbas.chrony.recurrence.analysis;
 
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
-import si.urbas.chrony.recurrence.analysis.DayRecurrenceAnalyser;
-import si.urbas.chrony.recurrence.analysis.RecurrenceAnalyser;
+import si.urbas.chrony.EventSamplesTestUtils;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class DayRecurrenceAnalyserTest extends RecurrenceAnalyserTest {
 
   @Test
   public void foundPatterns_MUST_return_two_weekly_patterns_WHEN_they_pairwise_happen_on_same_weekday_but_at_different_time() {
-    List<EventSample> eventSamples = asList(eventSampleAtTime(1, 9), eventSampleAtTime(1, 20), eventSampleAtTime(8, 9), eventSampleAtTime(8, 20));
+    List<EventSample> eventSamples = asList(EventSamplesTestUtils.eventSampleAtTime(1, 9), EventSamplesTestUtils.eventSampleAtTime(1, 20), EventSamplesTestUtils.eventSampleAtTime(8, 9), EventSamplesTestUtils.eventSampleAtTime(8, 20));
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(eventSamples);
     assertThat(recurrenceAnalyser.foundRecurrences(), contains(weeklyRecurrence, weeklyRecurrence));
   }

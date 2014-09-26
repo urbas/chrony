@@ -59,7 +59,7 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
     RecurrenceFitnessPolicy recurrenceFitnessPolicy = new RecurrenceFitnessPolicy(eventSamples);
     for (int i = 0; i < POPULATION_LIMIT; i++) {
       List<Integer> randomListOfRecurrences = getRandomListOfRecurrences(guessedRecurrences, RATE_OF_GUESSED_RECURRENCE, randomnessSource);
-      population.add(new RecurrenceChromosome(guessedRecurrences, eventSamples, randomListOfRecurrences, recurrenceFitnessPolicy));
+      population.add(new RecurrenceChromosome(guessedRecurrences, randomListOfRecurrences, recurrenceFitnessPolicy));
     }
     return population;
   }
