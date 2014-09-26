@@ -1,6 +1,8 @@
 package si.urbas.chrony.analysis;
 
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.recurrence.analysis.GeneticRecurrenceAnalyser;
+import si.urbas.chrony.recurrence.analysis.RecurrenceAnalyser;
 
 import java.util.List;
 

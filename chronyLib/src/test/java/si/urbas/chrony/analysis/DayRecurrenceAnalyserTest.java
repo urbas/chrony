@@ -2,6 +2,8 @@ package si.urbas.chrony.analysis;
 
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.recurrence.analysis.DayRecurrenceAnalyser;
+import si.urbas.chrony.recurrence.analysis.RecurrenceAnalyser;
 
 import java.util.List;
 

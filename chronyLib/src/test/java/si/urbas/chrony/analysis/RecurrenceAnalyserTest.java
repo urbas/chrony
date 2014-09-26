@@ -7,14 +7,15 @@ import org.junit.Test;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
+import si.urbas.chrony.recurrence.analysis.RecurrenceAnalyser;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static si.urbas.chrony.analysis.EventSamplesTestUtils.emptyEventSamples;
 
 public abstract class RecurrenceAnalyserTest {
 
@@ -36,7 +37,7 @@ public abstract class RecurrenceAnalyserTest {
 
   @Test
   public void foundRecurrences_MUST_return_an_empty_list_WHEN_given_no_event_samples() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(Collections.<EventSample>emptyList());
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(emptyEventSamples());
     assertThat(recurrenceAnalyser.foundRecurrences(), is(empty()));
   }
 

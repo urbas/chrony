@@ -1,4 +1,4 @@
-package si.urbas.chrony.analysis;
+package si.urbas.chrony.recurrence.analysis;
 
 import si.urbas.chrony.recurrence.Recurrence;
 

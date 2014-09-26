@@ -1,4 +1,4 @@
-package si.urbas.chrony.analysis;
+package si.urbas.chrony.recurrence.analysis;
 
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.metrics.EventTemporalMetrics;

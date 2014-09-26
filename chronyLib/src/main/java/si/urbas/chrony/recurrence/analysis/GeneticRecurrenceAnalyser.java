@@ -1,4 +1,4 @@
-package si.urbas.chrony.analysis;
+package si.urbas.chrony.recurrence.analysis;
 
 import org.apache.commons.math3.genetics.*;
 import si.urbas.chrony.EventSample;
@@ -56,7 +56,7 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
 
   private static List<Chromosome> createRandomPopulation(List<Recurrence> guessedRecurrences, List<EventSample> eventSamples, Random randomnessSource) {
     ArrayList<Chromosome> population = new ArrayList<Chromosome>();
-    RecurrenceFitnessPolicy recurrenceFitnessPolicy = new RecurrenceFitnessPolicy();
+    RecurrenceFitnessPolicy recurrenceFitnessPolicy = new RecurrenceFitnessPolicy(eventSamples);
     for (int i = 0; i < POPULATION_LIMIT; i++) {
       List<Integer> randomListOfRecurrences = getRandomListOfRecurrences(guessedRecurrences, RATE_OF_GUESSED_RECURRENCE, randomnessSource);
       population.add(new RecurrenceChromosome(guessedRecurrences, eventSamples, randomListOfRecurrences, recurrenceFitnessPolicy));
@@ -73,40 +73,4 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
     return includedRecurrences;
   }
 
-  private static class RecurrenceChromosome extends BinaryChromosome implements Recurrences {
-
-    private final List<EventSample> eventSamples;
-    private final List<Recurrence> availableRecurrences;
-    private final RecurrenceFitnessPolicy recurrenceFitnessPolicy;
-
-    public RecurrenceChromosome(List<Recurrence> availableRecurrences, List<EventSample> eventSamples, List<Integer> includedRecurrences, RecurrenceFitnessPolicy recurrenceFitnessPolicy) {
-      super(includedRecurrences);
-      this.availableRecurrences = availableRecurrences;
-      this.eventSamples = eventSamples;
-      this.recurrenceFitnessPolicy = recurrenceFitnessPolicy;
-    }
-
-    @Override
-    public AbstractListChromosome<Integer> newFixedLengthChromosome(List<Integer> chromosomeRepresentation) {
-      return new RecurrenceChromosome(availableRecurrences, eventSamples, chromosomeRepresentation, recurrenceFitnessPolicy);
-    }
-
-    @Override
-    public double fitness() {
-      return recurrenceFitnessPolicy.calculateFitness(this);
-    }
-
-    public List<Recurrence> getRecurrences(List<Recurrence> guessedRecurrences) {
-      ArrayList<Recurrence> recurrences = new ArrayList<Recurrence>();
-      List<Integer> representation = getRepresentation();
-      for (int i = 0; i < representation.size(); i++) {
-        Integer isRecurrenceIncluded = representation.get(i);
-        if (isRecurrenceIncluded == 1) {
-          recurrences.add(guessedRecurrences.get(i));
-        }
-      }
-      return recurrences;
-    }
-
-  }
 }
