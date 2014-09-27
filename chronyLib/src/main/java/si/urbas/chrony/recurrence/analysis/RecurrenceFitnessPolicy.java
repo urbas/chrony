@@ -33,7 +33,7 @@ public class RecurrenceFitnessPolicy {
   private long findMinimumTimeDifference(Recurrences recurrences, EventSample eventSample) {
     long minimumTimeDifference = 0;
     for (Recurrence recurrence : recurrences.getRecurrences()) {
-      long currentTimeDifference = recurrence.timeDifference(eventSample.getTimestamp());
+      long currentTimeDifference = recurrence.differenceTo(eventSample.getTimestamp());
       if (currentTimeDifference >= minimumTimeDifference) {
         minimumTimeDifference = currentTimeDifference;
       }

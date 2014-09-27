@@ -17,10 +17,6 @@ public class DailyPeriodRecurrence implements Recurrence {
     this(periodInDays, toUtcCalendar(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0));
   }
 
-  public DailyPeriodRecurrence(int periodInDays, long offsetInMillis) {
-    this(periodInDays, toUtcCalendar(offsetInMillis));
-  }
-
   public DailyPeriodRecurrence(int periodInDays, Calendar firstRecurrenceTime) {
     this.periodInDays = periodInDays;
     this.firstRecurrenceTime = firstRecurrenceTime;
@@ -41,7 +37,7 @@ public class DailyPeriodRecurrence implements Recurrence {
   }
 
   @Override
-  public long timeDifference(long timeInMilliseconds) {
+  public long differenceTo(long timeInMilliseconds) {
     return 0;
   }
 
