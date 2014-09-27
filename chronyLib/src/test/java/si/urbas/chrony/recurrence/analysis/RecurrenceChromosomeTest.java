@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -25,7 +26,7 @@ public class RecurrenceChromosomeTest {
   public void setUp() throws Exception {
     recurrenceFitnessPolicy = mock(RecurrenceFitnessPolicy.class);
     recurrenceChromosomeSize1_Binary1 = new RecurrenceChromosome(singleAvailableRecurrence(), Arrays.asList(1), recurrenceFitnessPolicy);
-    recurrenceChromosomeSize3_Binary101 = new RecurrenceChromosome(threeAvailableRecurrence(), Arrays.asList(1, 0, 1), recurrenceFitnessPolicy);
+    recurrenceChromosomeSize3_Binary101 = new RecurrenceChromosome(threeAvailableRecurrences(), Arrays.asList(1, 0, 1), recurrenceFitnessPolicy);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -42,12 +43,8 @@ public class RecurrenceChromosomeTest {
   @Test
   public void fitness_MUST_return_the_answer_from_the_fitness_policy() {
     double expectedFitness = Math.random();
-    when(recurrenceFitnessPolicy.fitness(recurrenceChromosomeSize1_Binary1))
-      .thenReturn(expectedFitness);
-    assertThat(
-      recurrenceChromosomeSize1_Binary1.fitness(),
-      equalTo(expectedFitness)
-    );
+    when(recurrenceFitnessPolicy.fitness(recurrenceChromosomeSize1_Binary1)).thenReturn(expectedFitness);
+    assertThat(recurrenceChromosomeSize1_Binary1.fitness(), equalTo(expectedFitness));
   }
 
   @Test
@@ -55,13 +52,22 @@ public class RecurrenceChromosomeTest {
     assertEquals(2, recurrenceChromosomeSize3_Binary101.getRecurrencesCount());
   }
 
-  private List<Recurrence> singleAvailableRecurrence() {return toList(new DailyPeriodRecurrence(7, 0, 0));}
+  @Test
+  public void getRecurrences_MUST_return_only_those_recurrences_provided_in_the_binary_list() {
+    List<Recurrence> availableRecurrences = threeAvailableRecurrences();
+    assertThat(
+      recurrenceChromosomeSize3_Binary101.getRecurrences(),
+      contains(availableRecurrences.get(0), availableRecurrences.get(2))
+    );
+  }
 
-  private List<Recurrence> threeAvailableRecurrence() {
+  private List<Recurrence> singleAvailableRecurrence() {return toList(new DailyPeriodRecurrence(7, 0, 0, 0, 0, 0));}
+
+  private List<Recurrence> threeAvailableRecurrences() {
     return toList(
-      new DailyPeriodRecurrence(7, 0, 0),
-      new DailyPeriodRecurrence(1, 2, 3),
-      new DailyPeriodRecurrence(4, 5, 6)
+      new DailyPeriodRecurrence(7, 0, 0, 0, 0, 0),
+      new DailyPeriodRecurrence(1, 0, 0, 0, 2, 3),
+      new DailyPeriodRecurrence(4, 0, 0, 0, 5, 6)
     );
   }
 

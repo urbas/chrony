@@ -10,10 +10,9 @@ import static si.urbas.chrony.util.Ordinals.toNumericOrdinal;
 public class RecurrenceDescriptions {
   static final String DESCRIPTION_OF_EMPTY_RECURRENCE_ANALYSIS = "No recurrence pattern discovered.";
 
-  public static String toShortDescriptionOf(List<? extends Recurrence> recurrenceAnalysis) {
+  public static String toShortDescription(List<? extends Recurrence> recurrenceAnalysis) {
     if (recurrenceAnalysis.size() == 1) {
-      Recurrence recurrence = recurrenceAnalysis.get(0);
-      return toShortDescriptionOf(recurrence);
+      return toShortDescription(recurrenceAnalysis.get(0));
     } else if (recurrenceAnalysis.size() > 1) {
       throw new UnsupportedOperationException();
     } else {
@@ -21,13 +20,16 @@ public class RecurrenceDescriptions {
     }
   }
 
-  public static String toShortDescriptionOf(Recurrence recurrence) {
+  public static String toShortDescription(Recurrence recurrence) {
     if (recurrence instanceof DailyPeriodRecurrence) {
-      DailyPeriodRecurrence dailyPeriodRecurrence = (DailyPeriodRecurrence) recurrence;
-      return "every " + toOrdinalDay(dailyPeriodRecurrence) + " at " + formatTime(dailyPeriodRecurrence);
+      return toShortDescription((DailyPeriodRecurrence) recurrence);
     } else {
       throw new UnsupportedOperationException();
     }
+  }
+
+  private static String toShortDescription(DailyPeriodRecurrence dailyPeriodRecurrence) {
+    return "every " + toOrdinalDay(dailyPeriodRecurrence) + " at " + formatTime(dailyPeriodRecurrence);
   }
 
   private static String toOrdinalDay(DailyPeriodRecurrence recurrence) {

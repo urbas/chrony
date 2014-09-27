@@ -18,4 +18,9 @@ public class RecurrencesList implements Recurrences {
   public int getRecurrencesCount() {
     return recurrenceList.size();
   }
+
+  @Override
+  public List<Recurrence> getRecurrences() {
+    return recurrenceList;
+  }
 }

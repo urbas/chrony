@@ -12,6 +12,7 @@ public class RecurrenceChromosome extends BinaryChromosome implements Recurrence
 
   private final List<Recurrence> availableRecurrences;
   private final RecurrenceFitnessPolicy recurrenceFitnessPolicy;
+  private final ArrayList<Recurrence> recurrences;
   private int activeRecurrencesCount;
 
   public RecurrenceChromosome(List<Recurrence> availableRecurrences, List<Integer> includedRecurrences, RecurrenceFitnessPolicy recurrenceFitnessPolicy) {
@@ -19,7 +20,8 @@ public class RecurrenceChromosome extends BinaryChromosome implements Recurrence
     assertRecurrenceListsSizesMatch(availableRecurrences, includedRecurrences);
     this.availableRecurrences = availableRecurrences;
     this.recurrenceFitnessPolicy = recurrenceFitnessPolicy;
-    this.activeRecurrencesCount = countActiveRecurrences();
+    this.activeRecurrencesCount = countActiveRecurrences(includedRecurrences);
+    this.recurrences = buildRecurrencesList(availableRecurrences, includedRecurrences);
   }
 
   @Override
@@ -32,26 +34,31 @@ public class RecurrenceChromosome extends BinaryChromosome implements Recurrence
     return recurrenceFitnessPolicy.fitness(this);
   }
 
-  public List<Recurrence> getRecurrences(List<Recurrence> guessedRecurrences) {
-    ArrayList<Recurrence> recurrences = new ArrayList<Recurrence>();
-    List<Integer> representation = getRepresentation();
-    for (int i = 0; i < representation.size(); i++) {
-      Integer isRecurrenceIncluded = representation.get(i);
-      if (isRecurrenceIncluded == 1) {
-        recurrences.add(guessedRecurrences.get(i));
-      }
-    }
-    return recurrences;
-  }
-
   @Override
   public int getRecurrencesCount() {
     return activeRecurrencesCount;
   }
 
-  private int countActiveRecurrences() {
+  @Override
+  public List<Recurrence> getRecurrences() {
+    return recurrences;
+
+  }
+
+  private static ArrayList<Recurrence> buildRecurrencesList(List<Recurrence> availableRecurrences, List<Integer> includedRecurrences) {
+    ArrayList<Recurrence> recurrences = new ArrayList<Recurrence>();
+    for (int i = 0; i < includedRecurrences.size(); i++) {
+      Integer isRecurrenceIncluded = includedRecurrences.get(i);
+      if (isRecurrenceIncluded == 1) {
+        recurrences.add(availableRecurrences.get(i));
+      }
+    }
+    return recurrences;
+  }
+
+  private static int countActiveRecurrences(List<Integer> includedRecurrences) {
     int count = 0;
-    for (Integer isRecurrenceIncluded : getRepresentation()) {
+    for (Integer isRecurrenceIncluded : includedRecurrences) {
       if (isRecurrenceIncluded != 0) {
         ++count;
       }

@@ -9,6 +9,7 @@ import si.urbas.chrony.util.TimeUtils;
 import java.util.*;
 
 import static si.urbas.chrony.util.EventSampleAssertions.assertEventSamplesOrdered;
+import static si.urbas.chrony.util.TimeUtils.createUtcCalendar;
 
 public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
 
@@ -58,7 +59,7 @@ public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
       if (eventSamplesOfWeeklyPattern.size() >= MIN_EVENT_SAMPLES_FOR_RECURRENCE) {
         for (HourBasedRecurrenceCluster hourBasedRecurrenceCluster : hourlyClusters(eventSamplesOfWeeklyPattern)) {
           if (isRecurrenceConfident(hourBasedRecurrenceCluster.getEventSamplesInCluster())) {
-            foundPatterns.add(new DailyPeriodRecurrence(WEEKLY_RECURRENCE_PERIOD, 0, 0));
+            foundPatterns.add(new DailyPeriodRecurrence(WEEKLY_RECURRENCE_PERIOD, 0, 0, 0, 0, 0));
             eventSamples.removeAll(hourBasedRecurrenceCluster.getEventSamplesInCluster());
           }
         }
@@ -89,7 +90,7 @@ public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
       EventSample secondEventSample = eventSamples.get(1);
       long timeSpanBetweenFirstTwoSamples = secondEventSample.getTimestamp() - firstEventSample.getTimestamp();
       if (timeSpanBetweenFirstTwoSamples < TimeUtils.WEEK_IN_MILLIS) {
-        DailyPeriodRecurrence foundRecurrencePattern = new DailyPeriodRecurrence(Math.round(timeSpanBetweenFirstTwoSamples / TimeUtils.DAY_IN_MILLIS), 0, 0);
+        DailyPeriodRecurrence foundRecurrencePattern = new DailyPeriodRecurrence(Math.round(timeSpanBetweenFirstTwoSamples / TimeUtils.DAY_IN_MILLIS), 0, 0, 0, 0, 0);
         foundPatterns.add(foundRecurrencePattern);
       }
     }
@@ -109,7 +110,7 @@ public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
 
     private static ArrayList<ArrayList<EventSample>> extractWeeklyOccurrences(List<EventSample> eventSamples) {
       ArrayList<ArrayList<EventSample>> weeklyOccurrencesStore = createWeeklyOccurrencesStore();
-      Calendar calendar = Calendar.getInstance();
+      Calendar calendar = createUtcCalendar();
       for (EventSample eventSample : eventSamples) {
         calendar.setTimeInMillis(eventSample.getTimestamp());
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
@@ -142,7 +143,7 @@ public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
 
     public HourBasedRecurrenceCluster(int hourOfDay, Collection<EventSample> eventSamplesOfWeeklyPattern) {
       this.eventSamplesInCluster = new ArrayList<EventSample>();
-      Calendar calendar = Calendar.getInstance();
+      Calendar calendar = createUtcCalendar();
       for (EventSample eventSample : eventSamplesOfWeeklyPattern) {
         calendar.setTimeInMillis(eventSample.getTimestamp());
         int hourOfSample = calendar.get(Calendar.HOUR_OF_DAY) - 1;

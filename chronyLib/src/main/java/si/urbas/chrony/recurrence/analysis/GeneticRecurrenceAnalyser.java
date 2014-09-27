@@ -37,7 +37,7 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
   }
 
   private static List<Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples) {
-    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(1, 0, 0));
+    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(1, 0, 0, 0, 0, 0));
   }
 
   private static ElitisticListPopulation createInitialPopulation(List<EventSample> eventSamples, List<Recurrence> guessedRecurrences) {
