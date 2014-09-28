@@ -4,7 +4,7 @@ import si.urbas.chrony.util.TimeUtils;
 
 import java.util.Calendar;
 
-import static java.lang.Math.abs;
+import static si.urbas.chrony.util.MathUtils.smallestByAbsoluteValue;
 import static si.urbas.chrony.util.TimeUtils.toUtcCalendar;
 
 public class DailyPeriodRecurrence implements Recurrence {
@@ -46,7 +46,7 @@ public class DailyPeriodRecurrence implements Recurrence {
     long distanceToUndershootingOccurrence = timeInMilliseconds - (firstRecurrenceTimeInMillis + distanceToTimeInPeriods * periodInMillis);
     boolean isTimeBeforeFirstOccurrence = distanceFromFirstOccurrence < 0;
     long distanceToOvershootingOccurrence = timeInMilliseconds - (firstRecurrenceTimeInMillis + (distanceToTimeInPeriods + (isTimeBeforeFirstOccurrence ? -1 : 1)) * periodInMillis);
-    return getNearestDistance(distanceToUndershootingOccurrence, distanceToOvershootingOccurrence);
+    return smallestByAbsoluteValue(distanceToUndershootingOccurrence, distanceToOvershootingOccurrence);
   }
 
   @Override
@@ -74,7 +74,4 @@ public class DailyPeriodRecurrence implements Recurrence {
            '}';
   }
 
-  private static long getNearestDistance(long distanceA, long distanceB) {
-    return abs(distanceA) < abs(distanceB) ? distanceA : distanceB;
-  }
 }
