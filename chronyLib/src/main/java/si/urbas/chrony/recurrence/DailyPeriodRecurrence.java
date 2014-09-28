@@ -4,6 +4,7 @@ import si.urbas.chrony.util.TimeUtils;
 
 import java.util.Calendar;
 
+import static java.lang.Math.abs;
 import static si.urbas.chrony.util.TimeUtils.toUtcCalendar;
 
 public class DailyPeriodRecurrence implements Recurrence {
@@ -37,8 +38,15 @@ public class DailyPeriodRecurrence implements Recurrence {
   }
 
   @Override
-  public long differenceTo(long timeInMilliseconds) {
-    return 0;
+  public long distanceTo(long timeInMilliseconds) {
+    long periodInMillis = TimeUtils.DAY_IN_MILLIS * periodInDays;
+    long firstRecurrenceTimeInMillis = firstRecurrenceTime.getTimeInMillis();
+    long distanceFromFirstOccurrence = timeInMilliseconds - firstRecurrenceTimeInMillis;
+    long distanceToTimeInPeriods = distanceFromFirstOccurrence / periodInMillis;
+    long distanceToUndershootingOccurrence = timeInMilliseconds - (firstRecurrenceTimeInMillis + distanceToTimeInPeriods * periodInMillis);
+    boolean isTimeBeforeFirstOccurrence = distanceFromFirstOccurrence < 0;
+    long distanceToOvershootingOccurrence = timeInMilliseconds - (firstRecurrenceTimeInMillis + (distanceToTimeInPeriods + (isTimeBeforeFirstOccurrence ? -1 : 1)) * periodInMillis);
+    return getNearestDistance(distanceToUndershootingOccurrence, distanceToOvershootingOccurrence);
   }
 
   @Override
@@ -64,5 +72,9 @@ public class DailyPeriodRecurrence implements Recurrence {
            "firstRecurrenceTime=" + TimeUtils.toSimpleString(firstRecurrenceTime) +
            ", periodInDays=" + periodInDays +
            '}';
+  }
+
+  private static long getNearestDistance(long distanceA, long distanceB) {
+    return abs(distanceA) < abs(distanceB) ? distanceA : distanceB;
   }
 }
