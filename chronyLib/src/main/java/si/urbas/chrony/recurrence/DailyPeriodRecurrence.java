@@ -1,16 +1,14 @@
 package si.urbas.chrony.recurrence;
 
-import si.urbas.chrony.util.TimeUtils;
-
 import java.util.Calendar;
 
 import static si.urbas.chrony.util.MathUtils.smallestByAbsoluteValue;
-import static si.urbas.chrony.util.TimeUtils.toUtcCalendar;
+import static si.urbas.chrony.util.TimeUtils.*;
 
 public class DailyPeriodRecurrence implements Recurrence {
 
   private final int periodInDays;
-  private final Calendar firstRecurrenceTime;
+  private final Calendar firstOccurrence;
   private final int hourOfDay;
   private final int minutePastHour;
 
@@ -18,11 +16,11 @@ public class DailyPeriodRecurrence implements Recurrence {
     this(periodInDays, toUtcCalendar(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0));
   }
 
-  public DailyPeriodRecurrence(int periodInDays, Calendar firstRecurrenceTime) {
+  public DailyPeriodRecurrence(int periodInDays, Calendar firstOccurrence) {
     this.periodInDays = periodInDays;
-    this.firstRecurrenceTime = firstRecurrenceTime;
-    hourOfDay = firstRecurrenceTime.get(Calendar.HOUR_OF_DAY);
-    minutePastHour = firstRecurrenceTime.get(Calendar.MINUTE);
+    this.firstOccurrence = firstOccurrence;
+    hourOfDay = firstOccurrence.get(Calendar.HOUR_OF_DAY);
+    minutePastHour = firstOccurrence.get(Calendar.MINUTE);
   }
 
   public int getHourOfDay() {
@@ -39,8 +37,8 @@ public class DailyPeriodRecurrence implements Recurrence {
 
   @Override
   public long distanceTo(long timeInMilliseconds) {
-    long periodInMillis = TimeUtils.DAY_IN_MILLIS * periodInDays;
-    long firstRecurrenceTimeInMillis = firstRecurrenceTime.getTimeInMillis();
+    long periodInMillis = DAY_IN_MILLIS * periodInDays;
+    long firstRecurrenceTimeInMillis = firstOccurrence.getTimeInMillis();
     long distanceFromFirstOccurrence = timeInMilliseconds - firstRecurrenceTimeInMillis;
     long distanceToTimeInPeriods = distanceFromFirstOccurrence / periodInMillis;
     long distanceToUndershootingOccurrence = timeInMilliseconds - (firstRecurrenceTimeInMillis + distanceToTimeInPeriods * periodInMillis);
@@ -56,20 +54,20 @@ public class DailyPeriodRecurrence implements Recurrence {
 
     DailyPeriodRecurrence that = (DailyPeriodRecurrence) o;
 
-    return periodInDays == that.periodInDays && firstRecurrenceTime.equals(that.firstRecurrenceTime);
+    return periodInDays == that.periodInDays && firstOccurrence.equals(that.firstOccurrence);
   }
 
   @Override
   public int hashCode() {
     int result = periodInDays;
-    result = 31 * result + firstRecurrenceTime.hashCode();
+    result = 31 * result + firstOccurrence.hashCode();
     return result;
   }
 
   @Override
   public String toString() {
     return "DailyPeriodRecurrence{" +
-           "firstRecurrenceTime=" + TimeUtils.toSimpleString(firstRecurrenceTime) +
+           "firstOccurrence=" + toSimpleString(firstOccurrence) +
            ", periodInDays=" + periodInDays +
            '}';
   }
