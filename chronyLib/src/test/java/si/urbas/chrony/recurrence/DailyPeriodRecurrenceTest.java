@@ -6,13 +6,13 @@ import java.util.Calendar;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static si.urbas.chrony.util.TimeUtils.createUtcCalendar;
-import static si.urbas.chrony.util.TimeUtils.toUtcCalendar;
+import static si.urbas.chrony.util.TimeUtils.*;
 
 public class DailyPeriodRecurrenceTest {
 
   private static final int PERIOD_1_DAY = 1;
   private static final int PERIOD_3_DAYS = 3;
+  private static final int PERIOD_7_DAYS = 7;
 
   @Test
   public void distanceTo_MUST_return_0_WHEN_the_nearest_recurrence_happens_exactly_on_the_given_time() {
@@ -69,6 +69,42 @@ public class DailyPeriodRecurrenceTest {
     DailyPeriodRecurrence dailyPeriodRecurrence = new DailyPeriodRecurrence(PERIOD_3_DAYS, 2000, 3, 1, 10, 10);
     Calendar timeOfInterest = toUtcCalendar(1985, 3, 2, 10, 13, 0);
     assertEquals(180000, dailyPeriodRecurrence.distanceTo(timeOfInterest.getTimeInMillis()));
+  }
+
+  @Test
+  public void distanceTo_MUST_return_5h_30min() {
+    DailyPeriodRecurrence dailyPeriodRecurrence = new DailyPeriodRecurrence(PERIOD_7_DAYS, 2014, 8, 29, 16, 10);
+    long timeOfInterest = toUtcCalendar(2014, 7, 4, 21, 40, 0).getTimeInMillis();
+    long distanceOf5h30min = 5 * HOUR_IN_MILLIS + 30 * MINUTE_IN_MILLIS;
+    long calculatedDistance = dailyPeriodRecurrence.distanceTo(timeOfInterest);
+    assertEquals(distanceOf5h30min, calculatedDistance);
+  }
+
+  @Test
+  public void distanceTo_MUST_return_negative_5h_30min() {
+    DailyPeriodRecurrence dailyPeriodRecurrence = new DailyPeriodRecurrence(PERIOD_7_DAYS, 2014, 7, 4, 21, 40);
+    long timeOfInterest = toUtcCalendar(2014, 8, 29, 16, 10, 0).getTimeInMillis();
+    long negativeDistance5h30min = -(5 * HOUR_IN_MILLIS + 30 * MINUTE_IN_MILLIS);
+    long calculatedDistance = dailyPeriodRecurrence.distanceTo(timeOfInterest);
+    assertEquals(negativeDistance5h30min, calculatedDistance);
+  }
+
+  @Test
+  public void distanceTo_MUST_return_3days_11h_29mins() {
+    DailyPeriodRecurrence dailyPeriodRecurrence = new DailyPeriodRecurrence(PERIOD_7_DAYS, 2014, 8, 0, 11, 30);
+    long timeOfInterest = toUtcCalendar(2014, 8, 17, 22, 59, 0).getTimeInMillis();
+    long negativeDistance5h30min = 3 * DAY_IN_MILLIS + 11 * HOUR_IN_MILLIS + 29 * MINUTE_IN_MILLIS;
+    long calculatedDistance = dailyPeriodRecurrence.distanceTo(timeOfInterest);
+    assertEquals(negativeDistance5h30min, calculatedDistance);
+  }
+
+  @Test
+  public void distanceTo_MUST_return_negative_3days_11h_29mins() {
+    DailyPeriodRecurrence dailyPeriodRecurrence = new DailyPeriodRecurrence(PERIOD_7_DAYS, 2014, 8, 0, 11, 30);
+    long timeOfInterest = toUtcCalendar(2014, 8, 18, 0, 1, 0).getTimeInMillis();
+    long negativeDistance5h30min = -(3 * DAY_IN_MILLIS + 11 * HOUR_IN_MILLIS + 29 * MINUTE_IN_MILLIS);
+    long calculatedDistance = dailyPeriodRecurrence.distanceTo(timeOfInterest);
+    assertEquals(negativeDistance5h30min, calculatedDistance);
   }
 
   @Test
