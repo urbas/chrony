@@ -6,6 +6,8 @@ import si.urbas.chrony.recurrence.Recurrences;
 
 import java.util.List;
 
+import static java.lang.Math.abs;
+
 public class RecurrenceFitnessPolicy {
 
   private static final int SIZE_PENALTY_RATE = -1000;
@@ -19,10 +21,14 @@ public class RecurrenceFitnessPolicy {
     return sizePenalty(recurrences) + timeMismatchPenalty(recurrences);
   }
 
+  private static int sizePenalty(Recurrences recurrences) {
+    return recurrences.getRecurrencesCount() * SIZE_PENALTY_RATE;
+  }
+
   private int timeMismatchPenalty(Recurrences recurrences) {
     int penalty = 0;
     for (EventSample eventSample : eventSamples) {
-      penalty -= findMinimumTimeDifference(recurrences, eventSample);
+      penalty -= findMinimumDistance(recurrences, eventSample);
     }
     return penalty;
   }
@@ -30,18 +36,14 @@ public class RecurrenceFitnessPolicy {
   /**
    * @return difference in milliseconds between the closest recurrence and the timestamp of this event sample.
    */
-  private long findMinimumTimeDifference(Recurrences recurrences, EventSample eventSample) {
-    long minimumTimeDifference = 0;
+  private long findMinimumDistance(Recurrences recurrences, EventSample eventSample) {
+    long minimumDistance = 0;
     for (Recurrence recurrence : recurrences.getRecurrences()) {
-      long currentTimeDifference = recurrence.distanceTo(eventSample.getTimestamp());
-      if (currentTimeDifference >= minimumTimeDifference) {
-        minimumTimeDifference = currentTimeDifference;
+      long currentRecurrenceDistance = abs(recurrence.distanceTo(eventSample.getTimestamp()));
+      if (currentRecurrenceDistance >= minimumDistance) {
+        minimumDistance = currentRecurrenceDistance;
       }
     }
-    return minimumTimeDifference;
-  }
-
-  private static int sizePenalty(Recurrences recurrences) {
-    return recurrences.getRecurrencesCount() * SIZE_PENALTY_RATE;
+    return minimumDistance;
   }
 }

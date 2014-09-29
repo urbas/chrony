@@ -42,7 +42,7 @@ public class RecurrenceFitnessPolicyTest {
   }
 
   private static Recurrences singleWeeklyRecurrence() {
-    return recurrences(new DailyPeriodRecurrence(2, 0, 0, 0, 0, 0));
+    return recurrences(new DailyPeriodRecurrence(7, 0, 0, 0, 0, 0));
   }
 
   private static Recurrences singleDailyRecurrence() {
