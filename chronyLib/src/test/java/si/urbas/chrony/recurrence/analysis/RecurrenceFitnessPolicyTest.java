@@ -41,6 +41,15 @@ public class RecurrenceFitnessPolicyTest {
     );
   }
 
+  @Test
+  public void fitness_MUST_return_a_smaller_number_FOR_a_recurrence_that_prescribes_fewer_spurious_occurrences() {
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(7, 0), eventSampleAtTime(14, 0)));
+    assertThat(
+      fitnessPolicy.fitness(singleDailyRecurrence()),
+      is(lessThan(fitnessPolicy.fitness(singleWeeklyRecurrence())))
+    );
+  }
+
   private static Recurrences singleWeeklyRecurrence() {
     return recurrences(new DailyPeriodRecurrence(7, 0, 0, 0, 0, 0));
   }

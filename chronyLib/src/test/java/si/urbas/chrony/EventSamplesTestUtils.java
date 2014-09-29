@@ -20,9 +20,8 @@ public class EventSamplesTestUtils {
 
   public static EventSample eventSampleAtTime(int day, int hour) {
     Calendar calendar = createUtcCalendar();
-    calendar.setTimeInMillis(0);
-    calendar.add(Calendar.HOUR, day * 24 + hour);
-    System.out.println(calendar.getTime());
+    calendar.set(0, 0, day, hour, 0, 0);
+    calendar.set(Calendar.MILLISECOND, 0);
     return new EventSample(EVENT_NAME, calendar.getTimeInMillis(), null);
   }
 

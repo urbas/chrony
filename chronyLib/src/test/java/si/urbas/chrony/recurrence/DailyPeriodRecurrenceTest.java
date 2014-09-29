@@ -3,9 +3,13 @@ package si.urbas.chrony.recurrence;
 import org.junit.Test;
 
 import java.util.Calendar;
+import java.util.List;
 
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
 import static si.urbas.chrony.util.TimeUtils.*;
 
 public class DailyPeriodRecurrenceTest {
@@ -109,11 +113,19 @@ public class DailyPeriodRecurrenceTest {
 
   @Test
   public void equals_MUST_return_true_for_two_instances_created_with_same_parameters() {
-    assertEquals(new DailyPeriodRecurrence(1, 2, 3, 4, 5, 6), new DailyPeriodRecurrence(1, 2, 3, 4, 5, 6));
+    assertEquals(createDailyPeriodRecurrence(), createDailyPeriodRecurrence());
   }
 
   @Test
   public void equals_MUST_return_false_for_two_instances_created_with_different_parameters() {
-    assertNotEquals(new DailyPeriodRecurrence(1, 2, 3, 4, 0, 6), new DailyPeriodRecurrence(1, 2, 3, 4, 5, 6));
+    assertNotEquals(new DailyPeriodRecurrence(1, 2, 3, 4, 0, 6), createDailyPeriodRecurrence());
   }
+
+  @Test
+  public void getOccurrencesBetween_MUST_return_an_empty_list_WHEN_the_range_is_non_positive() {
+    List<Long> foundOccurrences = createDailyPeriodRecurrence().getOccurrencesBetween(123, 123);
+    assertThat(foundOccurrences, is(empty()));
+  }
+
+  private static DailyPeriodRecurrence createDailyPeriodRecurrence() {return new DailyPeriodRecurrence(1, 2, 3, 4, 5, 6);}
 }

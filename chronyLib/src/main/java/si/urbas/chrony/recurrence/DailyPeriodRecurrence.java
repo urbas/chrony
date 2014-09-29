@@ -1,6 +1,8 @@
 package si.urbas.chrony.recurrence;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import static si.urbas.chrony.util.MathUtils.smallestByAbsoluteValue;
 import static si.urbas.chrony.util.TimeUtils.*;
@@ -45,6 +47,11 @@ public class DailyPeriodRecurrence implements Recurrence {
     boolean isTimeBeforeFirstOccurrence = distanceFromFirstOccurrence < 0;
     long distanceToOvershootingOccurrence = timeInMilliseconds - (firstRecurrenceTimeInMillis + (distanceToTimeInPeriods + (isTimeBeforeFirstOccurrence ? -1 : 1)) * periodInMillis);
     return smallestByAbsoluteValue(distanceToUndershootingOccurrence, distanceToOvershootingOccurrence);
+  }
+
+  @Override
+  public List<Long> getOccurrencesBetween(long fromTimeInMillis, long toTimeInMillis) {
+    return new ArrayList<Long>();
   }
 
   @Override

@@ -1,6 +1,7 @@
 package si.urbas.chrony.recurrence.analysis;
 
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.metrics.EventTemporalMetrics;
 import si.urbas.chrony.recurrence.Recurrence;
 import si.urbas.chrony.recurrence.Recurrences;
 
@@ -18,19 +19,29 @@ public class RecurrenceFitnessPolicy {
   }
 
   public double fitness(Recurrences recurrences) {
-    return sizePenalty(recurrences) + timeMismatchPenalty(recurrences);
+    return sizePenalty(recurrences) +
+           minimumDistancesSum(recurrences) +
+           distancesOfOccurrencesToSamplesSum(recurrences);
   }
 
   private static int sizePenalty(Recurrences recurrences) {
     return recurrences.getRecurrencesCount() * SIZE_PENALTY_RATE;
   }
 
-  private int timeMismatchPenalty(Recurrences recurrences) {
+  private int minimumDistancesSum(Recurrences recurrences) {
     int penalty = 0;
     for (EventSample eventSample : eventSamples) {
       penalty -= findMinimumDistance(recurrences, eventSample);
     }
     return penalty;
+  }
+
+  private double distancesOfOccurrencesToSamplesSum(Recurrences recurrences) {
+    EventTemporalMetrics temporalMetrics = EventTemporalMetrics.calculate(eventSamples);
+    for (Recurrence recurrence : recurrences.getRecurrences()) {
+      recurrence.getOccurrencesBetween(temporalMetrics.oldestTimestamp, temporalMetrics.newestTimestamp);
+    }
+    return 0;
   }
 
   /**
