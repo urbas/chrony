@@ -1,5 +1,6 @@
 package si.urbas.chrony.recurrence.analysis;
 
+import org.junit.Before;
 import org.junit.Test;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrences;
@@ -17,6 +18,11 @@ import static si.urbas.chrony.recurrence.RecurrencesTestUtils.recurrences;
 public class RecurrenceFitnessPolicyTest {
 
   private static final int COMPLETELY_PRECISE = 0;
+
+  @Before
+  public void setUp() {
+    System.out.println("next test");
+  }
 
   @Test
   public void fitness_MUST_return_0_WHEN_given_no_samples_and_empty_recurrence() {
@@ -47,6 +53,15 @@ public class RecurrenceFitnessPolicyTest {
     assertThat(
       fitnessPolicy.fitness(singleDailyRecurrence()),
       is(lessThan(fitnessPolicy.fitness(singleWeeklyRecurrence())))
+    );
+  }
+
+  @Test
+  public void fitness_MUST_prefer_two_recurrences_to_one_WHEN_two_recurrences_match_the_samples_perfectly() {
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(1, 0), eventSampleAtTime(2, 0), eventSampleAtTime(8, 0), eventSampleAtTime(9, 0)));
+    assertThat(
+      fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(7, 0, 0, 1, 0, 0))),
+      is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(7, 0, 0, 1, 0, 0), new DailyPeriodRecurrence(7, 0, 0, 2, 0, 0)))))
     );
   }
 

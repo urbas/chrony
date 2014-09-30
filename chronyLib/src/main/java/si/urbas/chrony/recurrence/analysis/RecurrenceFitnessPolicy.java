@@ -11,7 +11,7 @@ import static java.lang.Math.abs;
 
 public class RecurrenceFitnessPolicy {
 
-  private static final int SIZE_PENALTY_RATE = -1000;
+  private static final int SIZE_PENALTY_RATE = 1000 * 60 * 60;
   private final List<EventSample> eventSamples;
 
   public RecurrenceFitnessPolicy(List<EventSample> eventSamples) {
@@ -19,16 +19,22 @@ public class RecurrenceFitnessPolicy {
   }
 
   public double fitness(Recurrences recurrences) {
-    return sizePenalty(recurrences) -
-           minimumDistancesSum(recurrences) -
-           distancesOfOccurrencesToSamplesSum(recurrences);
+    int sizePenalty = sizePenalty(recurrences);
+    int minimumDistancePenalty = minimumDistancesPenalty(recurrences);
+    double spuriousOccurrencesPenalty = spuriousOccurrencesPenalty(recurrences);
+    System.out.println("sizePenalty " + sizePenalty);
+    System.out.println("minimumDistancePenalty " + minimumDistancePenalty);
+    System.out.println("spuriousOccurrencesPenalty " + spuriousOccurrencesPenalty);
+    return -sizePenalty -
+           minimumDistancePenalty -
+           spuriousOccurrencesPenalty;
   }
 
   private static int sizePenalty(Recurrences recurrences) {
     return recurrences.getRecurrencesCount() * SIZE_PENALTY_RATE;
   }
 
-  private int minimumDistancesSum(Recurrences recurrences) {
+  private int minimumDistancesPenalty(Recurrences recurrences) {
     int penalty = 0;
     for (EventSample eventSample : eventSamples) {
       penalty += findMinimumDistance(recurrences, eventSample);
@@ -36,7 +42,7 @@ public class RecurrenceFitnessPolicy {
     return penalty;
   }
 
-  private double distancesOfOccurrencesToSamplesSum(Recurrences recurrences) {
+  private long spuriousOccurrencesPenalty(Recurrences recurrences) {
     EventTemporalMetrics temporalMetrics = EventTemporalMetrics.calculate(eventSamples);
     int distanceSum = 0;
     for (Recurrence recurrence : recurrences.getRecurrences()) {
@@ -63,10 +69,10 @@ public class RecurrenceFitnessPolicy {
    * @return difference in milliseconds between the closest recurrence and the timestamp of this event sample.
    */
   private long findMinimumDistance(Recurrences recurrences, EventSample eventSample) {
-    long minimumDistance = 0;
+    long minimumDistance = Long.MAX_VALUE;
     for (Recurrence recurrence : recurrences.getRecurrences()) {
       long currentRecurrenceDistance = abs(recurrence.distanceTo(eventSample.getTimestamp()));
-      if (currentRecurrenceDistance >= minimumDistance) {
+      if (currentRecurrenceDistance <= minimumDistance) {
         minimumDistance = currentRecurrenceDistance;
       }
     }
