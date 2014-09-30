@@ -51,7 +51,15 @@ public class DailyPeriodRecurrence implements Recurrence {
 
   @Override
   public List<Long> getOccurrencesBetween(long fromTimeInMillis, long toTimeInMillis) {
-    return new ArrayList<Long>();
+    ArrayList<Long> occurrences = new ArrayList<Long>();
+    if (toTimeInMillis > fromTimeInMillis) {
+      for (long currentOccurrence = getFirstOccurrenceAfter(fromTimeInMillis);
+           currentOccurrence < toTimeInMillis;
+           currentOccurrence += periodInDays * DAY_IN_MILLIS) {
+        occurrences.add(currentOccurrence);
+      }
+    }
+    return occurrences;
   }
 
   @Override
@@ -77,6 +85,16 @@ public class DailyPeriodRecurrence implements Recurrence {
            "firstOccurrence=" + toSimpleString(firstOccurrence) +
            ", periodInDays=" + periodInDays +
            '}';
+  }
+
+  private long getFirstOccurrenceAfter(long timeInMillis) {
+    long distanceToTime = distanceTo(timeInMillis);
+    long nearestOccurrence = timeInMillis - distanceToTime;
+    if (distanceToTime > 0) {
+      return nearestOccurrence + periodInDays * DAY_IN_MILLIS;
+    } else {
+      return nearestOccurrence;
+    }
   }
 
 }

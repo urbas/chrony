@@ -5,11 +5,8 @@ import org.junit.Test;
 import java.util.Calendar;
 import java.util.List;
 
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static si.urbas.chrony.util.TimeUtils.*;
 
 public class DailyPeriodRecurrenceTest {
@@ -17,6 +14,7 @@ public class DailyPeriodRecurrenceTest {
   private static final int PERIOD_1_DAY = 1;
   private static final int PERIOD_3_DAYS = 3;
   private static final int PERIOD_7_DAYS = 7;
+  private static final long RANGE_WIDTH_10_MILLIS = 10;
 
   @Test
   public void distanceTo_MUST_return_0_WHEN_the_nearest_recurrence_happens_exactly_on_the_given_time() {
@@ -125,6 +123,44 @@ public class DailyPeriodRecurrenceTest {
   public void getOccurrencesBetween_MUST_return_an_empty_list_WHEN_the_range_is_non_positive() {
     List<Long> foundOccurrences = createDailyPeriodRecurrence().getOccurrencesBetween(123, 123);
     assertThat(foundOccurrences, is(empty()));
+  }
+
+  @Test
+  public void getOccurrencesBetween_MUST_return_one_occurrence_WHEN_the_range_includes_the_initial_occurrence() {
+    long firstOccurrence = toUtcTimeInMillis(1, 2, 3, 4, 5, 6);
+    long rangeStart = firstOccurrence - RANGE_WIDTH_10_MILLIS / 2;
+    DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_1_DAY, toUtcCalendar(firstOccurrence));
+    List<Long> foundOccurrences = recurrence.getOccurrencesBetween(rangeStart, rangeStart + RANGE_WIDTH_10_MILLIS);
+    assertThat(foundOccurrences, contains(firstOccurrence));
+  }
+
+  @Test
+  public void getOccurrencesBetween_MUST_return_a_future_occurrence_WHEN_the_range_includes_a_future_occurrence() {
+    long firstOccurrence = toUtcTimeInMillis(1, 2, 3, 4, 5, 6);
+    long futureOccurrence = toUtcTimeInMillis(1, 2, 5, 4, 5, 6);
+    long rangeStart = futureOccurrence - RANGE_WIDTH_10_MILLIS / 2;
+    DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_1_DAY, toUtcCalendar(firstOccurrence));
+    List<Long> foundOccurrences = recurrence.getOccurrencesBetween(rangeStart, rangeStart + RANGE_WIDTH_10_MILLIS);
+    assertThat(foundOccurrences, contains(futureOccurrence));
+  }
+
+  @Test
+  public void getOccurrencesBetween_MUST_return_past_and_future_occurrences_WHEN_the_range_includes_them() {
+    long firstOccurrence = toUtcTimeInMillis(2014, 8, 22, 13, 45, 0);
+    long rangeStart = toUtcTimeInMillis(2014, 8, 8, 11, 45, 0);
+    long rangeEnd = toUtcTimeInMillis(2014, 9, 6, 19, 45, 0);
+    DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_7_DAYS, toUtcCalendar(firstOccurrence));
+    List<Long> foundOccurrences = recurrence.getOccurrencesBetween(rangeStart, rangeEnd);
+    assertThat(
+      foundOccurrences,
+      contains(
+        toUtcTimeInMillis(2014, 8, 8, 13, 45, 0),
+        toUtcTimeInMillis(2014, 8, 15, 13, 45, 0),
+        toUtcTimeInMillis(2014, 8, 22, 13, 45, 0),
+        toUtcTimeInMillis(2014, 8, 29, 13, 45, 0),
+        toUtcTimeInMillis(2014, 9, 6, 13, 45, 0)
+      )
+    );
   }
 
   private static DailyPeriodRecurrence createDailyPeriodRecurrence() {return new DailyPeriodRecurrence(1, 2, 3, 4, 5, 6);}

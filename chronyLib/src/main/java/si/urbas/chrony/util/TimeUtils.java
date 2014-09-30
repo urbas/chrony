@@ -15,6 +15,10 @@ public class TimeUtils {
   public static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
   private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
+  public static long toUtcTimeInMillis(int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour, int secondsPastMinute) {
+    return toUtcCalendar(year, month, dayOfMonth, hourOfDay, minutesPastHour, secondsPastMinute).getTimeInMillis();
+  }
+
   public static Calendar createUtcCalendar() {return Calendar.getInstance(UTC_TIME_ZONE);}
 
   public static Calendar toUtcCalendar(long utcTimeInMillisSinceEpoch) {
