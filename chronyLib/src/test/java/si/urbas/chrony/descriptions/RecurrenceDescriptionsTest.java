@@ -19,7 +19,7 @@ public class RecurrenceDescriptionsTest {
   private static final int TWO_DAYS = 2;
   private static final int ONE_DAY = 1;
   private static final int SIXTEEN_O_CLOCK = 16;
-  private static final int FORTY_PAST_HOUR = 40;
+  private static final int FIVE_PAST_HOUR = 5;
 
   @Test
   public void toShortDescriptionOf_MUST_say_that_no_recurrence_was_discovered_WHEN_the_recurrence_analysis_is_empty() {
@@ -35,8 +35,8 @@ public class RecurrenceDescriptionsTest {
 
   @Test
   public void toShortDescriptionOf_MUST_describe_bidaily_recurrences() {
-    String actualDescription = toShortDescription(dayRecurrenceEvery(TWO_DAYS, SIXTEEN_O_CLOCK, FORTY_PAST_HOUR));
-    assertEquals("every 2nd day at 16:40", actualDescription);
+    String actualDescription = toShortDescription(dayRecurrenceEvery(TWO_DAYS, SIXTEEN_O_CLOCK, FIVE_PAST_HOUR));
+    assertEquals("every 2nd day at 16:05", actualDescription);
   }
 
   private List<DailyPeriodRecurrence> dayRecurrenceEvery(int periodInDays, int hourOfDay, int minutesPastHour) {

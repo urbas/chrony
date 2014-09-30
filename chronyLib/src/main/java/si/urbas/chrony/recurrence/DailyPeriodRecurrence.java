@@ -11,8 +11,6 @@ public class DailyPeriodRecurrence implements Recurrence {
 
   private final int periodInDays;
   private final Calendar firstOccurrence;
-  private final int hourOfDay;
-  private final int minutePastHour;
 
   public DailyPeriodRecurrence(int periodInDays, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {
     this(periodInDays, toUtcCalendar(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0));
@@ -21,16 +19,6 @@ public class DailyPeriodRecurrence implements Recurrence {
   public DailyPeriodRecurrence(int periodInDays, Calendar firstOccurrence) {
     this.periodInDays = periodInDays;
     this.firstOccurrence = firstOccurrence;
-    hourOfDay = firstOccurrence.get(Calendar.HOUR_OF_DAY);
-    minutePastHour = firstOccurrence.get(Calendar.MINUTE);
-  }
-
-  public int getHourOfDay() {
-    return hourOfDay;
-  }
-
-  public int getMinutesPastHour() {
-    return minutePastHour;
   }
 
   public int getPeriodInDays() {
@@ -85,6 +73,10 @@ public class DailyPeriodRecurrence implements Recurrence {
            "firstOccurrence=" + toSimpleString(firstOccurrence) +
            ", periodInDays=" + periodInDays +
            '}';
+  }
+
+  public Calendar getFirstOccurrence() {
+    return firstOccurrence;
   }
 
   private long getFirstOccurrenceAfter(long timeInMillis) {

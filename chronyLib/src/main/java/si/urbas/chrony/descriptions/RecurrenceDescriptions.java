@@ -3,12 +3,15 @@ package si.urbas.chrony.descriptions;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static si.urbas.chrony.util.Ordinals.toNumericOrdinal;
 
 public class RecurrenceDescriptions {
+
   static final String DESCRIPTION_OF_EMPTY_RECURRENCE_ANALYSIS = "No recurrence pattern discovered.";
+  private static final SimpleDateFormat HOUR_AND_MINUTE_FORMAT = new SimpleDateFormat("HH:mm");
 
   public static String toShortDescription(List<? extends Recurrence> recurrenceAnalysis) {
     if (recurrenceAnalysis.size() == 1) {
@@ -42,6 +45,6 @@ public class RecurrenceDescriptions {
   }
 
   private static String formatTime(DailyPeriodRecurrence recurrence) {
-    return recurrence.getHourOfDay() + ":" + recurrence.getMinutesPastHour();
+    return HOUR_AND_MINUTE_FORMAT.format(recurrence.getFirstOccurrence().getTime());
   }
 }
