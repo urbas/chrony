@@ -19,8 +19,8 @@ public class RecurrenceFitnessPolicy {
   }
 
   public double fitness(Recurrences recurrences) {
-    return sizePenalty(recurrences) +
-           minimumDistancesSum(recurrences) +
+    return sizePenalty(recurrences) -
+           minimumDistancesSum(recurrences) -
            distancesOfOccurrencesToSamplesSum(recurrences);
   }
 
@@ -31,17 +31,32 @@ public class RecurrenceFitnessPolicy {
   private int minimumDistancesSum(Recurrences recurrences) {
     int penalty = 0;
     for (EventSample eventSample : eventSamples) {
-      penalty -= findMinimumDistance(recurrences, eventSample);
+      penalty += findMinimumDistance(recurrences, eventSample);
     }
     return penalty;
   }
 
   private double distancesOfOccurrencesToSamplesSum(Recurrences recurrences) {
     EventTemporalMetrics temporalMetrics = EventTemporalMetrics.calculate(eventSamples);
+    int distanceSum = 0;
     for (Recurrence recurrence : recurrences.getRecurrences()) {
-      recurrence.getOccurrencesBetween(temporalMetrics.oldestTimestamp, temporalMetrics.newestTimestamp);
+      List<Long> occurrencesInEntireRange = recurrence.getOccurrencesBetween(temporalMetrics.oldestTimestamp, temporalMetrics.newestTimestamp);
+      for (Long occurrence : occurrencesInEntireRange) {
+        distanceSum += distanceToClosestSample(occurrence);
+      }
     }
-    return 0;
+    return distanceSum;
+  }
+
+  private long distanceToClosestSample(long occurrenceTimeInMillis) {
+    long minDistance = Long.MAX_VALUE;
+    for (EventSample eventSample : eventSamples) {
+      long currentDistance = abs(eventSample.getTimestamp() - occurrenceTimeInMillis);
+      if (currentDistance < minDistance) {
+        minDistance = currentDistance;
+      }
+    }
+    return minDistance;
   }
 
   /**
