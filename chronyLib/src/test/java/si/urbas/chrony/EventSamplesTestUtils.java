@@ -16,6 +16,10 @@ public class EventSamplesTestUtils {
   public static final int DAY_8 = 7;
   public static final int DAY_10 = 9;
 
+  public static EventSample eventSampleAtTime(long timeInMillis) {
+    return new EventSample(EVENT_NAME, timeInMillis, null);
+  }
+
   public static List<EventSample> emptyEventSamples() {return Collections.emptyList();}
 
   public static EventSample eventSampleAtTime(int day, int hour) {
