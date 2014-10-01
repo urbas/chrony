@@ -39,7 +39,6 @@ public class DailyPeriodRecurrenceTest {
 
   @Test
   public void distanceTo_MUST_return_negative_120000_WHEN_some_future_recurrence_happens_2_minutes_after_the_given_time() {
-    System.out.println("Past:");
     DailyPeriodRecurrence dailyPeriodRecurrence = new DailyPeriodRecurrence(PERIOD_1_DAY, 2000, 3, 14, 15, 33);
     Calendar timeOfInterest = toUtcCalendar(2000, 4, 28, 15, 31, 0);
     assertEquals(-120000, dailyPeriodRecurrence.distanceTo(timeOfInterest.getTimeInMillis()));

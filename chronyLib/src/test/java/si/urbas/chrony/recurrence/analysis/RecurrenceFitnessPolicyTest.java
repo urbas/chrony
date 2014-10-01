@@ -1,6 +1,5 @@
 package si.urbas.chrony.recurrence.analysis;
 
-import org.junit.Before;
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.EventSamplesTestUtils;
@@ -18,18 +17,11 @@ import static si.urbas.chrony.EventSamplesTestUtils.emptyEventSamples;
 import static si.urbas.chrony.EventSamplesTestUtils.eventSampleAtTime;
 import static si.urbas.chrony.recurrence.RecurrencesTestUtils.emptyRecurrences;
 import static si.urbas.chrony.recurrence.RecurrencesTestUtils.recurrences;
-import static si.urbas.chrony.util.TimeUtils.DAY_IN_MILLIS;
-import static si.urbas.chrony.util.TimeUtils.HOUR_IN_MILLIS;
-import static si.urbas.chrony.util.TimeUtils.toUtcTimeInMillis;
+import static si.urbas.chrony.util.TimeUtils.*;
 
 public class RecurrenceFitnessPolicyTest {
 
   private static final int COMPLETELY_PRECISE = 0;
-
-  @Before
-  public void setUp() {
-    System.out.println("next test");
-  }
 
   @Test
   public void fitness_MUST_return_0_WHEN_given_no_samples_and_empty_recurrence() {
@@ -77,8 +69,22 @@ public class RecurrenceFitnessPolicyTest {
     int periodInDays = 1;
     int durationInDays = 5;
     int maxDeviationInHours = 1;
-    System.out.println("Roughly daily samples:");
     ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(periodInDays, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(roughlyDailySamples);
+    assertThat(
+      fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(7, 2014, 8, 16, 14, 37))),
+      is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(periodInDays, 2014, 8, 16, 14, 37)))))
+    );
+  }
+
+  @Test
+  public void fitness_MUST_return_the_smallest_number_for_the_daily_recurrence_WHEN_two_occurrences_are_missing_in_seven_days() {
+    int periodInDays = 1;
+    int durationInDays = 7;
+    int maxDeviationInHours = 1;
+    ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(periodInDays, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
+    roughlyDailySamples.remove(2);
+    roughlyDailySamples.remove(2);
     RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(roughlyDailySamples);
     assertThat(
       fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(7, 2014, 8, 16, 14, 37))),

@@ -19,15 +19,9 @@ public class RecurrenceFitnessPolicy {
   }
 
   public double fitness(Recurrences recurrences) {
-    int sizePenalty = sizePenalty(recurrences);
-    int minimumDistancePenalty = minimumDistancesPenalty(recurrences);
-    long spuriousOccurrencesPenalty = spuriousOccurrencesPenalty(recurrences);
-    System.out.println("sizePenalty " + sizePenalty);
-    System.out.println("minimumDistancePenalty " + minimumDistancePenalty);
-    System.out.println("spuriousOccurrencesPenalty " + spuriousOccurrencesPenalty);
-    return -sizePenalty -
-           minimumDistancePenalty -
-           spuriousOccurrencesPenalty;
+    return -sizePenalty(recurrences) -
+           minimumDistancesPenalty(recurrences) -
+           spuriousOccurrencesPenalty(recurrences);
   }
 
   private static int sizePenalty(Recurrences recurrences) {
