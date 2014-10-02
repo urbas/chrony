@@ -26,14 +26,14 @@ public class DayRecurrenceAnalyserTest extends RecurrenceAnalyserTest {
   @Test
   public void foundPatterns_MUST_return_two_weekly_patterns_WHEN_given_four_events() {
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime1d17h, eventSampleAtTime3d17h, eventSampleAtTime8d17h, eventSampleAtTime10d17h));
-    assertThat(recurrenceAnalyser.foundRecurrences(), contains(weeklyRecurrence, weeklyRecurrence));
+    assertThat(recurrenceAnalyser.foundRecurrences().getRecurrences(), contains(weeklyRecurrence, weeklyRecurrence));
   }
 
   @Test
   public void foundPatterns_MUST_return_two_weekly_patterns_WHEN_they_pairwise_happen_on_same_weekday_but_at_different_time() {
     List<EventSample> eventSamples = asList(EventSamplesTestUtils.eventSampleAtTime(1, 9), EventSamplesTestUtils.eventSampleAtTime(1, 20), EventSamplesTestUtils.eventSampleAtTime(8, 9), EventSamplesTestUtils.eventSampleAtTime(8, 20));
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(eventSamples);
-    assertThat(recurrenceAnalyser.foundRecurrences(), contains(weeklyRecurrence, weeklyRecurrence));
+    assertThat(recurrenceAnalyser.foundRecurrences().getRecurrences(), contains(weeklyRecurrence, weeklyRecurrence));
   }
 
 }

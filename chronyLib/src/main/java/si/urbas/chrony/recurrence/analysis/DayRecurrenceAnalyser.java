@@ -4,10 +4,13 @@ import si.urbas.chrony.EventSample;
 import si.urbas.chrony.metrics.EventTemporalMetrics;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
+import si.urbas.chrony.recurrence.Recurrences;
+import si.urbas.chrony.recurrence.RecurrencesList;
 import si.urbas.chrony.util.TimeUtils;
 
 import java.util.*;
 
+import static si.urbas.chrony.recurrence.RecurrencesList.emptyRecurrences;
 import static si.urbas.chrony.util.EventSampleAssertions.assertEventSamplesOrdered;
 import static si.urbas.chrony.util.TimeUtils.createUtcCalendar;
 
@@ -17,7 +20,7 @@ public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
   private static final int WEEKLY_RECURRENCE_PERIOD = 7;
   private static final int MIN_EVENT_SAMPLES_FOR_RECURRENCE = 2;
   private static final int HOURS_IN_A_DAY = 24;
-  private final List<Recurrence> foundPatterns;
+  private final Recurrences foundPatterns;
   private EventTemporalMetrics eventTemporalMetrics;
 
   /**
@@ -33,18 +36,18 @@ public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
     this.foundPatterns = findPatterns(new ArrayList<EventSample>(eventSamples));
   }
 
-  private List<Recurrence> findPatterns(ArrayList<EventSample> eventSamples) {
+  private RecurrencesList findPatterns(ArrayList<EventSample> eventSamples) {
     if (eventSamples.size() >= MIN_EVENT_SAMPLES_FOR_RECURRENCE && isEventTimeSpanNonZero()) {
       ArrayList<Recurrence> foundPatterns = new ArrayList<Recurrence>();
       findWeeklyPatterns(eventSamples, foundPatterns);
       findSubWeekPatterns(eventSamples, foundPatterns);
-      return foundPatterns;
+      return new RecurrencesList(foundPatterns);
     }
-    return Collections.emptyList();
+    return emptyRecurrences;
   }
 
   @Override
-  public List<Recurrence> foundRecurrences() {
+  public Recurrences foundRecurrences() {
     return foundPatterns;
   }
 

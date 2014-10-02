@@ -1,9 +1,11 @@
 package si.urbas.chrony.recurrence;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class RecurrencesList implements Recurrences {
+  public static final RecurrencesList emptyRecurrences = new RecurrencesList(Collections.<Recurrence>emptyList());
   private final List<Recurrence> recurrenceList;
 
   public RecurrencesList(List<Recurrence> recurrenceList) {

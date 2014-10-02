@@ -41,6 +41,13 @@ public class RecurrenceChromosomeTest {
   }
 
   @Test
+  public void fitness_MUST_cache_the_result_from_the_fitness_policy() {
+    recurrenceChromosomeSize1_Binary1.fitness();
+    recurrenceChromosomeSize1_Binary1.fitness();
+    verify(recurrenceFitnessPolicy, times(1)).fitness(recurrenceChromosomeSize1_Binary1);
+  }
+
+  @Test
   public void fitness_MUST_return_the_answer_from_the_fitness_policy() {
     double expectedFitness = Math.random();
     when(recurrenceFitnessPolicy.fitness(recurrenceChromosomeSize1_Binary1)).thenReturn(expectedFitness);
@@ -48,7 +55,14 @@ public class RecurrenceChromosomeTest {
   }
 
   @Test
-  public void size_MUST_return_the_number_of_non_zero_elements_in_the_binary_list() {
+  public void fitness_MUST_return_the_cached_answer_from_the_fitness_policy() {
+    double expectedFitness = Math.random();
+    when(recurrenceFitnessPolicy.fitness(recurrenceChromosomeSize1_Binary1)).thenReturn(expectedFitness);
+    assertThat(recurrenceChromosomeSize1_Binary1.fitness(), equalTo(recurrenceChromosomeSize1_Binary1.fitness()));
+  }
+
+  @Test
+  public void getRecurrencesCount_MUST_return_the_number_of_non_zero_elements_in_the_binary_list() {
     assertEquals(2, recurrenceChromosomeSize3_Binary101.getRecurrencesCount());
   }
 

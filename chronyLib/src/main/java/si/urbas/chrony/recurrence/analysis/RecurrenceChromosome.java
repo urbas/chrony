@@ -13,39 +13,45 @@ public class RecurrenceChromosome extends BinaryChromosome implements Recurrence
   private final List<Recurrence> availableRecurrences;
   private final RecurrenceFitnessPolicy recurrenceFitnessPolicy;
   private final ArrayList<Recurrence> recurrences;
-  private int activeRecurrencesCount;
+  private double cachedFitness;
+  private boolean isFitnessInitialised = false;
 
-  public RecurrenceChromosome(List<Recurrence> availableRecurrences, List<Integer> includedRecurrences, RecurrenceFitnessPolicy recurrenceFitnessPolicy) {
+  public RecurrenceChromosome(List<Recurrence> availableRecurrences,
+                              List<Integer> includedRecurrences,
+                              RecurrenceFitnessPolicy recurrenceFitnessPolicy) {
     super(includedRecurrences);
     assertRecurrenceListsSizesMatch(availableRecurrences, includedRecurrences);
     this.availableRecurrences = availableRecurrences;
     this.recurrenceFitnessPolicy = recurrenceFitnessPolicy;
-    this.activeRecurrencesCount = countActiveRecurrences(includedRecurrences);
     this.recurrences = buildRecurrencesList(availableRecurrences, includedRecurrences);
   }
 
   @Override
-  public AbstractListChromosome<Integer> newFixedLengthChromosome(List<Integer> chromosomeRepresentation) {
-    return new RecurrenceChromosome(availableRecurrences, chromosomeRepresentation, recurrenceFitnessPolicy);
+  public AbstractListChromosome<Integer> newFixedLengthChromosome(List<Integer> includedRecurrences) {
+    return new RecurrenceChromosome(availableRecurrences, includedRecurrences, recurrenceFitnessPolicy);
   }
 
   @Override
   public double fitness() {
-    return recurrenceFitnessPolicy.fitness(this);
+    if (!isFitnessInitialised) {
+      cachedFitness = recurrenceFitnessPolicy.fitness(this);
+      isFitnessInitialised = true;
+    }
+    return cachedFitness;
   }
 
   @Override
   public int getRecurrencesCount() {
-    return activeRecurrencesCount;
+    return recurrences.size();
   }
 
   @Override
   public List<Recurrence> getRecurrences() {
     return recurrences;
-
   }
 
-  private static ArrayList<Recurrence> buildRecurrencesList(List<Recurrence> availableRecurrences, List<Integer> includedRecurrences) {
+  private static ArrayList<Recurrence> buildRecurrencesList(List<Recurrence> availableRecurrences,
+                                                            List<Integer> includedRecurrences) {
     ArrayList<Recurrence> recurrences = new ArrayList<Recurrence>();
     for (int i = 0; i < includedRecurrences.size(); i++) {
       Integer isRecurrenceIncluded = includedRecurrences.get(i);
@@ -56,17 +62,8 @@ public class RecurrenceChromosome extends BinaryChromosome implements Recurrence
     return recurrences;
   }
 
-  private static int countActiveRecurrences(List<Integer> includedRecurrences) {
-    int count = 0;
-    for (Integer isRecurrenceIncluded : includedRecurrences) {
-      if (isRecurrenceIncluded != 0) {
-        ++count;
-      }
-    }
-    return count;
-  }
-
-  private static void assertRecurrenceListsSizesMatch(List<Recurrence> availableRecurrences, List<Integer> includedRecurrences) {
+  private static void assertRecurrenceListsSizesMatch(List<Recurrence> availableRecurrences,
+                                                      List<Integer> includedRecurrences) {
     if (availableRecurrences.size() != includedRecurrences.size()) {
       throw new IllegalArgumentException("The list of available recurrences must match the size of included recurrences.");
     }

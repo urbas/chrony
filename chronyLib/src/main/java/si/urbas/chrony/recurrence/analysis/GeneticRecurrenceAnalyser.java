@@ -4,6 +4,7 @@ import org.apache.commons.math3.genetics.*;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
+import si.urbas.chrony.recurrence.Recurrences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,19 +21,18 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
   private static final int MAX_GENERATIONS = 25;
   private static final double RATE_OF_GUESSED_RECURRENCE = 0.1;
   private static final double CROSSOVER_RATIO = 0.1;
-  private final List<Recurrence> foundRecurrences;
+  private final RecurrenceChromosome foundRecurrences;
 
   public GeneticRecurrenceAnalyser(List<EventSample> eventSamples) {
     List<Recurrence> guessedRecurrences = guessPossibleRecurrences(eventSamples);
     GeneticAlgorithm geneticAlgorithm = createBinaryGeneticAlgorithm();
     ElitisticListPopulation initialPopulation = createInitialPopulation(eventSamples, guessedRecurrences);
     Population evolvedPopulation = geneticAlgorithm.evolve(initialPopulation, new FixedGenerationCount(MAX_GENERATIONS));
-    RecurrenceChromosome fittestChromosome = (RecurrenceChromosome) evolvedPopulation.getFittestChromosome();
-    foundRecurrences = new ArrayList<Recurrence>();
+    foundRecurrences = (RecurrenceChromosome) evolvedPopulation.getFittestChromosome();
   }
 
   @Override
-  public List<Recurrence> foundRecurrences() {
+  public Recurrences foundRecurrences() {
     return foundRecurrences;
   }
 
