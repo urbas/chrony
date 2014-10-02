@@ -4,6 +4,7 @@ import org.junit.Test;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.EventSamplesTestUtils;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
+import si.urbas.chrony.recurrence.Recurrence;
 import si.urbas.chrony.recurrence.Recurrences;
 
 import java.util.ArrayList;
@@ -33,9 +34,26 @@ public class RecurrenceFitnessPolicyTest {
   }
 
   @Test
+  public void fitness_MUST_severely_punish_non_empty_recurrences_WHEN_given_less_than_two_samples() {
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(1, 0)));
+    double actualFitness = fitnessPolicy.fitness(recurrences(createTestRecurrence()));
+    double expectedFitness = Double.NEGATIVE_INFINITY;
+    assertEquals(expectedFitness, actualFitness, COMPLETELY_PRECISE);
+  }
+
+  @Test
   public void fitness_MUST_return_a_negative_number_WHEN_given_some_recurrences_AND_no_samples() {
     RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(emptyEventSamples());
     assertThat(fitnessPolicy.fitness(singleDailyRecurrence()), is(lessThan(0.0)));
+  }
+
+  @Test
+  public void fitness_MUST_favour_non_empty_recurrences_WHEN_there_are_some_samples() {
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(1, 0), eventSampleAtTime(2, 0)));
+    assertThat(
+      fitnessPolicy.fitness(emptyRecurrences()),
+      is(lessThan(fitnessPolicy.fitness(singleDailyRecurrence())))
+    );
   }
 
   @Test
@@ -73,7 +91,7 @@ public class RecurrenceFitnessPolicyTest {
     ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(periodInDays, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
     RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(roughlyDailySamples);
     assertThat(
-      fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(7, 2014, 8, 16, 14, 37))),
+      fitnessPolicy.fitness(recurrences(createTestRecurrence())),
       is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(periodInDays, 2014, 8, 16, 14, 37)))))
     );
   }
@@ -82,7 +100,7 @@ public class RecurrenceFitnessPolicyTest {
   public void fitness_MUST_return_the_smallest_number_for_the_daily_recurrence_WHEN_two_occurrences_are_missing_in_seven_days() {
     RecurrenceFitnessPolicy fitnessPolicy = prepareFitnessPolicyWith5DailyRandomisedSamples();
     assertThat(
-      fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(7, 2014, 8, 16, 14, 37))),
+      fitnessPolicy.fitness(recurrences(createTestRecurrence())),
       is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(1, 2014, 8, 16, 14, 37)))))
     );
   }
@@ -92,7 +110,7 @@ public class RecurrenceFitnessPolicyTest {
     RecurrenceFitnessPolicy fitnessPolicy = prepareFitnessPolicyWithBidailyRandomisedSamples();
     assertThat(
       fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(2, 2014, 8, 16, 14, 37), new DailyPeriodRecurrence(2, 2014, 8, 17, 14, 37))),
-      is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(1, 2014, 8, 16, 14, 37)))))
+      is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(1, 2010, 8, 16, 14, 37)))))
     );
   }
 
@@ -139,5 +157,7 @@ public class RecurrenceFitnessPolicyTest {
     ArrayList<EventSample> samples = createRandomEventSamples(2, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
     return new RecurrenceFitnessPolicy(samples);
   }
+
+  private static Recurrence createTestRecurrence() {return new DailyPeriodRecurrence(7, 2014, 8, 16, 14, 37);}
 
 }

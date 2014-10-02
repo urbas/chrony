@@ -19,14 +19,16 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
   private static final int TOURNAMENT_SELECTION_ARITY = 5;
   private static final double ELITISM_RATE = 0.15;
   private static final int MAX_GENERATIONS = 25;
-  private static final double RATE_OF_GUESSED_RECURRENCE = 0.1;
+  private static final double RATE_OF_GUESSED_RECURRENCE = 0.5;
   private static final double CROSSOVER_RATIO = 0.1;
   private final RecurrenceChromosome foundRecurrences;
 
   public GeneticRecurrenceAnalyser(List<EventSample> eventSamples) {
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(eventSamples);
     List<Recurrence> guessedRecurrences = guessPossibleRecurrences(eventSamples);
     GeneticAlgorithm geneticAlgorithm = createBinaryGeneticAlgorithm();
-    ElitisticListPopulation initialPopulation = createInitialPopulation(eventSamples, guessedRecurrences);
+    ElitisticListPopulation initialPopulation = createInitialPopulation(guessedRecurrences, fitnessPolicy);
+    System.out.println("Initial population: " + initialPopulation);
     Population evolvedPopulation = geneticAlgorithm.evolve(initialPopulation, new FixedGenerationCount(MAX_GENERATIONS));
     foundRecurrences = (RecurrenceChromosome) evolvedPopulation.getFittestChromosome();
   }
@@ -37,11 +39,11 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
   }
 
   private static List<Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples) {
-    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(1, 0, 0, 0, 0, 0));
+    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(1, 0, 0, 1, 17, 0));
   }
 
-  private static ElitisticListPopulation createInitialPopulation(List<EventSample> eventSamples, List<Recurrence> guessedRecurrences) {
-    return new ElitisticListPopulation(createRandomPopulation(guessedRecurrences, eventSamples, new Random()), POPULATION_LIMIT, ELITISM_RATE);
+  private static ElitisticListPopulation createInitialPopulation(List<Recurrence> guessedRecurrences, RecurrenceFitnessPolicy fitnessPolicy) {
+    return new ElitisticListPopulation(createRandomPopulation(guessedRecurrences, new Random(), fitnessPolicy), POPULATION_LIMIT, ELITISM_RATE);
   }
 
   private static GeneticAlgorithm createBinaryGeneticAlgorithm() {
@@ -54,12 +56,11 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
     );
   }
 
-  private static List<Chromosome> createRandomPopulation(List<Recurrence> guessedRecurrences, List<EventSample> eventSamples, Random randomnessSource) {
+  private static List<Chromosome> createRandomPopulation(List<Recurrence> guessedRecurrences, Random randomnessSource, RecurrenceFitnessPolicy fitnessPolicy) {
     ArrayList<Chromosome> population = new ArrayList<Chromosome>();
-    RecurrenceFitnessPolicy recurrenceFitnessPolicy = new RecurrenceFitnessPolicy(eventSamples);
     for (int i = 0; i < POPULATION_LIMIT; i++) {
       List<Integer> randomListOfRecurrences = getRandomListOfRecurrences(guessedRecurrences, RATE_OF_GUESSED_RECURRENCE, randomnessSource);
-      population.add(new RecurrenceChromosome(guessedRecurrences, randomListOfRecurrences, recurrenceFitnessPolicy));
+      population.add(new RecurrenceChromosome(guessedRecurrences, randomListOfRecurrences, fitnessPolicy));
     }
     return population;
   }

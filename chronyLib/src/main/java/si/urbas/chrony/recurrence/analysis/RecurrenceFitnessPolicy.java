@@ -22,17 +22,33 @@ public class RecurrenceFitnessPolicy {
   }
 
   public double fitness(Recurrences recurrences) {
-    int sizePenalty = sizePenalty(recurrences);
-    int minimumDistancesPenalty = minimumDistancesPenalty(recurrences);
-    long spuriousOccurrencesPenalty = spuriousOccurrencesPenalty(recurrences);
-    return -sizePenalty - minimumDistancesPenalty - spuriousOccurrencesPenalty;
+    if (eventSamples.size() < 2 && recurrences.getRecurrencesCount() > 0) {
+      return Double.NEGATIVE_INFINITY;
+    } else {
+      EventTemporalMetrics eventSamplesTemporalMetrics = EventTemporalMetrics.calculate(eventSamples);
+      int sizePenalty = sizePenalty(recurrences);
+      System.out.println("sizePenalty = " + sizePenalty);
+      long minimumDistancesPenalty = minimumDistancesPenalty(recurrences, eventSamplesTemporalMetrics);
+      System.out.println("minimumDistancesPenalty = " + minimumDistancesPenalty);
+      long spuriousOccurrencesPenalty = spuriousOccurrencesPenalty(recurrences, eventSamplesTemporalMetrics);
+      System.out.println("spuriousOccurrencesPenalty = " + spuriousOccurrencesPenalty);
+      return -sizePenalty - minimumDistancesPenalty - spuriousOccurrencesPenalty;
+    }
   }
 
   private static int sizePenalty(Recurrences recurrences) {
     return recurrences.getRecurrencesCount() * SIZE_PENALTY_RATE;
   }
 
-  private int minimumDistancesPenalty(Recurrences recurrences) {
+  private long minimumDistancesPenalty(Recurrences recurrences, EventTemporalMetrics eventSamplesTemporalMetrics) {
+    if (recurrences.getRecurrencesCount() == 0) {
+      return defaultMinimumDistancePenalty(eventSamplesTemporalMetrics);
+    } else {
+      return sumOfMinDistances(recurrences);
+    }
+  }
+
+  private long sumOfMinDistances(Recurrences recurrences) {
     int penalty = 0;
     for (EventSample eventSample : eventSamples) {
       penalty += findMinimumDistance(recurrences, eventSample);
@@ -40,11 +56,15 @@ public class RecurrenceFitnessPolicy {
     return penalty;
   }
 
-  private long spuriousOccurrencesPenalty(Recurrences recurrences) {
-    EventTemporalMetrics temporalMetrics = EventTemporalMetrics.calculate(eventSamples);
+  private long defaultMinimumDistancePenalty(EventTemporalMetrics eventSamplesTemporalMetrics) {
+    long entireTimeSpan = eventSamplesTemporalMetrics.newestTimestamp - eventSamplesTemporalMetrics.oldestTimestamp;
+    return entireTimeSpan * eventSamples.size() / 2;
+  }
+
+  private long spuriousOccurrencesPenalty(Recurrences recurrences, EventTemporalMetrics eventSamplesTemporalMetrics) {
     int distanceSum = 0;
     for (Recurrence recurrence : recurrences.getRecurrences()) {
-      List<Long> occurrencesInEntireRange = recurrence.getOccurrencesBetween(temporalMetrics.oldestTimestamp, temporalMetrics.newestTimestamp);
+      List<Long> occurrencesInEntireRange = recurrence.getOccurrencesBetween(eventSamplesTemporalMetrics.oldestTimestamp, eventSamplesTemporalMetrics.newestTimestamp);
       for (Long occurrence : occurrencesInEntireRange) {
         distanceSum += distanceToClosestSample(occurrence);
       }

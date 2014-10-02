@@ -28,24 +28,28 @@ public abstract class RecurrenceAnalyserTest {
 
   @Test
   public void foundRecurrences_MUST_return_an_empty_list_WHEN_given_no_event_samples() {
+    System.out.println("First test");
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(emptyEventSamples());
     assertThat(recurrenceAnalyser.foundRecurrences().getRecurrences(), is(empty()));
   }
 
   @Test
   public void foundRecurrences_MUST_return_an_empty_list_WHEN_the_entire_time_span_of_the_event_is_0() {
+    System.out.println("Seconds test");
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime10d17h, eventSampleAtTime10d17h));
     assertThat(recurrenceAnalyser.foundRecurrences().getRecurrences(), is(empty()));
   }
 
   @Test
   public void foundRecurrences_MUST_return_an_empty_list_WHEN_given_a_single_event_sample() {
+    System.out.println("Third test");
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime1d17h));
     assertThat(recurrenceAnalyser.foundRecurrences().getRecurrences(), is(empty()));
   }
 
   @Test
   public void foundRecurrences_MUST_return_a_daily_recurrence_WHEN_given_two_events_a_day_apart() {
+    System.out.println("Woohoo!");
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime1d17h, eventSampleAtTime2d17h));
     assertThat(recurrenceAnalyser.foundRecurrences().getRecurrences(), contains(dailyRecurrence));
   }
