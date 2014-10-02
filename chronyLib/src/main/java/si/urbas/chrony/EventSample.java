@@ -1,5 +1,7 @@
 package si.urbas.chrony;
 
+import si.urbas.chrony.util.TimeUtils;
+
 import java.util.Date;
 
 public class EventSample {
@@ -38,7 +40,7 @@ public class EventSample {
   public String toString() {
     return "EventSample{" +
            "eventName='" + eventName + '\'' +
-           ", timestamp=" + timestamp +
+           ", timestamp=" + TimeUtils.toSimpleString(timestamp) +
            ", data=" + data +
            '}';
   }

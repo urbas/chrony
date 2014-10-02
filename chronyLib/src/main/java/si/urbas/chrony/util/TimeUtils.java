@@ -2,6 +2,7 @@ package si.urbas.chrony.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 public class TimeUtils {
@@ -36,5 +37,9 @@ public class TimeUtils {
 
   public static String toSimpleString(Calendar calendar) {
     return SIMPLE_DATE_FORMAT.format(calendar.getTime());
+  }
+
+  public static String toSimpleString(long utcTimeInMillis) {
+    return SIMPLE_DATE_FORMAT.format(new Date(utcTimeInMillis));
   }
 }

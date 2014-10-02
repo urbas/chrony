@@ -14,14 +14,18 @@ public class RecurrenceFitnessPolicy {
   private static final int SIZE_PENALTY_RATE = 1000 * 60 * 60;
   private final List<EventSample> eventSamples;
 
+  /**
+   * @param eventSamples a list o event samples that has to be ordered by the sample's timestamp in an increasing order.
+   */
   public RecurrenceFitnessPolicy(List<EventSample> eventSamples) {
     this.eventSamples = eventSamples;
   }
 
   public double fitness(Recurrences recurrences) {
-    return -sizePenalty(recurrences) -
-           minimumDistancesPenalty(recurrences) -
-           spuriousOccurrencesPenalty(recurrences);
+    int sizePenalty = sizePenalty(recurrences);
+    int minimumDistancesPenalty = minimumDistancesPenalty(recurrences);
+    long spuriousOccurrencesPenalty = spuriousOccurrencesPenalty(recurrences);
+    return -sizePenalty - minimumDistancesPenalty - spuriousOccurrencesPenalty;
   }
 
   private static int sizePenalty(Recurrences recurrences) {

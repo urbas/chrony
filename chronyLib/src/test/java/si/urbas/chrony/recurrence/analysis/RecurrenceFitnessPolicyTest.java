@@ -7,6 +7,7 @@ import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrences;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
@@ -79,21 +80,24 @@ public class RecurrenceFitnessPolicyTest {
 
   @Test
   public void fitness_MUST_return_the_smallest_number_for_the_daily_recurrence_WHEN_two_occurrences_are_missing_in_seven_days() {
-    int periodInDays = 1;
-    int durationInDays = 7;
-    int maxDeviationInHours = 1;
-    ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(periodInDays, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
-    roughlyDailySamples.remove(2);
-    roughlyDailySamples.remove(2);
-    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(roughlyDailySamples);
+    RecurrenceFitnessPolicy fitnessPolicy = prepareFitnessPolicyWith5DailyRandomisedSamples();
     assertThat(
       fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(7, 2014, 8, 16, 14, 37))),
-      is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(periodInDays, 2014, 8, 16, 14, 37)))))
+      is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(1, 2014, 8, 16, 14, 37)))))
     );
   }
 
-  private long randomValueBetween(long rangeStart, long rangeEnd) {
-    return Math.round(Math.random() * (rangeEnd - rangeStart) + rangeStart);
+  @Test
+  public void fitness_MUST_prefer_one_recurrence_WHEN_two_two_cover_exactly_the_same() {
+    RecurrenceFitnessPolicy fitnessPolicy = prepareFitnessPolicyWithBidailyRandomisedSamples();
+    assertThat(
+      fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(2, 2014, 8, 16, 14, 37), new DailyPeriodRecurrence(2, 2014, 8, 17, 14, 37))),
+      is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(1, 2014, 8, 16, 14, 37)))))
+    );
+  }
+
+  private long randomValueBetween(Random randomnessSource, long rangeStart, long rangeEnd) {
+    return Math.round(randomnessSource.nextDouble() * (rangeEnd - rangeStart) + rangeStart);
   }
 
   private static Recurrences singleWeeklyRecurrence() {
@@ -109,15 +113,31 @@ public class RecurrenceFitnessPolicyTest {
     long startTimeInMillis = toUtcTimeInMillis(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0);
     long endTimeInMillis = startTimeInMillis + durationInDays * DAY_IN_MILLIS;
     long maxDeviationFromExactRecurrence = maxDeviationInHours * HOUR_IN_MILLIS;
-    addUniformlyRandomOccurrences(roughlyDailySamples, periodInDays, startTimeInMillis, endTimeInMillis, maxDeviationFromExactRecurrence);
+    addUniformlyRandomOccurrences(roughlyDailySamples, new Random(4983291827L), periodInDays, startTimeInMillis, endTimeInMillis, maxDeviationFromExactRecurrence);
     return roughlyDailySamples;
   }
 
-  private void addUniformlyRandomOccurrences(ArrayList<EventSample> samplesToAddTo, long periodInDays, long startTimeInMillis, long endTimeInMillis, long maxDeviationFromExactRecurrence) {
+  private void addUniformlyRandomOccurrences(ArrayList<EventSample> samplesToAddTo, Random randomnessSource, long periodInDays, long startTimeInMillis, long endTimeInMillis, long maxDeviationFromExactRecurrence) {
     long periodInMillis = periodInDays * DAY_IN_MILLIS;
     for (long currentOccurrence = startTimeInMillis; currentOccurrence < endTimeInMillis; currentOccurrence += periodInMillis) {
-      samplesToAddTo.add(EventSamplesTestUtils.eventSampleAtTime(currentOccurrence + randomValueBetween(-maxDeviationFromExactRecurrence, maxDeviationFromExactRecurrence)));
+      samplesToAddTo.add(EventSamplesTestUtils.eventSampleAtTime(currentOccurrence + randomValueBetween(randomnessSource, -maxDeviationFromExactRecurrence, maxDeviationFromExactRecurrence)));
     }
+  }
+
+  private RecurrenceFitnessPolicy prepareFitnessPolicyWith5DailyRandomisedSamples() {
+    int durationInDays = 7;
+    int maxDeviationInHours = 1;
+    ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(1, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
+    roughlyDailySamples.remove(2);
+    roughlyDailySamples.remove(2);
+    return new RecurrenceFitnessPolicy(roughlyDailySamples);
+  }
+
+  private RecurrenceFitnessPolicy prepareFitnessPolicyWithBidailyRandomisedSamples() {
+    int durationInDays = 17;
+    int maxDeviationInHours = 1;
+    ArrayList<EventSample> samples = createRandomEventSamples(2, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
+    return new RecurrenceFitnessPolicy(samples);
   }
 
 }
