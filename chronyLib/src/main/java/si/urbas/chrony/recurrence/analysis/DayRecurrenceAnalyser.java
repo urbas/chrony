@@ -52,7 +52,7 @@ public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
   }
 
   private boolean isEventTimeSpanNonZero() {
-    return eventTemporalMetrics.newestTimestamp - eventTemporalMetrics.oldestTimestamp > 0;
+    return eventTemporalMetrics.entireTimeSpan() > 0;
   }
 
   private void findWeeklyPatterns(ArrayList<EventSample> eventSamples, ArrayList<Recurrence> foundPatterns) {
@@ -76,10 +76,9 @@ public class DayRecurrenceAnalyser implements RecurrenceAnalyser {
   }
 
   private boolean hasLongEnoughTimeSpan(List<EventSample> hourBasedRecurrenceCluster) {
-    return (double) timeSpanOfCluster(hourBasedRecurrenceCluster) / (double) getTimeSpanOfEvent() > MIN_TIME_SPAN_PERCENTAGE;
+    double timeSpanProportionOfCluster = (double) timeSpanOfCluster(hourBasedRecurrenceCluster) / (double) eventTemporalMetrics.entireTimeSpan();
+    return timeSpanProportionOfCluster > MIN_TIME_SPAN_PERCENTAGE;
   }
-
-  private long getTimeSpanOfEvent() {return eventTemporalMetrics.newestTimestamp - eventTemporalMetrics.oldestTimestamp;}
 
   private long timeSpanOfCluster(List<EventSample> hourBasedRecurrenceCluster) {
     EventSample lastSample = hourBasedRecurrenceCluster.get(hourBasedRecurrenceCluster.size() - 1);

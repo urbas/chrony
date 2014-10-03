@@ -5,7 +5,6 @@ import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.util.EventSampleUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,4 +35,7 @@ public class EventTemporalMetrics {
     return new EventTemporalMetrics(eventSamples.size(), latestTimestampForEvent, oldestTimestampForEvent);
   }
 
+  public long entireTimeSpan() {
+    return newestTimestamp - oldestTimestamp;
+  }
 }

@@ -2,14 +2,14 @@ package si.urbas.chrony.recurrence.analysis;
 
 import org.apache.commons.math3.genetics.*;
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.metrics.EventTemporalMetrics;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 import si.urbas.chrony.recurrence.Recurrences;
+import si.urbas.chrony.recurrence.RecurrencesList;
+import si.urbas.chrony.util.TimeUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
 
@@ -21,16 +21,20 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
   private static final int MAX_GENERATIONS = 25;
   private static final double RATE_OF_GUESSED_RECURRENCE = 0.5;
   private static final double CROSSOVER_RATIO = 0.1;
-  private final RecurrenceChromosome foundRecurrences;
+  private final Recurrences foundRecurrences;
 
   public GeneticRecurrenceAnalyser(List<EventSample> eventSamples) {
-    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(eventSamples);
-    List<Recurrence> guessedRecurrences = guessPossibleRecurrences(eventSamples);
-    GeneticAlgorithm geneticAlgorithm = createBinaryGeneticAlgorithm();
-    ElitisticListPopulation initialPopulation = createInitialPopulation(guessedRecurrences, fitnessPolicy);
-    System.out.println("Initial population: " + initialPopulation);
-    Population evolvedPopulation = geneticAlgorithm.evolve(initialPopulation, new FixedGenerationCount(MAX_GENERATIONS));
-    foundRecurrences = (RecurrenceChromosome) evolvedPopulation.getFittestChromosome();
+    EventTemporalMetrics eventTemporalMetrics = EventTemporalMetrics.calculate(eventSamples);
+    if (eventTemporalMetrics.entireTimeSpan() == 0) {
+      foundRecurrences = RecurrencesList.emptyRecurrences;
+    } else {
+      RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(eventSamples, eventTemporalMetrics);
+      List<Recurrence> guessedRecurrences = guessPossibleRecurrences(eventSamples, eventTemporalMetrics);
+      GeneticAlgorithm geneticAlgorithm = createBinaryGeneticAlgorithm();
+      ElitisticListPopulation initialPopulation = createInitialPopulation(guessedRecurrences, fitnessPolicy);
+      Population evolvedPopulation = geneticAlgorithm.evolve(initialPopulation, new FixedGenerationCount(MAX_GENERATIONS));
+      foundRecurrences = (Recurrences) evolvedPopulation.getFittestChromosome();
+    }
   }
 
   @Override
@@ -38,8 +42,10 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
     return foundRecurrences;
   }
 
-  private static List<Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples) {
-    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(1, 0, 0, 1, 17, 0));
+  private static List<Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples, EventTemporalMetrics eventTemporalMetrics) {
+    int periodInDays = (int) (eventTemporalMetrics.entireTimeSpan() / TimeUtils.DAY_IN_MILLIS);
+    Calendar eventTimestampCalendar = TimeUtils.toUtcCalendar(eventSamples.get(0).getTimestamp());
+    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(periodInDays, eventTimestampCalendar));
   }
 
   private static ElitisticListPopulation createInitialPopulation(List<Recurrence> guessedRecurrences, RecurrenceFitnessPolicy fitnessPolicy) {

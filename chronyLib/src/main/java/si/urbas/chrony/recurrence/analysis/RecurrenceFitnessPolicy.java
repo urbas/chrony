@@ -13,25 +13,27 @@ public class RecurrenceFitnessPolicy {
 
   private static final int SIZE_PENALTY_RATE = 1000 * 60 * 60;
   private final List<EventSample> eventSamples;
+  private EventTemporalMetrics eventSamplesTemporalMetrics;
 
   /**
    * @param eventSamples a list o event samples that has to be ordered by the sample's timestamp in an increasing order.
    */
   public RecurrenceFitnessPolicy(List<EventSample> eventSamples) {
+    this(eventSamples, EventTemporalMetrics.calculate(eventSamples));
+  }
+
+  public RecurrenceFitnessPolicy(List<EventSample> eventSamples, EventTemporalMetrics eventTemporalMetrics) {
     this.eventSamples = eventSamples;
+    this.eventSamplesTemporalMetrics = eventTemporalMetrics;
   }
 
   public double fitness(Recurrences recurrences) {
     if (eventSamples.size() < 2 && recurrences.getRecurrencesCount() > 0) {
       return Double.NEGATIVE_INFINITY;
     } else {
-      EventTemporalMetrics eventSamplesTemporalMetrics = EventTemporalMetrics.calculate(eventSamples);
       int sizePenalty = sizePenalty(recurrences);
-      System.out.println("sizePenalty = " + sizePenalty);
       long minimumDistancesPenalty = minimumDistancesPenalty(recurrences, eventSamplesTemporalMetrics);
-      System.out.println("minimumDistancesPenalty = " + minimumDistancesPenalty);
       long spuriousOccurrencesPenalty = spuriousOccurrencesPenalty(recurrences, eventSamplesTemporalMetrics);
-      System.out.println("spuriousOccurrencesPenalty = " + spuriousOccurrencesPenalty);
       return -sizePenalty - minimumDistancesPenalty - spuriousOccurrencesPenalty;
     }
   }
@@ -57,8 +59,7 @@ public class RecurrenceFitnessPolicy {
   }
 
   private long defaultMinimumDistancePenalty(EventTemporalMetrics eventSamplesTemporalMetrics) {
-    long entireTimeSpan = eventSamplesTemporalMetrics.newestTimestamp - eventSamplesTemporalMetrics.oldestTimestamp;
-    return entireTimeSpan * eventSamples.size() / 2;
+    return eventSamplesTemporalMetrics.entireTimeSpan() * eventSamples.size() / 2;
   }
 
   private long spuriousOccurrencesPenalty(Recurrences recurrences, EventTemporalMetrics eventSamplesTemporalMetrics) {
