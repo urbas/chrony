@@ -70,23 +70,23 @@ public abstract class RecurrenceAnalyserTest {
 
   private static class RecurrenceWithDailyPeriodMatcher extends BaseMatcher<Recurrence> {
 
-    private final int daysApart;
+    private final int periodInDays;
 
-    public RecurrenceWithDailyPeriodMatcher(int daysApart) {this.daysApart = daysApart;}
+    public RecurrenceWithDailyPeriodMatcher(int periodInDays) {this.periodInDays = periodInDays;}
 
     @Override
     public boolean matches(Object item) {
       return item instanceof DailyPeriodRecurrence && matches((DailyPeriodRecurrence) item);
     }
 
-    public boolean matches(DailyPeriodRecurrence recurrence) {
+    protected boolean matches(DailyPeriodRecurrence recurrence) {
       int period = recurrence.getPeriodInDays();
-      return period == daysApart;
+      return period == periodInDays;
     }
 
     @Override
     public void describeTo(Description description) {
-      description.appendText("daily recurrence with a period of " + daysApart + " day(s)");
+      description.appendText("daily recurrence with a period of " + periodInDays + " day(s)");
     }
   }
 }
