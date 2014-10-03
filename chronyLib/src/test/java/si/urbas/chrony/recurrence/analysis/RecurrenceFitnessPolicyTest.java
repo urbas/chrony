@@ -2,24 +2,20 @@ package si.urbas.chrony.recurrence.analysis;
 
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
-import si.urbas.chrony.EventSamplesTestUtils;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 import si.urbas.chrony.recurrence.Recurrences;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static si.urbas.chrony.EventSamplesTestUtils.emptyEventSamples;
-import static si.urbas.chrony.EventSamplesTestUtils.eventSampleAtTime;
+import static si.urbas.chrony.EventSamplesTestUtils.*;
 import static si.urbas.chrony.recurrence.RecurrencesTestUtils.emptyRecurrences;
 import static si.urbas.chrony.recurrence.RecurrencesTestUtils.recurrences;
-import static si.urbas.chrony.util.TimeUtils.*;
 
 public class RecurrenceFitnessPolicyTest {
 
@@ -114,10 +110,6 @@ public class RecurrenceFitnessPolicyTest {
     );
   }
 
-  private long randomValueBetween(Random randomnessSource, long rangeStart, long rangeEnd) {
-    return Math.round(randomnessSource.nextDouble() * (rangeEnd - rangeStart) + rangeStart);
-  }
-
   private static Recurrences singleWeeklyRecurrence() {
     return recurrences(new DailyPeriodRecurrence(7, 0, 0, 0, 0, 0));
   }
@@ -126,23 +118,7 @@ public class RecurrenceFitnessPolicyTest {
     return recurrences(new DailyPeriodRecurrence(1, 0, 0, 0, 0, 0));
   }
 
-  private ArrayList<EventSample> createRandomEventSamples(int periodInDays, int durationInDays, int maxDeviationInHours, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {
-    ArrayList<EventSample> roughlyDailySamples = new ArrayList<EventSample>();
-    long startTimeInMillis = toUtcTimeInMillis(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0);
-    long endTimeInMillis = startTimeInMillis + durationInDays * DAY_IN_MILLIS;
-    long maxDeviationFromExactRecurrence = maxDeviationInHours * HOUR_IN_MILLIS;
-    addUniformlyRandomOccurrences(roughlyDailySamples, new Random(4983291827L), periodInDays, startTimeInMillis, endTimeInMillis, maxDeviationFromExactRecurrence);
-    return roughlyDailySamples;
-  }
-
-  private void addUniformlyRandomOccurrences(ArrayList<EventSample> samplesToAddTo, Random randomnessSource, long periodInDays, long startTimeInMillis, long endTimeInMillis, long maxDeviationFromExactRecurrence) {
-    long periodInMillis = periodInDays * DAY_IN_MILLIS;
-    for (long currentOccurrence = startTimeInMillis; currentOccurrence < endTimeInMillis; currentOccurrence += periodInMillis) {
-      samplesToAddTo.add(EventSamplesTestUtils.eventSampleAtTime(currentOccurrence + randomValueBetween(randomnessSource, -maxDeviationFromExactRecurrence, maxDeviationFromExactRecurrence)));
-    }
-  }
-
-  private RecurrenceFitnessPolicy prepareFitnessPolicyWith5DailyRandomisedSamples() {
+  private static RecurrenceFitnessPolicy prepareFitnessPolicyWith5DailyRandomisedSamples() {
     int durationInDays = 7;
     int maxDeviationInHours = 1;
     ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(1, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
@@ -151,7 +127,7 @@ public class RecurrenceFitnessPolicyTest {
     return new RecurrenceFitnessPolicy(roughlyDailySamples);
   }
 
-  private RecurrenceFitnessPolicy prepareFitnessPolicyWithBidailyRandomisedSamples() {
+  private static RecurrenceFitnessPolicy prepareFitnessPolicyWithBidailyRandomisedSamples() {
     int durationInDays = 17;
     int maxDeviationInHours = 1;
     ArrayList<EventSample> samples = createRandomEventSamples(2, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
