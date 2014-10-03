@@ -18,6 +18,7 @@ import static si.urbas.chrony.EventSamplesTestUtils.*;
 public abstract class RecurrenceAnalyserTest {
 
   private static final int TWO_DAYS = 2;
+  private static final int THREE_DAYS = 3;
   protected final EventSample eventSampleAtTime1d17h = eventSampleAtTime(DAY_1, HOUR_17);
   protected final EventSample eventSampleAtTime2d17h = eventSampleAtTime(DAY_2, HOUR_17);
   protected final EventSample eventSampleAtTime3d17h = eventSampleAtTime(DAY_3, HOUR_17);
@@ -60,6 +61,12 @@ public abstract class RecurrenceAnalyserTest {
   public void foundRecurrences_MUST_return_a_recurrence_of_every_second_day_WHEN_given_two_events_that_are_two_days_apart() {
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime1d17h, eventSampleAtTime3d17h));
     assertThat(recurrenceAnalyser.foundRecurrences().getRecurrences(), contains(recurrenceWithPeriodOf(TWO_DAYS)));
+  }
+
+  @Test
+  public void foundRecurrences_MUST_return_a_3_day_recurrence_WHEN_given_a_larger_number_of_samples_roughly_three_day_apart() {
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(createRandomEventSamples(3, 10, 1, 2010, 2, 19, 4, 45));
+    assertThat(recurrenceAnalyser.foundRecurrences().getRecurrences(), contains(recurrenceWithPeriodOf(THREE_DAYS)));
   }
 
   protected abstract RecurrenceAnalyser createRecurrenceAnalyser(List<EventSample> eventSamples);

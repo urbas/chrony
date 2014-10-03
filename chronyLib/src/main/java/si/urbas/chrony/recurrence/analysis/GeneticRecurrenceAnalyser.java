@@ -29,7 +29,7 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
       foundRecurrences = RecurrencesList.emptyRecurrences;
     } else {
       RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(eventSamples, eventTemporalMetrics);
-      List<Recurrence> guessedRecurrences = guessPossibleRecurrences(eventSamples, eventTemporalMetrics);
+      List<Recurrence> guessedRecurrences = guessPossibleRecurrences(eventSamples);
       GeneticAlgorithm geneticAlgorithm = createBinaryGeneticAlgorithm();
       ElitisticListPopulation initialPopulation = createInitialPopulation(guessedRecurrences, fitnessPolicy);
       Population evolvedPopulation = geneticAlgorithm.evolve(initialPopulation, new FixedGenerationCount(MAX_GENERATIONS));
@@ -42,9 +42,11 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
     return foundRecurrences;
   }
 
-  private static List<Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples, EventTemporalMetrics eventTemporalMetrics) {
-    int periodInDays = (int) (eventTemporalMetrics.entireTimeSpan() / TimeUtils.DAY_IN_MILLIS);
-    Calendar eventTimestampCalendar = TimeUtils.toUtcCalendar(eventSamples.get(0).getTimestamp());
+  private static List<Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples) {
+    long timestampOfFirstEvent = eventSamples.get(0).getTimestamp();
+    long timestampOfSecondEvent = eventSamples.get(1).getTimestamp();
+    int periodInDays = (int) ((timestampOfSecondEvent - timestampOfFirstEvent) / TimeUtils.DAY_IN_MILLIS);
+    Calendar eventTimestampCalendar = TimeUtils.toUtcCalendar(timestampOfFirstEvent);
     return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(periodInDays, eventTimestampCalendar));
   }
 
