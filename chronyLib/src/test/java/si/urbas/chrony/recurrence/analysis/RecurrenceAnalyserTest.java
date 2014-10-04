@@ -1,12 +1,11 @@
 package si.urbas.chrony.recurrence.analysis;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
-import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
+import si.urbas.chrony.recurrence.test.matchers.RecurrenceOccurringCloseToMatcherBuilder;
+import si.urbas.chrony.recurrence.test.matchers.DailyPeriodRecurrenceMatcher;
 
 import java.util.List;
 
@@ -14,6 +13,8 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static si.urbas.chrony.EventSamplesTestUtils.*;
+import static si.urbas.chrony.util.TimeUtils.HOUR_IN_MILLIS;
+import static si.urbas.chrony.util.TimeUtils.toUtcTimeInMillis;
 
 public abstract class RecurrenceAnalyserTest {
 
@@ -65,35 +66,24 @@ public abstract class RecurrenceAnalyserTest {
 
   @Test
   public void foundRecurrences_MUST_return_a_3_day_recurrence_WHEN_given_a_larger_number_of_samples_roughly_three_day_apart() {
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(createRandomEventSamples(3, 10, 1, 2010, 2, 19, 4, 45));
-    assertThat(recurrenceAnalyser.foundRecurrences().getRecurrences(), contains(recurrenceWithPeriodOf(THREE_DAYS)));
+    long firstOccurrenceTimeInMillis = toUtcTimeInMillis(2010, 2, 19, 4, 45, 0);
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(createRandomEventSamples(3, 10, 1, firstOccurrenceTimeInMillis));
+    assertThat(
+      recurrenceAnalyser.foundRecurrences().getRecurrences(),
+      contains(
+        recurrenceOccurringWithin(HOUR_IN_MILLIS / 60).of(firstOccurrenceTimeInMillis).withPeriodOf(THREE_DAYS)
+      )
+    );
+  }
+
+  private RecurrenceOccurringCloseToMatcherBuilder recurrenceOccurringWithin(long maxDistanceToOccurrence) {
+    return new RecurrenceOccurringCloseToMatcherBuilder(maxDistanceToOccurrence);
   }
 
   protected abstract RecurrenceAnalyser createRecurrenceAnalyser(List<EventSample> eventSamples);
 
-  public static Matcher<Recurrence> recurrenceWithPeriodOf(final int daysApart) {
-    return new RecurrenceWithDailyPeriodMatcher(daysApart);
+  public static DailyPeriodRecurrenceMatcher recurrenceWithPeriodOf(final int daysApart) {
+    return new DailyPeriodRecurrenceMatcher(daysApart);
   }
 
-  private static class RecurrenceWithDailyPeriodMatcher extends BaseMatcher<Recurrence> {
-
-    private final int periodInDays;
-
-    public RecurrenceWithDailyPeriodMatcher(int periodInDays) {this.periodInDays = periodInDays;}
-
-    @Override
-    public boolean matches(Object item) {
-      return item instanceof DailyPeriodRecurrence && matches((DailyPeriodRecurrence) item);
-    }
-
-    protected boolean matches(DailyPeriodRecurrence recurrence) {
-      int period = recurrence.getPeriodInDays();
-      return period == periodInDays;
-    }
-
-    @Override
-    public void describeTo(Description description) {
-      description.appendText("daily recurrence with a period of " + periodInDays + " day(s)");
-    }
-  }
 }

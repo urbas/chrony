@@ -39,10 +39,10 @@ public class EventSamplesTestUtils {
 
   public static ArrayList<EventSample> createRandomEventSamples(int periodInDays, int durationInDays, int maxDeviationInHours, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {
     long startTimeInMillis = toUtcTimeInMillis(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0);
-    return createRandomEventSamples(periodInDays, startTimeInMillis, durationInDays, maxDeviationInHours);
+    return createRandomEventSamples(periodInDays, durationInDays, maxDeviationInHours, startTimeInMillis);
   }
 
-  public static ArrayList<EventSample> createRandomEventSamples(int periodInDays, long startTimeInMillis, int durationInDays, int maxDeviationInHours) {
+  public static ArrayList<EventSample> createRandomEventSamples(int periodInDays, int durationInDays, int maxDeviationInHours, long startTimeInMillis) {
     ArrayList<EventSample> roughlyRecurringSamples = new ArrayList<EventSample>();
     long endTimeInMillis = startTimeInMillis + durationInDays * DAY_IN_MILLIS;
     long maxDeviationFromExactRecurrence = maxDeviationInHours * HOUR_IN_MILLIS;
