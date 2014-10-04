@@ -28,6 +28,11 @@ public abstract class RecurrenceAnalyserTest {
   protected final Matcher<Recurrence> weeklyRecurrence = recurrenceWithPeriodOf(7);
   protected final Matcher<Recurrence> dailyRecurrence = recurrenceWithPeriodOf(1);
 
+  @Test(expected = IllegalArgumentException.class)
+  public void constructor_MUST_throw_an_exception_WHEN_the_list_of_event_samples_is_not_sorted() {
+    createRecurrenceAnalyser(asList(eventSampleAtTime2d17h, eventSampleAtTime1d17h));
+  }
+
   @Test
   public void foundRecurrences_MUST_return_an_empty_list_WHEN_given_no_event_samples() {
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(emptyEventSamples());
@@ -71,7 +76,7 @@ public abstract class RecurrenceAnalyserTest {
     assertThat(
       recurrenceAnalyser.foundRecurrences().getRecurrences(),
       contains(
-        recurrenceOccurringWithin(HOUR_IN_MILLIS / 60).of(firstOccurrenceTimeInMillis).withPeriodOf(THREE_DAYS)
+        recurrenceOccurringWithin(HOUR_IN_MILLIS).of(firstOccurrenceTimeInMillis).withPeriodOf(THREE_DAYS)
       )
     );
   }

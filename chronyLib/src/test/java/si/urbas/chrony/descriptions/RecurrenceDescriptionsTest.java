@@ -2,11 +2,8 @@ package si.urbas.chrony.descriptions;
 
 import org.junit.Test;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
-import si.urbas.chrony.recurrence.Recurrence;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import si.urbas.chrony.recurrence.Recurrences;
+import si.urbas.chrony.recurrence.RecurrencesList;
 
 import static org.junit.Assert.assertEquals;
 import static si.urbas.chrony.descriptions.RecurrenceDescriptions.DESCRIPTION_OF_EMPTY_RECURRENCE_ANALYSIS;
@@ -23,7 +20,7 @@ public class RecurrenceDescriptionsTest {
 
   @Test
   public void toShortDescriptionOf_MUST_say_that_no_recurrence_was_discovered_WHEN_the_recurrence_analysis_is_empty() {
-    String actualDescription = toShortDescription(Collections.<Recurrence>emptyList());
+    String actualDescription = toShortDescription(RecurrencesList.emptyRecurrences);
     assertEquals(DESCRIPTION_OF_EMPTY_RECURRENCE_ANALYSIS, actualDescription);
   }
 
@@ -39,7 +36,7 @@ public class RecurrenceDescriptionsTest {
     assertEquals("every 2nd day at 16:05", actualDescription);
   }
 
-  private List<DailyPeriodRecurrence> dayRecurrenceEvery(int periodInDays, int hourOfDay, int minutesPastHour) {
-    return Arrays.asList(new DailyPeriodRecurrence(periodInDays, 0, 0, 0, hourOfDay, minutesPastHour));
+  private Recurrences dayRecurrenceEvery(int periodInDays, int hourOfDay, int minutesPastHour) {
+    return new RecurrencesList(new DailyPeriodRecurrence(periodInDays, 0, 0, 0, hourOfDay, minutesPastHour));
   }
 }

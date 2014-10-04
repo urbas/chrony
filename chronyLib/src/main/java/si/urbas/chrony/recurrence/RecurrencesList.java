@@ -12,7 +12,7 @@ public class RecurrencesList implements Recurrences {
     this.recurrenceList = recurrenceList;
   }
 
-  public RecurrencesList(Recurrence[] recurrences) {
+  public RecurrencesList(Recurrence... recurrences) {
     this(Arrays.asList(recurrences));
   }
 

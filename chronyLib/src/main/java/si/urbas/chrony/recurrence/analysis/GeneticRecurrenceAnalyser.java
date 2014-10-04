@@ -11,6 +11,8 @@ import si.urbas.chrony.util.TimeUtils;
 
 import java.util.*;
 
+import static si.urbas.chrony.util.EventSampleAssertions.assertEventSamplesOrdered;
+
 public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
 
   private static final int POPULATION_LIMIT = 20;
@@ -24,6 +26,7 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
   private final Recurrences foundRecurrences;
 
   public GeneticRecurrenceAnalyser(List<EventSample> eventSamples) {
+    assertEventSamplesOrdered(eventSamples);
     EventTemporalMetrics eventTemporalMetrics = EventTemporalMetrics.calculate(eventSamples);
     if (eventTemporalMetrics.entireTimeSpan() == 0) {
       foundRecurrences = RecurrencesList.emptyRecurrences;

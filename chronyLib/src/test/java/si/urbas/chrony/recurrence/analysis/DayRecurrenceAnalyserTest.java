@@ -18,11 +18,6 @@ public class DayRecurrenceAnalyserTest extends RecurrenceAnalyserTest {
     return new DayRecurrenceAnalyser(eventSamples);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void constructor_MUST_throw_an_exception_WHEN_the_list_of_event_samples_is_not_sorted() {
-    createRecurrenceAnalyser(asList(eventSampleAtTime2d17h, eventSampleAtTime1d17h));
-  }
-
   @Test
   public void foundPatterns_MUST_return_two_weekly_patterns_WHEN_given_four_events() {
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(asList(eventSampleAtTime1d17h, eventSampleAtTime3d17h, eventSampleAtTime8d17h, eventSampleAtTime10d17h));
