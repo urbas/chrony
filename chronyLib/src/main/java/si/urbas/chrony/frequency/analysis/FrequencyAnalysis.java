@@ -1,4 +1,4 @@
-package si.urbas.chrony.analysis;
+package si.urbas.chrony.frequency.analysis;
 
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.util.EventSampleUtils;

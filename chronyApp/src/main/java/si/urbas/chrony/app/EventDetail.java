@@ -10,7 +10,7 @@ import android.widget.TextView;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventSample;
-import si.urbas.chrony.analysis.FrequencyAnalysis;
+import si.urbas.chrony.frequency.analysis.FrequencyAnalysis;
 import si.urbas.chrony.app.data.SQLiteEventRepository;
 import si.urbas.chrony.descriptions.RecurrenceDescriptions;
 import si.urbas.chrony.recurrence.Recurrences;
