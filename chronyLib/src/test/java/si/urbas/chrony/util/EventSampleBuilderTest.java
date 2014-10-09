@@ -29,7 +29,10 @@ public class EventSampleBuilderTest {
   @Test
   public void create_MUST_create_a_valid_event_sample_WHEN_all_data_is_specified() {
     initialiseNumberEvent();
-    assertEventSampleEquals(initialiseNumberEventSample().create(), EVENT_NAME, TIMESTAMP_1, SAMPLE_DATA_NUMBER_42_1);
+    EventSample eventSample = initialiseNumberEventSample().create();
+    assertEquals(EventSampleBuilderTest.EVENT_NAME, eventSample.getEventName());
+    assertEquals(EventSampleBuilderTest.TIMESTAMP_1, eventSample.getTimestamp());
+    assertEquals(EventSampleBuilderTest.SAMPLE_DATA_NUMBER_42_1, eventSample.getData());
   }
 
   @Test(expected = UnsupportedOperationException.class)
@@ -50,18 +53,12 @@ public class EventSampleBuilderTest {
     assertEquals(Event.NUMBER_DATA_TYPE, eventSampleBuilder.getDataType());
   }
 
-  private EventBuilder initialiseNumberEvent() {
-    return eventBuilder.withName(EVENT_NAME).withDataType(Event.NUMBER_DATA_TYPE);
+  private void initialiseNumberEvent() {
+    eventBuilder.withName(EVENT_NAME).withDataType(Event.NUMBER_DATA_TYPE);
   }
 
   private EventBuilder.EventSampleBuilder initialiseNumberEventSample() {
     return eventSampleBuilder.withTimestamp(TIMESTAMP_1).withData(SAMPLE_DATA_NUMBER_42_1);
-  }
-
-  private static void assertEventSampleEquals(EventSample eventSample, String eventName, long timestamp, Object data) {
-    assertEquals(eventName, eventSample.getEventName());
-    assertEquals(timestamp, eventSample.getTimestamp());
-    assertEquals(data, eventSample.getData());
   }
 
 }

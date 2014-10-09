@@ -13,7 +13,7 @@ public class TimeUtils {
   public static final long HOUR_IN_MILLIS = 60 * MINUTE_IN_MILLIS;
   public static final long DAY_IN_MILLIS = 24 * HOUR_IN_MILLIS;
   public static final long WEEK_IN_MILLIS = 7 * DAY_IN_MILLIS;
-  public static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
+  private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
   private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
   public static long toUtcTimeInMillis(int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour, int secondsPastMinute) {

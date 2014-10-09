@@ -25,7 +25,9 @@ public class EventBuilderTest {
 
   @Test
   public void create_MUST_return_a_fully_specified_event_WHEN_given_a_name_and_a_data_type() {
-    assertEventHas(initialiseNumberEvent().create(), EVENT_NAME, Event.NUMBER_DATA_TYPE);
+    Event event = initialiseNumberEvent().create();
+    assertEquals(EventBuilderTest.EVENT_NAME, event.getEventName());
+    assertEquals(Event.NUMBER_DATA_TYPE, event.getDataType());
   }
 
   @Test(expected = UnsupportedOperationException.class)
@@ -45,11 +47,6 @@ public class EventBuilderTest {
 
   private EventBuilder initialiseNumberEvent() {
     return eventBuilder.withName(EVENT_NAME).withDataType(Event.NUMBER_DATA_TYPE);
-  }
-
-  private static void assertEventHas(Event event, String expectedEventName, int expectedEventDataType) {
-    assertEquals(expectedEventName, event.getEventName());
-    assertEquals(expectedEventDataType, event.getDataType());
   }
 
 }

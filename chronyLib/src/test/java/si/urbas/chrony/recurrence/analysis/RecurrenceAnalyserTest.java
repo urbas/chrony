@@ -1,12 +1,11 @@
 package si.urbas.chrony.recurrence.analysis;
 
 import org.hamcrest.Matcher;
-import org.junit.Ignore;
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.Recurrence;
-import si.urbas.chrony.recurrence.test.matchers.RecurrenceOccurringCloseToMatcherBuilder;
 import si.urbas.chrony.recurrence.test.matchers.DailyPeriodRecurrenceMatcher;
+import si.urbas.chrony.recurrence.test.matchers.RecurrenceOccurringCloseToMatcherBuilder;
 
 import java.util.List;
 
@@ -21,13 +20,13 @@ public abstract class RecurrenceAnalyserTest {
 
   private static final int TWO_DAYS = 2;
   private static final int THREE_DAYS = 3;
-  protected final EventSample eventSampleAtTime1d17h = eventSampleAtTime(DAY_1, HOUR_17);
-  protected final EventSample eventSampleAtTime2d17h = eventSampleAtTime(DAY_2, HOUR_17);
-  protected final EventSample eventSampleAtTime3d17h = eventSampleAtTime(DAY_3, HOUR_17);
-  protected final EventSample eventSampleAtTime8d17h = eventSampleAtTime(DAY_8, HOUR_17);
-  protected final EventSample eventSampleAtTime10d17h = eventSampleAtTime(DAY_10, HOUR_17);
-  protected final Matcher<Recurrence> weeklyRecurrence = recurrenceWithPeriodOf(7);
-  protected final Matcher<Recurrence> dailyRecurrence = recurrenceWithPeriodOf(1);
+  private final EventSample eventSampleAtTime1d17h = eventSampleAtTime(DAY_1, HOUR_17);
+  private final EventSample eventSampleAtTime2d17h = eventSampleAtTime(DAY_2, HOUR_17);
+  private final EventSample eventSampleAtTime3d17h = eventSampleAtTime(DAY_3, HOUR_17);
+  private final EventSample eventSampleAtTime8d17h = eventSampleAtTime(DAY_8, HOUR_17);
+  private final EventSample eventSampleAtTime10d17h = eventSampleAtTime(DAY_10, HOUR_17);
+  private final Matcher<Recurrence> weeklyRecurrence = recurrenceWithPeriodOf(7);
+  private final Matcher<Recurrence> dailyRecurrence = recurrenceWithPeriodOf(1);
 
   @Test(expected = IllegalArgumentException.class)
   public void constructor_MUST_throw_an_exception_WHEN_the_list_of_event_samples_is_not_sorted() {
@@ -71,7 +70,6 @@ public abstract class RecurrenceAnalyserTest {
   }
 
   @Test
-  @Ignore
   public void foundRecurrences_MUST_return_a_3_day_recurrence_WHEN_given_a_larger_number_of_samples_roughly_three_day_apart() {
     long firstOccurrenceTimeInMillis = toUtcTimeInMillis(2010, 2, 19, 4, 45, 0);
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(createRandomEventSamples(3, 10, 1, firstOccurrenceTimeInMillis));
@@ -89,7 +87,7 @@ public abstract class RecurrenceAnalyserTest {
 
   protected abstract RecurrenceAnalyser createRecurrenceAnalyser(List<EventSample> eventSamples);
 
-  public static DailyPeriodRecurrenceMatcher recurrenceWithPeriodOf(final int daysApart) {
+  private static DailyPeriodRecurrenceMatcher recurrenceWithPeriodOf(final int daysApart) {
     return new DailyPeriodRecurrenceMatcher(daysApart);
   }
 

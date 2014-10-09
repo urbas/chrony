@@ -91,7 +91,7 @@ public class DailyPeriodRecurrenceTest {
   }
 
   @Test
-  public void distanceTo_MUST_return_3days_11h_29mins() {
+  public void distanceTo_MUST_return_3days_11h_29min() {
     DailyPeriodRecurrence dailyPeriodRecurrence = new DailyPeriodRecurrence(PERIOD_7_DAYS, 2014, 8, 0, 11, 30);
     long timeOfInterest = toUtcCalendar(2014, 8, 17, 22, 59, 0).getTimeInMillis();
     long negativeDistance5h30min = 3 * DAY_IN_MILLIS + 11 * HOUR_IN_MILLIS + 29 * MINUTE_IN_MILLIS;
@@ -100,7 +100,7 @@ public class DailyPeriodRecurrenceTest {
   }
 
   @Test
-  public void distanceTo_MUST_return_negative_3days_11h_29mins() {
+  public void distanceTo_MUST_return_negative_3days_11h_29min() {
     DailyPeriodRecurrence dailyPeriodRecurrence = new DailyPeriodRecurrence(PERIOD_7_DAYS, 2014, 8, 0, 11, 30);
     long timeOfInterest = toUtcCalendar(2014, 8, 18, 0, 1, 0).getTimeInMillis();
     long negativeDistance5h30min = -(3 * DAY_IN_MILLIS + 11 * HOUR_IN_MILLIS + 29 * MINUTE_IN_MILLIS);

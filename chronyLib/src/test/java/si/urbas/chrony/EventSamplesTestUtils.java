@@ -7,7 +7,7 @@ import static si.urbas.chrony.util.TimeUtils.*;
 
 public class EventSamplesTestUtils {
 
-  public static final String EVENT_NAME = "event name";
+  private static final String EVENT_NAME = "event name";
   public static final int HOUR_17 = 16;
   public static final int DAY_1 = 0;
   public static final int DAY_2 = 1;
@@ -16,7 +16,7 @@ public class EventSamplesTestUtils {
   public static final int DAY_10 = 9;
   private static final Random RANDOMNESS_SOURCE = new Random(4983291827L);
 
-  public static EventSample eventSampleAtTime(long timeInMillis) {
+  private static EventSample eventSampleAtTime(long timeInMillis) {
     return new EventSample(EVENT_NAME, timeInMillis, null);
   }
 
@@ -24,12 +24,12 @@ public class EventSamplesTestUtils {
 
   public static EventSample eventSampleAtTime(int day, int hour) {
     Calendar calendar = createUtcCalendar();
-    calendar.set(0, 0, day, hour, 0, 0);
+    calendar.set(0, Calendar.JANUARY, day, hour, 0, 0);
     calendar.set(Calendar.MILLISECOND, 0);
     return new EventSample(EVENT_NAME, calendar.getTimeInMillis(), null);
   }
 
-  public static void addUniformlyRandomOccurrences(ArrayList<EventSample> samplesToAddTo, Random randomnessSource, long periodInDays, long startTimeInMillis, long endTimeInMillis, long maxDeviationFromExactRecurrence) {
+  private static void addUniformlyRandomOccurrences(ArrayList<EventSample> samplesToAddTo, Random randomnessSource, long periodInDays, long startTimeInMillis, long endTimeInMillis, long maxDeviationFromExactRecurrence) {
     long periodInMillis = periodInDays * DAY_IN_MILLIS;
     for (long currentOccurrence = startTimeInMillis; currentOccurrence < endTimeInMillis; currentOccurrence += periodInMillis) {
       long timeInMillis = currentOccurrence + randomValueBetween(randomnessSource, -maxDeviationFromExactRecurrence, maxDeviationFromExactRecurrence);

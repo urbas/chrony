@@ -13,7 +13,7 @@ public class RecurrenceFitnessPolicy {
 
   private static final int SIZE_PENALTY_RATE = 1000 * 60 * 60;
   private final List<EventSample> eventSamples;
-  private EventTemporalMetrics eventSamplesTemporalMetrics;
+  private final EventTemporalMetrics eventSamplesTemporalMetrics;
 
   /**
    * @param eventSamples a list o event samples that has to be ordered by the sample's timestamp in an increasing order.
