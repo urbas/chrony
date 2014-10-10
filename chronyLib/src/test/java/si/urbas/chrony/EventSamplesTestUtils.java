@@ -1,5 +1,7 @@
 package si.urbas.chrony;
 
+import si.urbas.chrony.util.EventSampleOldestFirstOrder;
+
 import java.util.*;
 
 import static si.urbas.chrony.util.MathUtils.randomValueBetween;
@@ -29,14 +31,6 @@ public class EventSamplesTestUtils {
     return new EventSample(EVENT_NAME, calendar.getTimeInMillis(), null);
   }
 
-  private static void addUniformlyRandomOccurrences(ArrayList<EventSample> samplesToAddTo, Random randomnessSource, long periodInDays, long startTimeInMillis, long endTimeInMillis, long maxDeviationFromExactRecurrence) {
-    long periodInMillis = periodInDays * DAY_IN_MILLIS;
-    for (long currentOccurrence = startTimeInMillis; currentOccurrence < endTimeInMillis; currentOccurrence += periodInMillis) {
-      long timeInMillis = currentOccurrence + randomValueBetween(randomnessSource, -maxDeviationFromExactRecurrence, maxDeviationFromExactRecurrence);
-      samplesToAddTo.add(eventSampleAtTime(timeInMillis));
-    }
-  }
-
   public static ArrayList<EventSample> createRandomEventSamples(int periodInDays, int durationInDays, int maxDeviationInHours, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {
     long startTimeInMillis = toUtcTimeInMillis(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0);
     return createRandomEventSamples(periodInDays, durationInDays, maxDeviationInHours, startTimeInMillis);
@@ -44,9 +38,22 @@ public class EventSamplesTestUtils {
 
   public static ArrayList<EventSample> createRandomEventSamples(int periodInDays, int durationInDays, int maxDeviationInHours, long startTimeInMillis) {
     ArrayList<EventSample> roughlyRecurringSamples = new ArrayList<EventSample>();
+    return addRandomEventSamples(roughlyRecurringSamples, periodInDays, durationInDays, maxDeviationInHours, startTimeInMillis);
+  }
+
+  public static ArrayList<EventSample> addRandomEventSamples(ArrayList<EventSample> eventSamplesToAddTo, int periodInDays, int durationInDays, int maxDeviationInHours, long startTimeInMillis) {
     long endTimeInMillis = startTimeInMillis + durationInDays * DAY_IN_MILLIS;
     long maxDeviationFromExactRecurrence = maxDeviationInHours * HOUR_IN_MILLIS;
-    addUniformlyRandomOccurrences(roughlyRecurringSamples, RANDOMNESS_SOURCE, periodInDays, startTimeInMillis, endTimeInMillis, maxDeviationFromExactRecurrence);
-    return roughlyRecurringSamples;
+    addUniformlyRandomOccurrences(eventSamplesToAddTo, RANDOMNESS_SOURCE, periodInDays, startTimeInMillis, endTimeInMillis, maxDeviationFromExactRecurrence);
+    return eventSamplesToAddTo;
+  }
+
+  private static void addUniformlyRandomOccurrences(ArrayList<EventSample> samplesToAddTo, Random randomnessSource, long periodInDays, long startTimeInMillis, long endTimeInMillis, long maxDeviationFromExactRecurrence) {
+    long periodInMillis = periodInDays * DAY_IN_MILLIS;
+    for (long currentOccurrence = startTimeInMillis; currentOccurrence < endTimeInMillis; currentOccurrence += periodInMillis) {
+      long timeInMillis = currentOccurrence + randomValueBetween(randomnessSource, -maxDeviationFromExactRecurrence, maxDeviationFromExactRecurrence);
+      samplesToAddTo.add(eventSampleAtTime(timeInMillis));
+    }
+    Collections.sort(samplesToAddTo, EventSampleOldestFirstOrder.INSTANCE);
   }
 }

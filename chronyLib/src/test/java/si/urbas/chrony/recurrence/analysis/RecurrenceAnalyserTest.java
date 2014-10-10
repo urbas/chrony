@@ -1,12 +1,14 @@
 package si.urbas.chrony.recurrence.analysis;
 
 import org.hamcrest.Matcher;
+import org.junit.Ignore;
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.Recurrence;
 import si.urbas.chrony.recurrence.test.matchers.DailyPeriodRecurrenceMatcher;
 import si.urbas.chrony.recurrence.test.matchers.RecurrenceOccurringCloseToMatcherBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -77,6 +79,23 @@ public abstract class RecurrenceAnalyserTest {
       recurrenceAnalyser.foundRecurrences().getRecurrences(),
       contains(
         recurrenceOccurringWithin(HOUR_IN_MILLIS).of(firstOccurrenceTimeInMillis).withPeriodOf(THREE_DAYS)
+      )
+    );
+  }
+
+  @Test
+  @Ignore
+  public void foundRecurrences_MUST_return_a_composite_4_and_7_day_recurrence() {
+    long startTimeInMillis_4Day = toUtcTimeInMillis(2010, 2, 19, 4, 45, 0);
+    long startTimeInMillis_7Day = toUtcTimeInMillis(2010, 2, 20, 14, 17, 0);
+    ArrayList<EventSample> eventSamples = createRandomEventSamples(4, 35, 1, startTimeInMillis_4Day);
+    addRandomEventSamples(eventSamples, 7, 35, 1, startTimeInMillis_7Day);
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(eventSamples);
+    assertThat(
+      recurrenceAnalyser.foundRecurrences().getRecurrences(),
+      contains(
+        recurrenceOccurringWithin(HOUR_IN_MILLIS).of(startTimeInMillis_4Day).withPeriodOf(4),
+        recurrenceOccurringWithin(HOUR_IN_MILLIS).of(startTimeInMillis_7Day).withPeriodOf(7)
       )
     );
   }
