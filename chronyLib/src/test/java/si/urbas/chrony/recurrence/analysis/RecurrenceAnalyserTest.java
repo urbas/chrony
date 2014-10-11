@@ -84,7 +84,6 @@ public abstract class RecurrenceAnalyserTest {
   }
 
   @Test
-  @Ignore
   public void foundRecurrences_MUST_return_a_composite_4_and_7_day_recurrence() {
     long startTimeInMillis_4Day = toUtcTimeInMillis(2010, 2, 19, 4, 45, 0);
     long startTimeInMillis_7Day = toUtcTimeInMillis(2010, 2, 20, 14, 17, 0);

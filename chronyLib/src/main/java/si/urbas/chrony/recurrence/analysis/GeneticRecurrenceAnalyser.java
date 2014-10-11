@@ -9,7 +9,10 @@ import si.urbas.chrony.recurrence.Recurrences;
 import si.urbas.chrony.recurrence.RecurrencesList;
 import si.urbas.chrony.util.TimeUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
 
 import static si.urbas.chrony.util.EventSampleAssertions.assertEventSamplesOrdered;
 
@@ -46,11 +49,15 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
   }
 
   private static List<Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples) {
-    long timestampOfFirstEvent = eventSamples.get(0).getTimestamp();
-    long timestampOfSecondEvent = eventSamples.get(1).getTimestamp();
-    int periodInDays = (int) ((timestampOfSecondEvent - timestampOfFirstEvent) / TimeUtils.DAY_IN_MILLIS);
-    Calendar eventTimestampCalendar = TimeUtils.toUtcCalendar(timestampOfFirstEvent);
-    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(periodInDays, eventTimestampCalendar));
+    List<Recurrence> guessedRecurrences = new ArrayList<Recurrence>();
+    for (int i = 1; i < eventSamples.size(); i++) {
+      long timestampOfFirstEvent = eventSamples.get(i - 1).getTimestamp();
+      long timestampOfSecondEvent = eventSamples.get(i).getTimestamp();
+      int periodInDays = (int) ((timestampOfSecondEvent - timestampOfFirstEvent) / TimeUtils.DAY_IN_MILLIS);
+      Calendar eventTimestampCalendar = TimeUtils.toUtcCalendar(timestampOfFirstEvent);
+      guessedRecurrences.add(new DailyPeriodRecurrence(periodInDays, eventTimestampCalendar));
+    }
+    return guessedRecurrences;
   }
 
   private static ElitisticListPopulation createInitialPopulation(List<Recurrence> guessedRecurrences, RecurrenceFitnessPolicy fitnessPolicy) {
