@@ -23,7 +23,7 @@ public class RecurrenceOccurringCloseToMatcher extends RecurrenceMatcher {
 
   @Override
   protected String isolatedDescription() {
-    return "an occurrence " + describeDistance() + " away from " + TimeUtils.toSimpleString(targetOccurrenceTimeInMillis);
+    return "happens within " + describeDistance() + " of " + TimeUtils.toSimpleString(targetOccurrenceTimeInMillis);
   }
 
   private String describeDistance() {

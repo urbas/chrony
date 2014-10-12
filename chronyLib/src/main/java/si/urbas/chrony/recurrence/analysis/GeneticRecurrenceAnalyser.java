@@ -54,8 +54,10 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
       long timestampOfFirstEvent = eventSamples.get(i - 1).getTimestamp();
       long timestampOfSecondEvent = eventSamples.get(i).getTimestamp();
       int periodInDays = (int) ((timestampOfSecondEvent - timestampOfFirstEvent) / TimeUtils.DAY_IN_MILLIS);
-      Calendar eventTimestampCalendar = TimeUtils.toUtcCalendar(timestampOfFirstEvent);
-      guessedRecurrences.add(new DailyPeriodRecurrence(periodInDays, eventTimestampCalendar));
+      if (periodInDays > 0) {
+        Calendar eventTimestampCalendar = TimeUtils.toUtcCalendar(timestampOfFirstEvent);
+        guessedRecurrences.add(new DailyPeriodRecurrence(periodInDays, eventTimestampCalendar));
+      }
     }
     return guessedRecurrences;
   }

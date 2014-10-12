@@ -20,7 +20,7 @@ public class AllOfRecurrenceMatcher extends RecurrenceMatcher {
   public void describeTo(Description description) {
     super.describeTo(description);
     if (recurrenceMatchers.length > 0) {
-      description.appendText(" with ");
+      description.appendText(" that ");
       description.appendText(recurrenceMatchers[0].isolatedDescription());
       for (int i = 1; i < recurrenceMatchers.length; i++) {
         description.appendText(" and ");
