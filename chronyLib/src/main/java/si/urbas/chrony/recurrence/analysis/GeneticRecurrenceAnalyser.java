@@ -23,9 +23,10 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
   private static final double MUTATION_RATE = 0.05;
   private static final int TOURNAMENT_SELECTION_ARITY = 5;
   private static final double ELITISM_RATE = 0.15;
-  private static final int MAX_GENERATIONS = 25;
+  private static final int MAX_GENERATIONS = 2500;
   private static final double RATE_OF_GUESSED_RECURRENCE = 0.5;
   private static final double CROSSOVER_RATIO = 0.1;
+  private static final int[] POSSIBLE_PERIODS = new int[]{1, 2, 3, 4, 5, 6, 7};
   private final Recurrences foundRecurrences;
 
   public GeneticRecurrenceAnalyser(List<EventSample> eventSamples) {
@@ -50,16 +51,32 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
 
   private static List<Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples) {
     List<Recurrence> guessedRecurrences = new ArrayList<Recurrence>();
-    for (int i = 1; i < eventSamples.size(); i++) {
-      long timestampOfFirstEvent = eventSamples.get(i - 1).getTimestamp();
-      long timestampOfSecondEvent = eventSamples.get(i).getTimestamp();
-      int periodInDays = (int) ((timestampOfSecondEvent - timestampOfFirstEvent) / TimeUtils.DAY_IN_MILLIS);
-      if (periodInDays > 0) {
-        Calendar eventTimestampCalendar = TimeUtils.toUtcCalendar(timestampOfFirstEvent);
-        guessedRecurrences.add(new DailyPeriodRecurrence(periodInDays, eventTimestampCalendar));
+    boolean[] halfHourIntervalsWithSamples = findHalfHourIntervalsWithSamples(eventSamples);
+    int[] possiblePeriodsInDays = POSSIBLE_PERIODS;
+    Calendar timeOfOccurrence = eventSamples.get(0).getTimestampAsCalendar();
+    for (int i = 0; i < halfHourIntervalsWithSamples.length; i++) {
+      if (halfHourIntervalsWithSamples[i]) {
+        for (int periodInDays : possiblePeriodsInDays) {
+          for (int dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
+            timeOfOccurrence.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+            timeOfOccurrence.set(Calendar.HOUR_OF_DAY, i / 2);
+            timeOfOccurrence.set(Calendar.MINUTE, 30 * (i % 2));
+            guessedRecurrences.add(new DailyPeriodRecurrence(periodInDays, timeOfOccurrence));
+          }
+        }
       }
     }
     return guessedRecurrences;
+  }
+
+  private static boolean[] findHalfHourIntervalsWithSamples(List<EventSample> eventSamples) {
+    boolean[] halfHourIntervals = new boolean[TimeUtils.DAY_IN_HOURS * 2];
+    for (EventSample eventSample : eventSamples) {
+      Calendar timestamp = eventSample.getTimestampAsCalendar();
+      int intervalIndex = timestamp.get(Calendar.HOUR_OF_DAY) * 2 + timestamp.get(Calendar.MINUTE) / 30;
+      halfHourIntervals[intervalIndex] = true;
+    }
+    return halfHourIntervals;
   }
 
   private static ElitisticListPopulation createInitialPopulation(List<Recurrence> guessedRecurrences, RecurrenceFitnessPolicy fitnessPolicy) {

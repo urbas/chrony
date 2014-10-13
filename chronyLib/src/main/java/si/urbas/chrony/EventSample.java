@@ -2,6 +2,7 @@ package si.urbas.chrony;
 
 import si.urbas.chrony.util.TimeUtils;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class EventSample {
@@ -9,6 +10,7 @@ public class EventSample {
   private final String eventName;
   private final long timestamp;
   private final Object data;
+  private Calendar timestampAsCalendar;
 
   public EventSample(String eventName, long timestamp, Object data) {
     this.eventName = eventName;
@@ -36,13 +38,19 @@ public class EventSample {
     return data;
   }
 
+  public Calendar getTimestampAsCalendar() {
+    if (timestampAsCalendar == null) {
+      timestampAsCalendar = TimeUtils.toUtcCalendar(timestamp);
+    }
+    return (Calendar) timestampAsCalendar.clone();
+  }
+
   @Override
   public String toString() {
     return "EventSample{" +
            "eventName='" + eventName + '\'' +
-           ", timestamp=" + TimeUtils.toSimpleString(timestamp) +
+           ", timestamp=" + TimeUtils.toSimpleString(getTimestampAsCalendar()) +
            ", data=" + data +
            '}';
   }
-
 }

@@ -32,8 +32,8 @@ public class RecurrenceFitnessPolicy {
       return Double.NEGATIVE_INFINITY;
     } else {
       int sizePenalty = sizePenalty(recurrences);
-      long minimumDistancesPenalty = minimumDistancesPenalty(recurrences, eventSamplesTemporalMetrics);
-      long spuriousOccurrencesPenalty = spuriousOccurrencesPenalty(recurrences, eventSamplesTemporalMetrics);
+      double minimumDistancesPenalty = minimumDistancesPenalty(recurrences, eventSamplesTemporalMetrics);
+      double spuriousOccurrencesPenalty = spuriousOccurrencesPenalty(recurrences, eventSamplesTemporalMetrics);
       return -sizePenalty - minimumDistancesPenalty - spuriousOccurrencesPenalty;
     }
   }
@@ -42,7 +42,7 @@ public class RecurrenceFitnessPolicy {
     return recurrences.getRecurrencesCount() * SIZE_PENALTY_RATE;
   }
 
-  private long minimumDistancesPenalty(Recurrences recurrences, EventTemporalMetrics eventSamplesTemporalMetrics) {
+  private double minimumDistancesPenalty(Recurrences recurrences, EventTemporalMetrics eventSamplesTemporalMetrics) {
     if (recurrences.getRecurrencesCount() == 0) {
       return defaultMinimumDistancePenalty(eventSamplesTemporalMetrics);
     } else {
@@ -50,20 +50,20 @@ public class RecurrenceFitnessPolicy {
     }
   }
 
-  private long sumOfMinDistances(Recurrences recurrences) {
-    int penalty = 0;
+  private double sumOfMinDistances(Recurrences recurrences) {
+    double penalty = 0;
     for (EventSample eventSample : eventSamples) {
       penalty += findMinimumDistance(recurrences, eventSample);
     }
     return penalty;
   }
 
-  private long defaultMinimumDistancePenalty(EventTemporalMetrics eventSamplesTemporalMetrics) {
+  private double defaultMinimumDistancePenalty(EventTemporalMetrics eventSamplesTemporalMetrics) {
     return eventSamplesTemporalMetrics.entireTimeSpan() * eventSamples.size() / 2;
   }
 
-  private long spuriousOccurrencesPenalty(Recurrences recurrences, EventTemporalMetrics eventSamplesTemporalMetrics) {
-    int distanceSum = 0;
+  private double spuriousOccurrencesPenalty(Recurrences recurrences, EventTemporalMetrics eventSamplesTemporalMetrics) {
+    double distanceSum = 0;
     for (Recurrence recurrence : recurrences.getRecurrences()) {
       List<Long> occurrencesInEntireRange = recurrence.getOccurrencesBetween(eventSamplesTemporalMetrics.oldestTimestamp, eventSamplesTemporalMetrics.newestTimestamp);
       for (Long occurrence : occurrencesInEntireRange) {

@@ -11,7 +11,8 @@ public class TimeUtils {
   public static final long SECOND_IN_MILLIS = 1000;
   public static final long MINUTE_IN_MILLIS = 60 * SECOND_IN_MILLIS;
   public static final long HOUR_IN_MILLIS = 60 * MINUTE_IN_MILLIS;
-  public static final long DAY_IN_MILLIS = 24 * HOUR_IN_MILLIS;
+  public static final int DAY_IN_HOURS = 24;
+  public static final long DAY_IN_MILLIS = DAY_IN_HOURS * HOUR_IN_MILLIS;
   public static final long WEEK_IN_MILLIS = 7 * DAY_IN_MILLIS;
   private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
   private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
