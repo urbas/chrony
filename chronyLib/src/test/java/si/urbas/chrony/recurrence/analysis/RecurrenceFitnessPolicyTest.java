@@ -1,5 +1,6 @@
 package si.urbas.chrony.recurrence.analysis;
 
+import org.junit.Before;
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
@@ -7,6 +8,7 @@ import si.urbas.chrony.recurrence.Recurrence;
 import si.urbas.chrony.recurrence.Recurrences;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
@@ -20,6 +22,12 @@ import static si.urbas.chrony.recurrence.RecurrencesTestUtils.recurrences;
 public class RecurrenceFitnessPolicyTest {
 
   private static final int COMPLETELY_PRECISE = 0;
+  private Random randomnessSource;
+
+  @Before
+  public void setUp() {
+    randomnessSource = new Random(731297);
+  }
 
   @Test
   public void fitness_MUST_return_0_WHEN_given_no_samples_and_empty_recurrence() {
@@ -84,7 +92,7 @@ public class RecurrenceFitnessPolicyTest {
     int periodInDays = 1;
     int durationInDays = 5;
     int maxDeviationInHours = 1;
-    ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(periodInDays, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
+    ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(randomnessSource, periodInDays, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
     RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(roughlyDailySamples);
     assertThat(
       fitnessPolicy.fitness(recurrences(createTestRecurrence())),
@@ -94,7 +102,7 @@ public class RecurrenceFitnessPolicyTest {
 
   @Test
   public void fitness_MUST_return_the_smallest_number_for_the_daily_recurrence_WHEN_two_occurrences_are_missing_in_seven_days() {
-    RecurrenceFitnessPolicy fitnessPolicy = prepareFitnessPolicyWith5DailyRandomisedSamples();
+    RecurrenceFitnessPolicy fitnessPolicy = prepareFitnessPolicyWith5DailyRandomisedSamples(randomnessSource);
     assertThat(
       fitnessPolicy.fitness(recurrences(createTestRecurrence())),
       is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(1, 2014, 8, 16, 14, 37)))))
@@ -103,7 +111,7 @@ public class RecurrenceFitnessPolicyTest {
 
   @Test
   public void fitness_MUST_prefer_one_recurrence_WHEN_two_two_cover_exactly_the_same() {
-    RecurrenceFitnessPolicy fitnessPolicy = prepareFitnessPolicyWithBidailyRandomisedSamples();
+    RecurrenceFitnessPolicy fitnessPolicy = prepareFitnessPolicyWithBidailyRandomisedSamples(randomnessSource);
     assertThat(
       fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(2, 2014, 8, 16, 14, 37), new DailyPeriodRecurrence(2, 2014, 8, 17, 14, 37))),
       is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(1, 2010, 8, 16, 14, 37)))))
@@ -118,19 +126,19 @@ public class RecurrenceFitnessPolicyTest {
     return recurrences(new DailyPeriodRecurrence(1, 0, 0, 0, 0, 0));
   }
 
-  private static RecurrenceFitnessPolicy prepareFitnessPolicyWith5DailyRandomisedSamples() {
+  private static RecurrenceFitnessPolicy prepareFitnessPolicyWith5DailyRandomisedSamples(Random randomnessSource1) {
     int durationInDays = 7;
     int maxDeviationInHours = 1;
-    ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(1, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
+    ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(randomnessSource1, 1, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
     roughlyDailySamples.remove(2);
     roughlyDailySamples.remove(2);
     return new RecurrenceFitnessPolicy(roughlyDailySamples);
   }
 
-  private static RecurrenceFitnessPolicy prepareFitnessPolicyWithBidailyRandomisedSamples() {
+  private static RecurrenceFitnessPolicy prepareFitnessPolicyWithBidailyRandomisedSamples(Random randomnessSource1) {
     int durationInDays = 17;
     int maxDeviationInHours = 1;
-    ArrayList<EventSample> samples = createRandomEventSamples(2, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
+    ArrayList<EventSample> samples = createRandomEventSamples(randomnessSource1, 2, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
     return new RecurrenceFitnessPolicy(samples);
   }
 

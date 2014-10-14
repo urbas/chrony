@@ -1,7 +1,7 @@
 package si.urbas.chrony.recurrence.analysis;
 
 import org.hamcrest.Matcher;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.Recurrence;
@@ -10,6 +10,7 @@ import si.urbas.chrony.recurrence.test.matchers.RecurrenceOccurringCloseToMatche
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.*;
@@ -29,6 +30,12 @@ public abstract class RecurrenceAnalyserTest {
   private final EventSample eventSampleAtTime10d17h = eventSampleAtTime(DAY_10, HOUR_17);
   private final Matcher<Recurrence> weeklyRecurrence = recurrenceWithPeriodOf(7);
   private final Matcher<Recurrence> dailyRecurrence = recurrenceWithPeriodOf(1);
+  private Random randomnessSource;
+
+  @Before
+  public void setUp() {
+    randomnessSource = new Random(731297);
+  }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructor_MUST_throw_an_exception_WHEN_the_list_of_event_samples_is_not_sorted() {
@@ -74,7 +81,7 @@ public abstract class RecurrenceAnalyserTest {
   @Test
   public void foundRecurrences_MUST_return_a_3_day_recurrence_WHEN_given_a_larger_number_of_samples_roughly_three_day_apart() {
     long firstOccurrenceTimeInMillis = toUtcTimeInMillis(2010, 2, 19, 4, 45, 0);
-    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(createRandomEventSamples(3, 10, 1, firstOccurrenceTimeInMillis));
+    RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(createRandomEventSamples(randomnessSource, 3, 10, 1, firstOccurrenceTimeInMillis));
     assertThat(
       recurrenceAnalyser.foundRecurrences().getRecurrences(),
       contains(
@@ -87,8 +94,8 @@ public abstract class RecurrenceAnalyserTest {
   public void foundRecurrences_MUST_return_a_composite_4_and_7_day_recurrence() {
     long startTimeInMillis_4Day = toUtcTimeInMillis(2010, 2, 19, 4, 45, 0);
     long startTimeInMillis_7Day = toUtcTimeInMillis(2010, 2, 20, 14, 17, 0);
-    ArrayList<EventSample> eventSamples = createRandomEventSamples(4, 35, 1, startTimeInMillis_4Day);
-    addRandomEventSamples(eventSamples, 7, 35, 1, startTimeInMillis_7Day);
+    ArrayList<EventSample> eventSamples = createRandomEventSamples(randomnessSource, 4, 35, 1, startTimeInMillis_4Day);
+    addRandomEventSamples(eventSamples, randomnessSource, 7, 35, 1, startTimeInMillis_7Day);
     RecurrenceAnalyser recurrenceAnalyser = createRecurrenceAnalyser(eventSamples);
     assertThat(
       recurrenceAnalyser.foundRecurrences().getRecurrences(),

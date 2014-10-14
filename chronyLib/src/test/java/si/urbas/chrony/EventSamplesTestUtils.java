@@ -16,7 +16,6 @@ public class EventSamplesTestUtils {
   public static final int DAY_3 = 2;
   public static final int DAY_8 = 7;
   public static final int DAY_10 = 9;
-  private static final Random RANDOMNESS_SOURCE = new Random(4983291827L);
 
   private static EventSample eventSampleAtTime(long timeInMillis) {
     return new EventSample(EVENT_NAME, timeInMillis, null);
@@ -31,20 +30,20 @@ public class EventSamplesTestUtils {
     return new EventSample(EVENT_NAME, calendar.getTimeInMillis(), null);
   }
 
-  public static ArrayList<EventSample> createRandomEventSamples(int periodInDays, int durationInDays, int maxDeviationInHours, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {
+  public static ArrayList<EventSample> createRandomEventSamples(Random randomnessSource, int periodInDays, int durationInDays, int maxDeviationInHours, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {
     long startTimeInMillis = toUtcTimeInMillis(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0);
-    return createRandomEventSamples(periodInDays, durationInDays, maxDeviationInHours, startTimeInMillis);
+    return createRandomEventSamples(randomnessSource, periodInDays, durationInDays, maxDeviationInHours, startTimeInMillis);
   }
 
-  public static ArrayList<EventSample> createRandomEventSamples(int periodInDays, int durationInDays, int maxDeviationInHours, long startTimeInMillis) {
+  public static ArrayList<EventSample> createRandomEventSamples(Random randomnessSource, int periodInDays, int durationInDays, int maxDeviationInHours, long startTimeInMillis) {
     ArrayList<EventSample> roughlyRecurringSamples = new ArrayList<EventSample>();
-    return addRandomEventSamples(roughlyRecurringSamples, periodInDays, durationInDays, maxDeviationInHours, startTimeInMillis);
+    return addRandomEventSamples(roughlyRecurringSamples, randomnessSource, periodInDays, durationInDays, maxDeviationInHours, startTimeInMillis);
   }
 
-  public static ArrayList<EventSample> addRandomEventSamples(ArrayList<EventSample> eventSamplesToAddTo, int periodInDays, int durationInDays, int maxDeviationInHours, long startTimeInMillis) {
+  public static ArrayList<EventSample> addRandomEventSamples(ArrayList<EventSample> eventSamplesToAddTo, Random randomnessSource, int periodInDays, int durationInDays, int maxDeviationInHours, long startTimeInMillis) {
     long endTimeInMillis = startTimeInMillis + durationInDays * DAY_IN_MILLIS;
     long maxDeviationFromExactRecurrence = maxDeviationInHours * HOUR_IN_MILLIS;
-    addUniformlyRandomOccurrences(eventSamplesToAddTo, RANDOMNESS_SOURCE, periodInDays, startTimeInMillis, endTimeInMillis, maxDeviationFromExactRecurrence);
+    addUniformlyRandomOccurrences(eventSamplesToAddTo, randomnessSource, periodInDays, startTimeInMillis, endTimeInMillis, maxDeviationFromExactRecurrence);
     return eventSamplesToAddTo;
   }
 

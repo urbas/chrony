@@ -73,7 +73,10 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
     boolean[] halfHourIntervals = new boolean[TimeUtils.DAY_IN_HOURS * 2];
     for (EventSample eventSample : eventSamples) {
       Calendar timestamp = eventSample.getTimestampAsCalendar();
-      int intervalIndex = timestamp.get(Calendar.HOUR_OF_DAY) * 2 + timestamp.get(Calendar.MINUTE) / 30;
+      int minute = timestamp.get(Calendar.MINUTE);
+      int minuteSlot = minute / 30;
+      int hour = timestamp.get(Calendar.HOUR_OF_DAY);
+      int intervalIndex = hour * 2 + minuteSlot;
       halfHourIntervals[intervalIndex] = true;
     }
     return halfHourIntervals;
