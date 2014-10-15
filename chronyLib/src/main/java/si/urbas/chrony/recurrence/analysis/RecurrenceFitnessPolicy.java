@@ -5,6 +5,7 @@ import si.urbas.chrony.metrics.EventTemporalMetrics;
 import si.urbas.chrony.recurrence.Recurrence;
 import si.urbas.chrony.recurrence.Recurrences;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
@@ -13,18 +14,24 @@ public class RecurrenceFitnessPolicy {
 
   private static final int SIZE_PENALTY_RATE = 1000 * 60 * 60;
   private final List<EventSample> eventSamples;
+  private final ArrayList<RecurrenceFitness> recurrenceFitnesses;
   private final EventTemporalMetrics eventSamplesTemporalMetrics;
 
   /**
    * @param eventSamples a list o event samples that has to be ordered by the sample's timestamp in an increasing order.
    */
-  public RecurrenceFitnessPolicy(List<EventSample> eventSamples) {
-    this(eventSamples, EventTemporalMetrics.calculate(eventSamples));
+  public RecurrenceFitnessPolicy(List<EventSample> eventSamples, Recurrences recurrencePool) {
+    this(
+      eventSamples,
+      EventTemporalMetrics.calculate(eventSamples),
+      RecurrenceFitness.computeFitnesses(recurrencePool, eventSamples)
+    );
   }
 
-  public RecurrenceFitnessPolicy(List<EventSample> eventSamples, EventTemporalMetrics eventTemporalMetrics) {
+  public RecurrenceFitnessPolicy(List<EventSample> eventSamples, EventTemporalMetrics eventTemporalMetrics, ArrayList<RecurrenceFitness> recurrenceFitnesses) {
     this.eventSamples = eventSamples;
     this.eventSamplesTemporalMetrics = eventTemporalMetrics;
+    this.recurrenceFitnesses = recurrenceFitnesses;
   }
 
   public double fitness(Recurrences recurrences) {

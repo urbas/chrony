@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class RecurrencesTestUtils {
+
   public static Recurrences emptyRecurrences() {
     return new RecurrencesList(Collections.<Recurrence>emptyList());
   }

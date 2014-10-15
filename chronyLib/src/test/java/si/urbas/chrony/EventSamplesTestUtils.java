@@ -17,6 +17,10 @@ public class EventSamplesTestUtils {
   public static final int DAY_8 = 7;
   public static final int DAY_10 = 9;
 
+  private static EventSample eventSampleAtTime(Calendar calendar) {
+    return eventSampleAtTime(calendar.getTimeInMillis());
+  }
+
   private static EventSample eventSampleAtTime(long timeInMillis) {
     return new EventSample(EVENT_NAME, timeInMillis, null);
   }
@@ -28,6 +32,17 @@ public class EventSamplesTestUtils {
     calendar.set(0, Calendar.JANUARY, day, hour, 0, 0);
     calendar.set(Calendar.MILLISECOND, 0);
     return new EventSample(EVENT_NAME, calendar.getTimeInMillis(), null);
+  }
+
+  public static ArrayList<EventSample> createRecurringEventSamples(int periodInDays, int durationInDays, Calendar timeOfFirstOccurrence) {
+    Calendar calendar = (Calendar) timeOfFirstOccurrence.clone();
+    ArrayList<EventSample> eventSamples = new ArrayList<EventSample>();
+    do {
+      eventSamples.add(EventSamplesTestUtils.eventSampleAtTime(calendar));
+      calendar.add(Calendar.DAY_OF_MONTH, periodInDays);
+      durationInDays -= periodInDays;
+    } while (durationInDays >= 0);
+    return eventSamples;
   }
 
   public static ArrayList<EventSample> createRandomEventSamples(Random randomnessSource, int periodInDays, int durationInDays, int maxDeviationInHours, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {

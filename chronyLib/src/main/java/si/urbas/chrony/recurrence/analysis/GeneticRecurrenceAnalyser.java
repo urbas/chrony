@@ -35,8 +35,9 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
     if (eventTemporalMetrics.entireTimeSpan() == 0) {
       foundRecurrences = RecurrencesList.emptyRecurrences;
     } else {
-      RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(eventSamples, eventTemporalMetrics);
       List<Recurrence> guessedRecurrences = guessPossibleRecurrences(eventSamples);
+      ArrayList<RecurrenceFitness> recurrenceFitnesses = RecurrenceFitness.computeFitnesses(guessedRecurrences, eventSamples);
+      RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(eventSamples, eventTemporalMetrics, recurrenceFitnesses);
       GeneticAlgorithm geneticAlgorithm = createBinaryGeneticAlgorithm();
       ElitisticListPopulation initialPopulation = createInitialPopulation(guessedRecurrences, fitnessPolicy);
       Population evolvedPopulation = geneticAlgorithm.evolve(initialPopulation, new FixedGenerationCount(MAX_GENERATIONS));

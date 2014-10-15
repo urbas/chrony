@@ -8,6 +8,7 @@ import si.urbas.chrony.recurrence.Recurrence;
 import si.urbas.chrony.recurrence.Recurrences;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static java.util.Arrays.asList;
@@ -31,7 +32,7 @@ public class RecurrenceFitnessPolicyTest {
 
   @Test
   public void fitness_MUST_return_0_WHEN_given_no_samples_and_empty_recurrence() {
-    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(emptyEventSamples());
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(emptyEventSamples(), emptyRecurrences());
     double actualFitness = fitnessPolicy.fitness(emptyRecurrences());
     int expectedFitness = 0;
     assertEquals(expectedFitness, actualFitness, COMPLETELY_PRECISE);
@@ -39,21 +40,22 @@ public class RecurrenceFitnessPolicyTest {
 
   @Test
   public void fitness_MUST_severely_punish_non_empty_recurrences_WHEN_given_less_than_two_samples() {
-    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(1, 0)));
-    double actualFitness = fitnessPolicy.fitness(recurrences(createTestRecurrence()));
+    Recurrences recurrences = recurrences(createTestRecurrence());
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(1, 0)), recurrences);
+    double actualFitness = fitnessPolicy.fitness(recurrences);
     double expectedFitness = Double.NEGATIVE_INFINITY;
     assertEquals(expectedFitness, actualFitness, COMPLETELY_PRECISE);
   }
 
   @Test
   public void fitness_MUST_return_a_negative_number_WHEN_given_some_recurrences_AND_no_samples() {
-    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(emptyEventSamples());
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(emptyEventSamples(), singleDailyRecurrence());
     assertThat(fitnessPolicy.fitness(singleDailyRecurrence()), is(lessThan(0.0)));
   }
 
   @Test
   public void fitness_MUST_favour_non_empty_recurrences_WHEN_there_are_some_samples() {
-    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(1, 0), eventSampleAtTime(2, 0)));
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(1, 0), eventSampleAtTime(2, 0)), emptyRecurrences());
     assertThat(
       fitnessPolicy.fitness(emptyRecurrences()),
       is(lessThan(fitnessPolicy.fitness(singleDailyRecurrence())))
@@ -62,7 +64,7 @@ public class RecurrenceFitnessPolicyTest {
 
   @Test
   public void fitness_MUST_return_a_smaller_number_FOR_a_recurrence_with_a_wrong_period_THAN_a_recurrence_that_perfectly_matches_the_samples() {
-    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(1, 0), eventSampleAtTime(2, 0)));
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(1, 0), eventSampleAtTime(2, 0)), singleWeeklyRecurrence());
     assertThat(
       fitnessPolicy.fitness(singleWeeklyRecurrence()),
       is(lessThan(fitnessPolicy.fitness(singleDailyRecurrence())))
@@ -71,7 +73,7 @@ public class RecurrenceFitnessPolicyTest {
 
   @Test
   public void fitness_MUST_return_a_smaller_number_FOR_a_recurrence_that_prescribes_fewer_spurious_occurrences() {
-    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(7, 0), eventSampleAtTime(14, 0)));
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(7, 0), eventSampleAtTime(14, 0)), singleDailyRecurrence());
     assertThat(
       fitnessPolicy.fitness(singleDailyRecurrence()),
       is(lessThan(fitnessPolicy.fitness(singleWeeklyRecurrence())))
@@ -80,7 +82,8 @@ public class RecurrenceFitnessPolicyTest {
 
   @Test
   public void fitness_MUST_prefer_two_recurrences_to_one_WHEN_two_recurrences_match_the_samples_perfectly() {
-    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(asList(eventSampleAtTime(1, 0), eventSampleAtTime(2, 0), eventSampleAtTime(8, 0), eventSampleAtTime(9, 0)));
+    List<EventSample> eventSamples = asList(eventSampleAtTime(1, 0), eventSampleAtTime(2, 0), eventSampleAtTime(8, 0), eventSampleAtTime(9, 0));
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(eventSamples, emptyRecurrences());
     assertThat(
       fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(7, 0, 0, 1, 0, 0))),
       is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(7, 0, 0, 1, 0, 0), new DailyPeriodRecurrence(7, 0, 0, 2, 0, 0)))))
@@ -93,7 +96,7 @@ public class RecurrenceFitnessPolicyTest {
     int durationInDays = 5;
     int maxDeviationInHours = 1;
     ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(randomnessSource, periodInDays, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
-    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(roughlyDailySamples);
+    RecurrenceFitnessPolicy fitnessPolicy = new RecurrenceFitnessPolicy(roughlyDailySamples, emptyRecurrences());
     assertThat(
       fitnessPolicy.fitness(recurrences(createTestRecurrence())),
       is(lessThan(fitnessPolicy.fitness(recurrences(new DailyPeriodRecurrence(periodInDays, 2014, 8, 16, 14, 37)))))
@@ -132,14 +135,14 @@ public class RecurrenceFitnessPolicyTest {
     ArrayList<EventSample> roughlyDailySamples = createRandomEventSamples(randomnessSource1, 1, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
     roughlyDailySamples.remove(2);
     roughlyDailySamples.remove(2);
-    return new RecurrenceFitnessPolicy(roughlyDailySamples);
+    return new RecurrenceFitnessPolicy(roughlyDailySamples, emptyRecurrences());
   }
 
   private static RecurrenceFitnessPolicy prepareFitnessPolicyWithBidailyRandomisedSamples(Random randomnessSource1) {
     int durationInDays = 17;
     int maxDeviationInHours = 1;
     ArrayList<EventSample> samples = createRandomEventSamples(randomnessSource1, 2, durationInDays, maxDeviationInHours, 2014, 8, 16, 14, 37);
-    return new RecurrenceFitnessPolicy(samples);
+    return new RecurrenceFitnessPolicy(samples, emptyRecurrences());
   }
 
   private static Recurrence createTestRecurrence() {return new DailyPeriodRecurrence(7, 2014, 8, 16, 14, 37);}
