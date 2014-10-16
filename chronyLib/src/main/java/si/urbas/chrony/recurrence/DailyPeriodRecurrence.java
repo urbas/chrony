@@ -1,6 +1,5 @@
 package si.urbas.chrony.recurrence;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -38,16 +37,8 @@ public class DailyPeriodRecurrence implements Recurrence {
   }
 
   @Override
-  public List<Long> getOccurrencesBetween(long fromTimeInMillis, long toTimeInMillis) {
-    ArrayList<Long> occurrences = new ArrayList<Long>();
-    if (toTimeInMillis > fromTimeInMillis) {
-      for (long currentOccurrence = getFirstOccurrenceAfter(fromTimeInMillis);
-           currentOccurrence < toTimeInMillis;
-           currentOccurrence += periodInDays * DAY_IN_MILLIS) {
-        occurrences.add(currentOccurrence);
-      }
-    }
-    return occurrences;
+  public List<Long> getOccurrencesBetween(final long fromTimeInMillis, final long toTimeInMillis) {
+    return new OccurrenceList(getFirstOccurrenceAfter(fromTimeInMillis), toTimeInMillis, periodInDays * DAY_IN_MILLIS);
   }
 
   @Override

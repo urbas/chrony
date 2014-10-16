@@ -2,7 +2,6 @@ package si.urbas.chrony.recurrence.analysis;
 
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.Recurrence;
-import si.urbas.chrony.recurrence.Recurrences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,16 +18,12 @@ public class RecurrenceFitness {
     if (eventSamples.size() > 0) {
       fitness = -sumOfDistances(recurrence, eventSamples) - spuriousOccurrencesPenalty(recurrence, eventSamples);
     } else {
-      fitness = 0;
+      fitness = Double.NEGATIVE_INFINITY;
     }
   }
 
   public double fitness() {
     return fitness;
-  }
-
-  public static ArrayList<RecurrenceFitness> computeFitnesses(Recurrences recurrences, List<EventSample> eventSamples) {
-    return computeFitnesses(recurrences.getRecurrences(), eventSamples);
   }
 
   public static ArrayList<RecurrenceFitness> computeFitnesses(List<Recurrence> recurrences, List<EventSample> eventSamples) {
@@ -51,7 +46,7 @@ public class RecurrenceFitness {
     double distanceSum = 0;
     long timestampOfFirstSample = eventSamples.get(0).getTimestamp();
     long timestampOfLastSample = eventSamples.get(eventSamples.size() - 1).getTimestamp();
-    List<Long> occurrencesInEntireRange = recurrence.getOccurrencesBetween(timestampOfFirstSample, timestampOfLastSample);
+    Iterable<Long> occurrencesInEntireRange = recurrence.getOccurrencesBetween(timestampOfFirstSample, timestampOfLastSample);
     for (Long occurrence : occurrencesInEntireRange) {
       distanceSum += distanceToClosestSample(occurrence, eventSamples);
     }

@@ -16,14 +16,13 @@ public class RecurrenceOccurringCloseToMatcher extends RecurrenceMatcher {
 
   @Override
   public void describeTo(Description description) {
-    super.describeTo(description);
-    description.appendText(" with ");
+    description.appendText("recurrence ");
     description.appendText(isolatedDescription());
   }
 
   @Override
   protected String isolatedDescription() {
-    return "happens within " + describeDistance() + " of " + TimeUtils.toSimpleString(targetOccurrenceTimeInMillis);
+    return "happening within " + describeDistance() + " of " + TimeUtils.toSimpleString(targetOccurrenceTimeInMillis);
   }
 
   private String describeDistance() {

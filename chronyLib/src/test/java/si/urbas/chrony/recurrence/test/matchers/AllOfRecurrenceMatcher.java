@@ -18,14 +18,22 @@ public class AllOfRecurrenceMatcher extends RecurrenceMatcher {
 
   @Override
   public void describeTo(Description description) {
-    super.describeTo(description);
+    description.appendText("recurrence ");
+    description.appendText(isolatedDescription());
+  }
+
+  @Override
+  protected String isolatedDescription() {
+      StringBuilder description = new StringBuilder();
     if (recurrenceMatchers.length > 0) {
-      description.appendText(" that ");
-      description.appendText(recurrenceMatchers[0].isolatedDescription());
+      description.append(recurrenceMatchers[0].isolatedDescription());
       for (int i = 1; i < recurrenceMatchers.length; i++) {
-        description.appendText(" and ");
-        description.appendText(recurrenceMatchers[i].isolatedDescription());
+        description.append(" and ");
+        description.append(recurrenceMatchers[i].isolatedDescription());
       }
+    } else {
+      description.append("having no other constraints");
     }
+    return description.toString();
   }
 }

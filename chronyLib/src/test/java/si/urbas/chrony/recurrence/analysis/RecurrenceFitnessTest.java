@@ -37,9 +37,9 @@ public class RecurrenceFitnessTest {
   }
 
   @Test
-  public void fitness_MUST_return_0_WHEN_given_no_samples() {
+  public void fitness_MUST_return_negative_infinity_WHEN_given_no_samples() {
     RecurrenceFitness recurrenceFitness = new RecurrenceFitness(recurrence(), emptyEventSamples());
-    assertEquals(0, recurrenceFitness.fitness(), ZERO_DELTA);
+    assertEquals(Double.NEGATIVE_INFINITY, recurrenceFitness.fitness(), ZERO_DELTA);
   }
 
   @Test
@@ -67,7 +67,7 @@ public class RecurrenceFitnessTest {
   }
 
   @Test
-  public void fitness_MUST_return_a_negative_number_for_a_recurrence_that_overfits_samples() {
+  public void fitness_MUST_return_smaller_number_for_a_recurrence_that_is_more_frequent_than_a_perfect_recurrence() {
     long timeOfFirstOccurrence = toUtcTimeInMillis(2014, 9, 14, 5, 37, 0);
     ArrayList<EventSample> biDailyEventSamples = twoDayPeriodEventSamples(timeOfFirstOccurrence);
     RecurrenceFitness perfectRecurrenceFitness = createRecurrenceFitness(timeOfFirstOccurrence, TWO_DAYS_PERIOD, biDailyEventSamples, 0);
@@ -75,12 +75,21 @@ public class RecurrenceFitnessTest {
     assertThat(overfittingRecurrenceFitness.fitness(), is(lessThan(perfectRecurrenceFitness.fitness())));
   }
 
+  @Test
+  public void fitness_MUST_return_smaller_number_for_a_recurrence_that_is_less_frequent_than_a_perfect_recurrence() {
+    long timeOfFirstOccurrence = toUtcTimeInMillis(2014, 9, 14, 5, 37, 0);
+    ArrayList<EventSample> biDailyEventSamples = twoDayPeriodEventSamples(timeOfFirstOccurrence);
+    RecurrenceFitness perfectRecurrenceFitness = createRecurrenceFitness(timeOfFirstOccurrence, TWO_DAYS_PERIOD, biDailyEventSamples, 0);
+    RecurrenceFitness overfittingRecurrenceFitness = createRecurrenceFitness(timeOfFirstOccurrence, 2 * TWO_DAYS_PERIOD, biDailyEventSamples, 0);
+    assertThat(overfittingRecurrenceFitness.fitness(), is(lessThan(perfectRecurrenceFitness.fitness())));
+  }
+
   private ArrayList<EventSample> twoDayPeriodEventSamples(long timeOfFirstOccurrence) {
-    return createRecurringEventSamples(TWO_DAYS_PERIOD, 3 * TWO_DAYS_PERIOD, toUtcCalendar(timeOfFirstOccurrence));
+    return createRecurringEventSamples(TWO_DAYS_PERIOD, 6 * TWO_DAYS_PERIOD, toUtcCalendar(timeOfFirstOccurrence));
   }
 
   private ArrayList<EventSample> towDayPeriodRandomEventSamples() {
-    return createRandomEventSamples(randomnessSource, TWO_DAYS_PERIOD, 3 * TWO_DAYS_PERIOD, ONE_HOUR_DEVIATION, 2014, 9, 14, 5, 37);
+    return createRandomEventSamples(randomnessSource, TWO_DAYS_PERIOD, 6 * TWO_DAYS_PERIOD, ONE_HOUR_DEVIATION, 2014, 9, 14, 5, 37);
   }
 
   private static RecurrenceFitness createRecurrenceFitness(long timeOfFirstOccurrence, int periodInDays, ArrayList<EventSample> eventSamples, long phaseShiftInMillis) {

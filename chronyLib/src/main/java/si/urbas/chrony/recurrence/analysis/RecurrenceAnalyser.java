@@ -1,7 +1,9 @@
 package si.urbas.chrony.recurrence.analysis;
 
-import si.urbas.chrony.recurrence.Recurrences;
+import si.urbas.chrony.recurrence.Recurrence;
+
+import java.util.List;
 
 public interface RecurrenceAnalyser {
-  Recurrences foundRecurrences();
+  List<Recurrence> foundRecurrences();
 }

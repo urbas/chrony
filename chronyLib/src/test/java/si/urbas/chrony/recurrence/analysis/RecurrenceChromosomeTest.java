@@ -14,50 +14,49 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
-import static si.urbas.chrony.recurrence.RecurrencesTestUtils.toList;
 
 public class RecurrenceChromosomeTest {
 
-  private RecurrenceFitnessPolicy recurrenceFitnessPolicy;
+  private BitMaskChromosomeFitness bitMaskChromosomeFitness;
   private RecurrenceChromosome recurrenceChromosomeSize1_Binary1;
   private RecurrenceChromosome recurrenceChromosomeSize3_Binary101;
 
   @Before
   public void setUp() throws Exception {
-    recurrenceFitnessPolicy = mock(RecurrenceFitnessPolicy.class);
-    recurrenceChromosomeSize1_Binary1 = new RecurrenceChromosome(singleAvailableRecurrence(), Arrays.asList(1), recurrenceFitnessPolicy);
-    recurrenceChromosomeSize3_Binary101 = new RecurrenceChromosome(threeAvailableRecurrences(), Arrays.asList(1, 0, 1), recurrenceFitnessPolicy);
+    bitMaskChromosomeFitness = mock(BitMaskChromosomeFitness.class);
+    recurrenceChromosomeSize1_Binary1 = new RecurrenceChromosome(singleAvailableRecurrence(), Arrays.asList(1), bitMaskChromosomeFitness);
+    recurrenceChromosomeSize3_Binary101 = new RecurrenceChromosome(threeAvailableRecurrences(), Arrays.asList(1, 0, 1), bitMaskChromosomeFitness);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructor_MUST_throw_an_exception_WHEN_the_sizes_of_available_recurrences_and_included_recurrences_do_not_match() {
-    new RecurrenceChromosome(singleAvailableRecurrence(), emptyIncludedRecurrences(), recurrenceFitnessPolicy);
+    new RecurrenceChromosome(singleAvailableRecurrence(), emptyIncludedRecurrences(), bitMaskChromosomeFitness);
   }
 
   @Test
   public void fitness_MUST_delegate_to_the_fitness_policy() {
     recurrenceChromosomeSize1_Binary1.fitness();
-    verify(recurrenceFitnessPolicy).fitness(recurrenceChromosomeSize1_Binary1);
+    verify(bitMaskChromosomeFitness).fitness(recurrenceChromosomeSize1_Binary1);
   }
 
   @Test
   public void fitness_MUST_cache_the_result_from_the_fitness_policy() {
     recurrenceChromosomeSize1_Binary1.fitness();
     recurrenceChromosomeSize1_Binary1.fitness();
-    verify(recurrenceFitnessPolicy, times(1)).fitness(recurrenceChromosomeSize1_Binary1);
+    verify(bitMaskChromosomeFitness, times(1)).fitness(recurrenceChromosomeSize1_Binary1);
   }
 
   @Test
   public void fitness_MUST_return_the_answer_from_the_fitness_policy() {
     double expectedFitness = Math.random();
-    when(recurrenceFitnessPolicy.fitness(recurrenceChromosomeSize1_Binary1)).thenReturn(expectedFitness);
+    when(bitMaskChromosomeFitness.fitness(recurrenceChromosomeSize1_Binary1)).thenReturn(expectedFitness);
     assertThat(recurrenceChromosomeSize1_Binary1.fitness(), equalTo(expectedFitness));
   }
 
   @Test
   public void fitness_MUST_return_the_cached_answer_from_the_fitness_policy() {
     double expectedFitness = Math.random();
-    when(recurrenceFitnessPolicy.fitness(recurrenceChromosomeSize1_Binary1)).thenReturn(expectedFitness);
+    when(bitMaskChromosomeFitness.fitness(recurrenceChromosomeSize1_Binary1)).thenReturn(expectedFitness);
     assertThat(recurrenceChromosomeSize1_Binary1.fitness(), equalTo(recurrenceChromosomeSize1_Binary1.fitness()));
   }
 
@@ -75,14 +74,12 @@ public class RecurrenceChromosomeTest {
     );
   }
 
-  private List<Recurrence> singleAvailableRecurrence() {return toList(new DailyPeriodRecurrence(7, 0, 0, 0, 0, 0));}
+  private List<Recurrence> singleAvailableRecurrence() {
+    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(7, 0, 0, 0, 0, 0));
+  }
 
   private List<Recurrence> threeAvailableRecurrences() {
-    return toList(
-      new DailyPeriodRecurrence(7, 0, 0, 0, 0, 0),
-      new DailyPeriodRecurrence(1, 0, 0, 0, 2, 3),
-      new DailyPeriodRecurrence(4, 0, 0, 0, 5, 6)
-    );
+    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(7, 0, 0, 0, 0, 0), new DailyPeriodRecurrence(1, 0, 0, 0, 2, 3), new DailyPeriodRecurrence(4, 0, 0, 0, 5, 6));
   }
 
   private ArrayList<Integer> emptyIncludedRecurrences() {return new ArrayList<Integer>();}

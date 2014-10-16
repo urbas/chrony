@@ -3,51 +3,52 @@ package si.urbas.chrony.recurrence.analysis;
 import org.apache.commons.math3.genetics.AbstractListChromosome;
 import org.apache.commons.math3.genetics.BinaryChromosome;
 import si.urbas.chrony.recurrence.Recurrence;
-import si.urbas.chrony.recurrence.Recurrences;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecurrenceChromosome extends BinaryChromosome implements Recurrences {
+public class RecurrenceChromosome extends BinaryChromosome {
 
   private final List<Recurrence> availableRecurrences;
-  private final RecurrenceFitnessPolicy recurrenceFitnessPolicy;
+  private final BitMaskChromosomeFitness bitMaskChromosomeFitness;
   private final ArrayList<Recurrence> recurrences;
   private double cachedFitness;
   private boolean isFitnessInitialised = false;
 
   public RecurrenceChromosome(List<Recurrence> availableRecurrences,
                               List<Integer> includedRecurrences,
-                              RecurrenceFitnessPolicy recurrenceFitnessPolicy) {
+                              BitMaskChromosomeFitness bitMaskChromosomeFitness) {
     super(includedRecurrences);
     assertRecurrenceListsSizesMatch(availableRecurrences, includedRecurrences);
     this.availableRecurrences = availableRecurrences;
-    this.recurrenceFitnessPolicy = recurrenceFitnessPolicy;
+    this.bitMaskChromosomeFitness = bitMaskChromosomeFitness;
     this.recurrences = buildRecurrencesList(availableRecurrences, includedRecurrences);
   }
 
   @Override
   public AbstractListChromosome<Integer> newFixedLengthChromosome(List<Integer> includedRecurrences) {
-    return new RecurrenceChromosome(availableRecurrences, includedRecurrences, recurrenceFitnessPolicy);
+    return new RecurrenceChromosome(availableRecurrences, includedRecurrences, bitMaskChromosomeFitness);
   }
 
   @Override
   public double fitness() {
     if (!isFitnessInitialised) {
-      cachedFitness = recurrenceFitnessPolicy.fitness(this);
+      cachedFitness = bitMaskChromosomeFitness.fitness(this);
       isFitnessInitialised = true;
     }
     return cachedFitness;
   }
 
-  @Override
   public int getRecurrencesCount() {
     return recurrences.size();
   }
 
-  @Override
   public List<Recurrence> getRecurrences() {
     return recurrences;
+  }
+
+  public boolean hasRecurrence(int indexOfRecurrence) {
+    return getRepresentation().get(indexOfRecurrence) == 1;
   }
 
   private static ArrayList<Recurrence> buildRecurrencesList(List<Recurrence> availableRecurrences,

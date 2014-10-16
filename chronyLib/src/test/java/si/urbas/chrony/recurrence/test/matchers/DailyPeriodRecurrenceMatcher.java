@@ -13,19 +13,18 @@ public class DailyPeriodRecurrenceMatcher extends RecurrenceMatcher {
   @Override
   protected boolean matches(Recurrence recurrence) {
     return recurrence instanceof DailyPeriodRecurrence &&
-           matches((DailyPeriodRecurrence)recurrence);
+           matches((DailyPeriodRecurrence) recurrence);
   }
 
   @Override
   public void describeTo(Description description) {
-    super.describeTo(description);
-    description.appendText(" with ");
+    description.appendText("recurrence ");
     description.appendText(isolatedDescription());
   }
 
   @Override
   protected String isolatedDescription() {
-    return "a period of " + periodInDays + " day(s)";
+    return "having a period of " + periodInDays + " day(s)";
   }
 
   private boolean matches(DailyPeriodRecurrence recurrence) {

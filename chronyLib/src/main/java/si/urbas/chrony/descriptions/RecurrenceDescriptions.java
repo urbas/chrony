@@ -2,9 +2,9 @@ package si.urbas.chrony.descriptions;
 
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
-import si.urbas.chrony.recurrence.Recurrences;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import static si.urbas.chrony.util.Ordinals.toNumericOrdinal;
 
@@ -13,10 +13,10 @@ public class RecurrenceDescriptions {
   static final String DESCRIPTION_OF_EMPTY_RECURRENCE_ANALYSIS = "No recurrence pattern discovered.";
   private static final SimpleDateFormat HOUR_AND_MINUTE_FORMAT = new SimpleDateFormat("HH:mm");
 
-  public static String toShortDescription(Recurrences recurrences) {
-    if (recurrences.getRecurrencesCount() == 1) {
-      return toShortDescription(recurrences.getRecurrences().get(0));
-    } else if (recurrences.getRecurrencesCount() > 1) {
+  public static String toShortDescription(List<Recurrence> recurrences) {
+    if (recurrences.size() == 1) {
+      return toShortDescription(recurrences.get(0));
+    } else if (recurrences.size() > 1) {
       throw new UnsupportedOperationException();
     } else {
       return DESCRIPTION_OF_EMPTY_RECURRENCE_ANALYSIS;
