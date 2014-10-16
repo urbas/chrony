@@ -32,7 +32,11 @@ public class RecurrenceFitness {
   }
 
   public static ArrayList<RecurrenceFitness> computeFitnesses(List<Recurrence> recurrences, List<EventSample> eventSamples) {
-    return new ArrayList<RecurrenceFitness>();
+    ArrayList<RecurrenceFitness> recurrenceFitnesses = new ArrayList<RecurrenceFitness>();
+    for (Recurrence recurrence : recurrences) {
+      recurrenceFitnesses.add(new RecurrenceFitness(recurrence, eventSamples));
+    }
+    return recurrenceFitnesses;
   }
 
   private static double sumOfDistances(Recurrence recurrence, List<EventSample> eventSamples) {
