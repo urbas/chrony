@@ -73,4 +73,29 @@ public class OccurrenceListTest {
     assertEquals(9, new OccurrenceList(300, 3900, 400).indexOf(3900));
   }
 
+  @Test
+  public void indexOfClosest_MUST_return_0_WHEN_asking_for_an_occurrence_before_the_first() {
+    assertEquals(0, new OccurrenceList(300, 3900, 400).indexOfClosest(-120));
+  }
+
+  @Test
+  public void indexOfClosest_MUST_return_size_minus_1_WHEN_asking_for_an_occurrence_beyond_the_last() {
+    assertEquals(9, new OccurrenceList(300, 3900, 400).indexOfClosest(3901));
+  }
+
+  @Test
+  public void indexOfClosest_MUST_return_size_minus_one_WHEN_asking_for_an_occurrence_just_before_toTime() {
+    assertEquals(8, new OccurrenceList(300, 3899, 400).indexOfClosest(3898));
+  }
+
+  @Test
+  public void indexOfClosest_MUST_return_the_lower_index_WHEN_lower_one_is_closer() {
+    assertEquals(1, new OccurrenceList(300, 3900, 400).indexOfClosest(899));
+  }
+
+  @Test
+  public void indexOfClosest_MUST_return_the_upper_index_WHEN_lower_one_is_closer() {
+    assertEquals(2, new OccurrenceList(300, 3900, 400).indexOfClosest(900));
+  }
+
 }

@@ -16,7 +16,7 @@ public class RecurrenceFitness {
   public RecurrenceFitness(Recurrence recurrence, List<EventSample> eventSamples) {
     assertEventSamplesOrdered(eventSamples);
     if (eventSamples.size() > 0) {
-      fitness = -sumOfDistances(recurrence, eventSamples) - spuriousOccurrencesPenalty(recurrence, eventSamples);
+      fitness = -sumOfDistances(recurrence, eventSamples) - sumOfDistancesToSamples(recurrence, eventSamples);
     } else {
       fitness = Double.NEGATIVE_INFINITY;
     }
@@ -42,7 +42,7 @@ public class RecurrenceFitness {
     return sum;
   }
 
-  private double spuriousOccurrencesPenalty(Recurrence recurrence, List<EventSample> eventSamples) {
+  private double sumOfDistancesToSamples(Recurrence recurrence, List<EventSample> eventSamples) {
     double distanceSum = 0;
     long timestampOfFirstSample = eventSamples.get(0).getTimestamp();
     long timestampOfLastSample = eventSamples.get(eventSamples.size() - 1).getTimestamp();

@@ -53,6 +53,10 @@ public class OccurrenceList extends AbstractList<Long> {
     }
   }
 
+  public int indexOfClosest(long timeInMillis) {
+    return Math.min(size() - 1, Math.max(0, (int) Math.round((double) (timeInMillis - firstOccurrenceInMillis) / periodInMillis)));
+  }
+
   @Override
   public int size() {
     long timeSpanInMillis = toTimeInMillis - firstOccurrenceInMillis;
