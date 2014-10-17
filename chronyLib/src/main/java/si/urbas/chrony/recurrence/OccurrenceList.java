@@ -9,6 +9,9 @@ public class OccurrenceList extends AbstractList<Long> {
   private final long toTimeInMillis;
 
   public OccurrenceList(long firstOccurrenceInMillis, long toTimeInMillis, long periodInMillis) {
+    if (periodInMillis <= 0) {
+      throw new IllegalArgumentException("The period must be a positive number.");
+    }
     this.toTimeInMillis = toTimeInMillis;
     this.firstOccurrenceInMillis = firstOccurrenceInMillis;
     this.periodInMillis = periodInMillis;
@@ -16,6 +19,10 @@ public class OccurrenceList extends AbstractList<Long> {
 
   @Override
   public Long get(int index) {
+    return getOccurrenceAt(index);
+  }
+
+  public long getOccurrenceAt(int index) {
     if (index < 0 || index >= size()) {
       throw new IndexOutOfBoundsException();
     }
@@ -36,13 +43,13 @@ public class OccurrenceList extends AbstractList<Long> {
     return indexOf(timeInMillis.longValue());
   }
 
-  private int indexOf(long timeInMillis) {
+  public int indexOf(long timeInMillis) {
     long timeSpanToTimeInMillis = timeInMillis - firstOccurrenceInMillis;
     if (timeSpanToTimeInMillis < 0) {
       return -1;
     } else {
       long periodsToSoughtOccurrence = timeSpanToTimeInMillis / periodInMillis;
-      return (periodsToSoughtOccurrence * periodInMillis == timeInMillis) ? (int) periodsToSoughtOccurrence : -1;
+      return (periodsToSoughtOccurrence * periodInMillis == timeSpanToTimeInMillis) ? (int) periodsToSoughtOccurrence : -1;
     }
   }
 
