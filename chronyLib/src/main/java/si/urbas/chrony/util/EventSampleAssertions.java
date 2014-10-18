@@ -3,12 +3,12 @@ package si.urbas.chrony.util;
 import si.urbas.chrony.EventSample;
 
 import java.util.Iterator;
-import java.util.List;
 
 public class EventSampleAssertions {
-  public static void assertEventSamplesOrdered(List<EventSample> eventSamples) {
-    if (eventSamples.size() > 1) {
-      Iterator<EventSample> eventSampleIterator = eventSamples.iterator();
+
+  public static void assertEventSamplesOrdered(Iterable<EventSample> eventSamples) {
+    Iterator<EventSample> eventSampleIterator = eventSamples.iterator();
+    if (eventSampleIterator.hasNext()) {
       EventSample previousEventSample = eventSampleIterator.next();
       while (eventSampleIterator.hasNext()) {
         EventSample currentEventSample = eventSampleIterator.next();
@@ -19,4 +19,5 @@ public class EventSampleAssertions {
       }
     }
   }
+
 }
