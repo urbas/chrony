@@ -93,7 +93,7 @@ public class RecurrenceFitnessTest {
   }
 
   private static RecurrenceFitness createRecurrenceFitness(long timeOfFirstOccurrence, int periodInDays, ArrayList<EventSample> eventSamples, long phaseShiftInMillis) {
-    DailyPeriodRecurrence betterRecurrence = new DailyPeriodRecurrence(periodInDays, toUtcCalendar(timeOfFirstOccurrence + phaseShiftInMillis));
+    DailyPeriodRecurrence betterRecurrence = new DailyPeriodRecurrence(periodInDays, timeOfFirstOccurrence + phaseShiftInMillis);
     return new RecurrenceFitness(betterRecurrence, eventSamples);
   }
 

@@ -4,6 +4,7 @@ import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static si.urbas.chrony.util.Ordinals.toNumericOrdinal;
@@ -45,6 +46,6 @@ public class RecurrenceDescriptions {
   }
 
   private static String formatTime(DailyPeriodRecurrence recurrence) {
-    return HOUR_AND_MINUTE_FORMAT.format(recurrence.getFirstOccurrence().getTime());
+    return HOUR_AND_MINUTE_FORMAT.format(new Date(recurrence.getFirstOccurrenceInMillis()));
   }
 }

@@ -56,7 +56,7 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
             timeOfOccurrence.set(Calendar.DAY_OF_WEEK, dayOfWeek);
             timeOfOccurrence.set(Calendar.HOUR_OF_DAY, i / 2);
             timeOfOccurrence.set(Calendar.MINUTE, 30 * (i % 2));
-            guessedRecurrences.add(new DailyPeriodRecurrence(periodInDays, timeOfOccurrence));
+            guessedRecurrences.add(new DailyPeriodRecurrence(periodInDays, timeOfOccurrence.getTimeInMillis()));
           }
         }
       }

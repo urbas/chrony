@@ -18,9 +18,9 @@ public class DailyPeriodRecurrenceTest {
 
   @Test
   public void distanceTo_MUST_return_0_WHEN_the_nearest_recurrence_happens_exactly_on_the_given_time() {
-    Calendar calendar = createUtcCalendar();
-    DailyPeriodRecurrence dailyPeriodRecurrence = new DailyPeriodRecurrence(PERIOD_1_DAY, calendar);
-    assertEquals(0, dailyPeriodRecurrence.distanceTo(calendar.getTimeInMillis()));
+    long firstOccurrence = createUtcCalendar().getTimeInMillis();
+    DailyPeriodRecurrence dailyPeriodRecurrence = new DailyPeriodRecurrence(PERIOD_1_DAY, firstOccurrence);
+    assertEquals(0, dailyPeriodRecurrence.distanceTo(firstOccurrence));
   }
 
   @Test
@@ -128,7 +128,7 @@ public class DailyPeriodRecurrenceTest {
   public void getOccurrencesBetween_MUST_return_one_occurrence_WHEN_the_range_includes_the_initial_occurrence() {
     long firstOccurrence = toUtcTimeInMillis(1, 2, 3, 4, 5, 6);
     long rangeStart = firstOccurrence - RANGE_WIDTH_10_MILLIS / 2;
-    DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_1_DAY, toUtcCalendar(firstOccurrence));
+    DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_1_DAY, firstOccurrence);
     List<Long> foundOccurrences = recurrence.getOccurrencesBetween(rangeStart, rangeStart + RANGE_WIDTH_10_MILLIS);
     assertThat(foundOccurrences, contains(firstOccurrence));
   }
@@ -138,7 +138,7 @@ public class DailyPeriodRecurrenceTest {
     long firstOccurrence = toUtcTimeInMillis(1, 2, 3, 4, 5, 6);
     long futureOccurrence = toUtcTimeInMillis(1, 2, 5, 4, 5, 6);
     long rangeStart = futureOccurrence - RANGE_WIDTH_10_MILLIS / 2;
-    DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_1_DAY, toUtcCalendar(firstOccurrence));
+    DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_1_DAY, firstOccurrence);
     List<Long> foundOccurrences = recurrence.getOccurrencesBetween(rangeStart, rangeStart + RANGE_WIDTH_10_MILLIS);
     assertThat(foundOccurrences, contains(futureOccurrence));
   }
@@ -148,7 +148,7 @@ public class DailyPeriodRecurrenceTest {
     long firstOccurrence = toUtcTimeInMillis(2014, 8, 22, 13, 45, 0);
     long rangeStart = toUtcTimeInMillis(2014, 8, 8, 11, 45, 0);
     long rangeEnd = toUtcTimeInMillis(2014, 9, 6, 19, 45, 0);
-    DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_7_DAYS, toUtcCalendar(firstOccurrence));
+    DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_7_DAYS, firstOccurrence);
     List<Long> foundOccurrences = recurrence.getOccurrencesBetween(rangeStart, rangeEnd);
     assertThat(
       foundOccurrences,
