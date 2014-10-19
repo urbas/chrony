@@ -20,7 +20,7 @@ public class RecurrenceFitness {
   public RecurrenceFitness(Recurrence recurrence, List<EventSample> eventSamples) {
     assertEventSamplesOrdered(eventSamples);
     if (eventSamples.size() > 0) {
-      fitness = -sumOfDistancesFromSamples(recurrence, eventSamples) -
+      fitness = -sumOfDistancesFromSamples(recurrence, eventSamples)
                 - sumOfDistancesToSamples(recurrence, eventSamples);
     } else {
       fitness = Double.NEGATIVE_INFINITY;
