@@ -14,6 +14,9 @@ public class RecurrenceFitness {
 
   private final double fitness;
 
+  /**
+   * @param eventSamples event samples ordered by ascending timestamp.
+   */
   public RecurrenceFitness(Recurrence recurrence, List<EventSample> eventSamples) {
     assertEventSamplesOrdered(eventSamples);
     if (eventSamples.size() > 0) {
