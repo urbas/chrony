@@ -6,13 +6,13 @@ public class RegularOccurrenceList extends AbstractList<Long> implements Occurre
 
   private final long firstOccurrenceInMillis;
   private final long periodInMillis;
-  private final long toTimeInMillis;
+  private final long untilTimeInMillis;
 
-  public RegularOccurrenceList(long firstOccurrenceInMillis, long toTimeInMillis, long periodInMillis) {
+  public RegularOccurrenceList(long periodInMillis, long firstOccurrenceInMillis, long untilTimeInMillis) {
     if (periodInMillis <= 0) {
       throw new IllegalArgumentException("The period must be a positive number.");
     }
-    this.toTimeInMillis = toTimeInMillis;
+    this.untilTimeInMillis = untilTimeInMillis;
     this.firstOccurrenceInMillis = firstOccurrenceInMillis;
     this.periodInMillis = periodInMillis;
   }
@@ -62,7 +62,7 @@ public class RegularOccurrenceList extends AbstractList<Long> implements Occurre
 
   @Override
   public int size() {
-    long timeSpanInMillis = toTimeInMillis - firstOccurrenceInMillis;
+    long timeSpanInMillis = untilTimeInMillis - firstOccurrenceInMillis;
     return timeSpanInMillis < 0 ? 0 : (int) (timeSpanInMillis / periodInMillis + 1);
   }
 }
