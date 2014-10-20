@@ -9,7 +9,7 @@ import java.util.*;
 
 import static si.urbas.chrony.util.EventSampleAssertions.assertEventSamplesOrdered;
 
-public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
+public class GeneticRecurrenceFinder implements RecurrenceFinder {
 
   private static final int POPULATION_LIMIT = 20;
   private static final double CROSSOVER_RATE = 0.1;
@@ -21,7 +21,7 @@ public class GeneticRecurrenceAnalyser implements RecurrenceAnalyser {
   private static final double CROSSOVER_RATIO = 0.1;
   private final List<Recurrence> foundRecurrences;
 
-  public GeneticRecurrenceAnalyser(List<EventSample> eventSamples, RecurrenceAnalyser foundRecurrencesToOptimize) {
+  public GeneticRecurrenceFinder(List<EventSample> eventSamples, RecurrenceFinder foundRecurrencesToOptimize) {
     assertEventSamplesOrdered(eventSamples);
     EventTemporalMetrics eventTemporalMetrics = EventTemporalMetrics.calculate(eventSamples);
     if (eventTemporalMetrics.entireTimeSpan() == 0) {

@@ -10,12 +10,12 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-public class GuessingRecurrenceAnalyser implements RecurrenceAnalyser {
+public class GuessingRecurrenceFinder implements RecurrenceFinder {
 
   private static final int[] POSSIBLE_PERIODS = new int[]{1, 2, 3, 4, 5, 6, 7};
   private final List<Recurrence> foundRecurrences;
 
-  public GuessingRecurrenceAnalyser(List<EventSample> eventSamples) {
+  public GuessingRecurrenceFinder(List<EventSample> eventSamples) {
     if (eventSamples.size() > 1) {
       foundRecurrences = guessPossibleRecurrences(eventSamples);
     } else {

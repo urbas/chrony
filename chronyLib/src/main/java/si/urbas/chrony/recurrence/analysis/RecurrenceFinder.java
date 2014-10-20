@@ -4,6 +4,6 @@ import si.urbas.chrony.recurrence.Recurrence;
 
 import java.util.List;
 
-public interface RecurrenceAnalyser {
+public interface RecurrenceFinder {
   List<Recurrence> foundRecurrences();
 }

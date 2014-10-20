@@ -4,8 +4,11 @@ import si.urbas.chrony.EventSample;
 
 import java.util.List;
 
-public class RecurrenceAnalysers {
-  public static GeneticRecurrenceFinder create(List<EventSample> eventSamples) {
+public class GeneticRecurrenceFinderTest extends RecurrenceAnalyserTest {
+
+  @Override
+  protected RecurrenceFinder createRecurrenceAnalyser(List<EventSample> eventSamples) {
     return new GeneticRecurrenceFinder(eventSamples, new GuessingRecurrenceFinder(eventSamples));
   }
+
 }
