@@ -17,7 +17,8 @@ public class SingleDailyRecurrenceFinderTest {
   
   @Test
   public void foundRecurrences_MUST_return_a_recurrence_for_two_events() {
-      
+    SingleDailyRecurrenceFinder recurrenceAnalyser = new SingleDailyRecurrenceFinder(emptyEventSamples());
+    assertThat(recurrenceAnalyser.foundRecurrences(), is(empty()));
   }
 
 }
