@@ -6,8 +6,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.Recurrence;
-import si.urbas.chrony.recurrence.test.matchers.DailyPeriodRecurrenceMatcher;
-import si.urbas.chrony.recurrence.test.matchers.RecurrenceOccurringCloseToMatcherBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +15,12 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static si.urbas.chrony.EventSamplesTestUtils.*;
+import static si.urbas.chrony.recurrence.test.matchers.RecurrenceMatchers.recurrenceWithPeriodOf;
+import static si.urbas.chrony.recurrence.test.matchers.RecurrenceMatchers.recurrenceWithin;
 import static si.urbas.chrony.util.TimeUtils.HOUR_IN_MILLIS;
 import static si.urbas.chrony.util.TimeUtils.toUtcTimeInMillis;
 
-public abstract class RecurrenceAnalyserTest {
+public abstract class RecurrenceFinderTest {
 
   private static final int TWO_DAYS = 2;
   private static final int THREE_DAYS = 3;
@@ -90,7 +90,7 @@ public abstract class RecurrenceAnalyserTest {
     assertThat(
       recurrenceFinder.foundRecurrences(),
       contains(
-        recurrenceOccurringWithin(HOUR_IN_MILLIS).of(firstOccurrenceTimeInMillis).withPeriodOf(THREE_DAYS)
+        recurrenceWithin(HOUR_IN_MILLIS).of(firstOccurrenceTimeInMillis).withPeriodOf(THREE_DAYS)
       )
     );
   }
@@ -106,20 +106,12 @@ public abstract class RecurrenceAnalyserTest {
     assertThat(
       recurrenceFinder.foundRecurrences(),
       contains(
-        recurrenceOccurringWithin(HOUR_IN_MILLIS).of(startTimeInMillis_4Day).withPeriodOf(4),
-        recurrenceOccurringWithin(HOUR_IN_MILLIS).of(startTimeInMillis_7Day).withPeriodOf(7)
+        recurrenceWithin(HOUR_IN_MILLIS).of(startTimeInMillis_4Day).withPeriodOf(4),
+        recurrenceWithin(HOUR_IN_MILLIS).of(startTimeInMillis_7Day).withPeriodOf(7)
       )
     );
   }
 
-  private RecurrenceOccurringCloseToMatcherBuilder recurrenceOccurringWithin(long maxDistanceToOccurrence) {
-    return new RecurrenceOccurringCloseToMatcherBuilder(maxDistanceToOccurrence);
-  }
-
   protected abstract RecurrenceFinder createRecurrenceAnalyser(List<EventSample> eventSamples);
-
-  private static DailyPeriodRecurrenceMatcher recurrenceWithPeriodOf(final int daysApart) {
-    return new DailyPeriodRecurrenceMatcher(daysApart);
-  }
 
 }

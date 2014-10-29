@@ -34,6 +34,10 @@ public class EventSamplesTestUtils {
     return new EventSample(EVENT_NAME, calendar.getTimeInMillis(), null);
   }
 
+  public static ArrayList<EventSample> createRecurringEventSamples(int periodInDays, int durationInDays, long timeOfFirstOccurrence) {
+    return createRecurringEventSamples(periodInDays, durationInDays, toUtcCalendar(timeOfFirstOccurrence));
+  }
+
   public static ArrayList<EventSample> createRecurringEventSamples(int periodInDays, int durationInDays, Calendar timeOfFirstOccurrence) {
     Calendar calendar = (Calendar) timeOfFirstOccurrence.clone();
     ArrayList<EventSample> eventSamples = new ArrayList<EventSample>();
@@ -45,27 +49,26 @@ public class EventSamplesTestUtils {
     return eventSamples;
   }
 
-  public static ArrayList<EventSample> createRandomEventSamples(Random randomnessSource, int periodInDays, int durationInDays, int maxDeviationInHours, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {
+  public static ArrayList<EventSample> createRandomEventSamples(Random randomnessSource, int periodInDays, int durationInDays, int maxDeviationInMillis, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {
     long startTimeInMillis = toUtcTimeInMillis(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0);
-    return createRandomEventSamples(randomnessSource, periodInDays, durationInDays, maxDeviationInHours, startTimeInMillis);
+    return createRandomEventSamples(randomnessSource, periodInDays, durationInDays, maxDeviationInMillis, startTimeInMillis);
   }
 
-  public static ArrayList<EventSample> createRandomEventSamples(Random randomnessSource, int periodInDays, int durationInDays, int maxDeviationInHours, long startTimeInMillis) {
+  public static ArrayList<EventSample> createRandomEventSamples(Random randomnessSource, int periodInDays, int durationInDays, int maxDeviationInMillis, long startTimeInMillis) {
     ArrayList<EventSample> roughlyRecurringSamples = new ArrayList<EventSample>();
-    return addRandomEventSamples(roughlyRecurringSamples, randomnessSource, periodInDays, durationInDays, maxDeviationInHours, startTimeInMillis);
+    return addRandomEventSamples(roughlyRecurringSamples, randomnessSource, periodInDays, durationInDays, maxDeviationInMillis, startTimeInMillis);
   }
 
-  public static ArrayList<EventSample> addRandomEventSamples(ArrayList<EventSample> eventSamplesToAddTo, Random randomnessSource, int periodInDays, int durationInDays, int maxDeviationInHours, long startTimeInMillis) {
+  public static ArrayList<EventSample> addRandomEventSamples(ArrayList<EventSample> eventSamplesToAddTo, Random randomnessSource, int periodInDays, int durationInDays, long maxDeviationInMillis, long startTimeInMillis) {
     long endTimeInMillis = startTimeInMillis + durationInDays * DAY_IN_MILLIS;
-    long maxDeviationFromExactRecurrence = maxDeviationInHours * HOUR_IN_MILLIS;
-    addUniformlyRandomOccurrences(eventSamplesToAddTo, randomnessSource, periodInDays, startTimeInMillis, endTimeInMillis, maxDeviationFromExactRecurrence);
+    addUniformlyRandomOccurrences(eventSamplesToAddTo, randomnessSource, periodInDays, startTimeInMillis, endTimeInMillis, maxDeviationInMillis);
     return eventSamplesToAddTo;
   }
 
-  private static void addUniformlyRandomOccurrences(ArrayList<EventSample> samplesToAddTo, Random randomnessSource, long periodInDays, long startTimeInMillis, long endTimeInMillis, long maxDeviationFromExactRecurrence) {
+  private static void addUniformlyRandomOccurrences(ArrayList<EventSample> samplesToAddTo, Random randomnessSource, long periodInDays, long startTimeInMillis, long endTimeInMillis, long maxDeviationInMillis) {
     long periodInMillis = periodInDays * DAY_IN_MILLIS;
     for (long currentOccurrence = startTimeInMillis; currentOccurrence < endTimeInMillis; currentOccurrence += periodInMillis) {
-      long timeInMillis = currentOccurrence + randomValueBetween(randomnessSource, -maxDeviationFromExactRecurrence, maxDeviationFromExactRecurrence);
+      long timeInMillis = currentOccurrence + randomValueBetween(randomnessSource, -maxDeviationInMillis, maxDeviationInMillis);
       samplesToAddTo.add(eventSampleAtTime(timeInMillis));
     }
     Collections.sort(samplesToAddTo, EventSampleOldestFirstOrder.INSTANCE);

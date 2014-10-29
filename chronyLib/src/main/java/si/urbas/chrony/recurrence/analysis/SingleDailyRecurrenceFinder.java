@@ -1,19 +1,31 @@
 package si.urbas.chrony.recurrence.analysis;
 
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
+import si.urbas.chrony.util.TimeUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 
 public class SingleDailyRecurrenceFinder implements RecurrenceFinder {
-  public SingleDailyRecurrenceFinder(List<EventSample> eventSamples) {
 
+  private final List<Recurrence> foundRecurrences;
+
+  public SingleDailyRecurrenceFinder(List<EventSample> eventSamples) {
+    if (eventSamples.size() < 2) {
+      foundRecurrences = emptyList();
+    } else {
+      long firstEventTimestamp = eventSamples.get(0).getTimestamp();
+      long secondEventTimestamp = eventSamples.get(1).getTimestamp();
+      foundRecurrences = Arrays.<Recurrence>asList(new DailyPeriodRecurrence((int) ((secondEventTimestamp - firstEventTimestamp) / TimeUtils.DAY_IN_MILLIS), firstEventTimestamp));
+    }
   }
 
   @Override
   public List<Recurrence> foundRecurrences() {
-    return emptyList();
+    return foundRecurrences;
   }
 }
