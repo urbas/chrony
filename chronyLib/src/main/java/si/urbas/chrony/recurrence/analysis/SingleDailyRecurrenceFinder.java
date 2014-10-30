@@ -20,7 +20,12 @@ public class SingleDailyRecurrenceFinder implements RecurrenceFinder {
     } else {
       long firstEventTimestamp = eventSamples.get(0).getTimestamp();
       long secondEventTimestamp = eventSamples.get(1).getTimestamp();
-      foundRecurrences = Arrays.<Recurrence>asList(new DailyPeriodRecurrence((int) ((secondEventTimestamp - firstEventTimestamp) / TimeUtils.DAY_IN_MILLIS), firstEventTimestamp));
+      int periodInDays = (int) Math.round((double) (secondEventTimestamp - firstEventTimestamp) / TimeUtils.DAY_IN_MILLIS);
+      foundRecurrences = Arrays.<Recurrence>asList(
+        new DailyPeriodRecurrence(
+          periodInDays,
+          firstEventTimestamp)
+      );
     }
   }
 

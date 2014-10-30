@@ -18,7 +18,7 @@ public class DailyPeriodRecurrenceMatcher extends RecurrenceMatcher {
 
   @Override
   public void describeTo(Description description) {
-    description.appendText("recurrence ");
+    description.appendText("a recurrence ");
     description.appendText(isolatedDescription());
   }
 

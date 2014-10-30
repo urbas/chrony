@@ -15,8 +15,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static si.urbas.chrony.EventSamplesTestUtils.*;
-import static si.urbas.chrony.recurrence.test.matchers.RecurrenceMatchers.recurrenceWithPeriodOf;
-import static si.urbas.chrony.recurrence.test.matchers.RecurrenceMatchers.recurrenceWithin;
+import static si.urbas.chrony.recurrence.test.matchers.RecurrenceMatchers.recurrence;
 import static si.urbas.chrony.util.TimeUtils.HOUR_IN_MILLIS;
 import static si.urbas.chrony.util.TimeUtils.toUtcTimeInMillis;
 
@@ -29,8 +28,8 @@ public abstract class RecurrenceFinderTest {
   private final EventSample eventSampleAtTime3d17h = eventSampleAtTime(DAY_3, HOUR_17);
   private final EventSample eventSampleAtTime8d17h = eventSampleAtTime(DAY_8, HOUR_17);
   private final EventSample eventSampleAtTime10d17h = eventSampleAtTime(DAY_10, HOUR_17);
-  private final Matcher<Recurrence> weeklyRecurrence = recurrenceWithPeriodOf(7);
-  private final Matcher<Recurrence> dailyRecurrence = recurrenceWithPeriodOf(1);
+  private final Matcher<Recurrence> weeklyRecurrence = recurrence().withPeriodOf(7);
+  private final Matcher<Recurrence> dailyRecurrence = recurrence().withPeriodOf(1);
   private Random randomnessSource;
 
   @Before
@@ -79,7 +78,7 @@ public abstract class RecurrenceFinderTest {
   @Ignore
   public void foundRecurrences_MUST_return_a_recurrence_of_every_second_day_WHEN_given_two_events_that_are_two_days_apart() {
     RecurrenceFinder recurrenceFinder = createRecurrenceAnalyser(asList(eventSampleAtTime1d17h, eventSampleAtTime3d17h));
-    assertThat(recurrenceFinder.foundRecurrences(), contains(recurrenceWithPeriodOf(TWO_DAYS)));
+    assertThat(recurrenceFinder.foundRecurrences(), contains(recurrence().withPeriodOf(TWO_DAYS)));
   }
 
   @Test
@@ -90,7 +89,7 @@ public abstract class RecurrenceFinderTest {
     assertThat(
       recurrenceFinder.foundRecurrences(),
       contains(
-        recurrenceWithin(HOUR_IN_MILLIS).of(firstOccurrenceTimeInMillis).withPeriodOf(THREE_DAYS)
+        recurrence().within(HOUR_IN_MILLIS).of(firstOccurrenceTimeInMillis).withPeriodOf(THREE_DAYS)
       )
     );
   }
@@ -106,8 +105,8 @@ public abstract class RecurrenceFinderTest {
     assertThat(
       recurrenceFinder.foundRecurrences(),
       contains(
-        recurrenceWithin(HOUR_IN_MILLIS).of(startTimeInMillis_4Day).withPeriodOf(4),
-        recurrenceWithin(HOUR_IN_MILLIS).of(startTimeInMillis_7Day).withPeriodOf(7)
+        recurrence().within(HOUR_IN_MILLIS).of(startTimeInMillis_4Day).withPeriodOf(4),
+        recurrence().within(HOUR_IN_MILLIS).of(startTimeInMillis_7Day).withPeriodOf(7)
       )
     );
   }

@@ -2,13 +2,15 @@ package si.urbas.chrony.recurrence.test.matchers;
 
 public class RecurrenceOccurringCloseToMatcherBuilder {
 
+  private final AllOfRecurrenceMatcher allOfRecurrenceMatcher;
   private final long maxDistanceToOccurrence;
 
-  public RecurrenceOccurringCloseToMatcherBuilder(long maxDistanceToOccurrence) {
+  public RecurrenceOccurringCloseToMatcherBuilder(AllOfRecurrenceMatcher allOfRecurrenceMatcher, long maxDistanceToOccurrence) {
+    this.allOfRecurrenceMatcher = allOfRecurrenceMatcher;
     this.maxDistanceToOccurrence = maxDistanceToOccurrence;
   }
 
-  public RecurrenceOccurringCloseToMatcher of(long firstOccurrenceTimeInMillis) {
-    return new RecurrenceOccurringCloseToMatcher(firstOccurrenceTimeInMillis, maxDistanceToOccurrence);
+  public AllOfRecurrenceMatcher of(long firstOccurrenceTimeInMillis) {
+    return allOfRecurrenceMatcher.and(new RecurrenceOccurringCloseToMatcher(firstOccurrenceTimeInMillis, maxDistanceToOccurrence));
   }
 }
