@@ -1,0 +1,46 @@
+package si.urbas.chrony.recurrence.analysis;
+
+import org.junit.Test;
+import si.urbas.chrony.EventSample;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static si.urbas.chrony.EventSamplesTestUtils.eventSampleAtTime;
+import static si.urbas.chrony.recurrence.analysis.EventSamplesUtils.averageTimeOfDay;
+import static si.urbas.chrony.util.TimeUtils.*;
+
+public class EventSamplesUtilsTest {
+
+  private final EventSample eventSampleAt12h45m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 12, 45, 12));
+  private final EventSample eventSampleAt17h45m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 17, 45, 12));
+  private final EventSample eventSampleAt07h45m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 7, 45, 12));
+  private final EventSample eventSampleAt12h45m42s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 12, 45, 42));
+  private final EventSample eventSampleAt12h44m42s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 12, 44, 42));
+  private final EventSample eventSampleAt12h20m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 12, 20, 12));
+  private final EventSample eventSampleAt13h10m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 13, 10, 12));
+
+  @Test(expected = IllegalArgumentException.class)
+  public void averageTimeOfDay_MUST_throw_an_exception_WHEN_there_are_no_event_samples() {
+    averageTimeOfDay(Collections.<EventSample>emptyList());
+  }
+
+  @Test
+  public void averageTimeOfDay_MUST_return_the_time_of_day_of_the_single_event_sample() {
+    long expectedAverage = 12 * HOUR_IN_MILLIS + 45 * MINUTE_IN_MILLIS + 12 * SECOND_IN_MILLIS;
+    assertEquals(expectedAverage, averageTimeOfDay(Arrays.asList(eventSampleAt12h45m12s)));
+  }
+
+  @Test
+  public void averageTimeOfDay_MUST_return_average_of_times_of_day_of_all_event_samples() {
+    long expectedAverage = 12 * HOUR_IN_MILLIS + 45 * MINUTE_IN_MILLIS + 12 * SECOND_IN_MILLIS;
+    List<EventSample> eventSamples = Arrays.asList(eventSampleAt07h45m12s, eventSampleAt17h45m12s,
+                                                   eventSampleAt12h45m42s, eventSampleAt12h44m42s,
+                                                   eventSampleAt12h20m12s, eventSampleAt13h10m12s,
+                                                   eventSampleAt12h45m12s);
+    assertEquals(expectedAverage, averageTimeOfDay(eventSamples));
+  }
+
+}

@@ -43,4 +43,11 @@ public class TimeUtils {
   public static String toSimpleString(long utcTimeInMillis) {
     return SIMPLE_DATE_FORMAT.format(new Date(utcTimeInMillis));
   }
+
+  public static long timeOfDayInMillis(Calendar calendar) {
+    return calendar.get(Calendar.HOUR_OF_DAY) * HOUR_IN_MILLIS +
+           calendar.get(Calendar.MINUTE) * MINUTE_IN_MILLIS +
+           calendar.get(Calendar.SECOND) * SECOND_IN_MILLIS +
+           calendar.get(Calendar.MILLISECOND);
+  }
 }

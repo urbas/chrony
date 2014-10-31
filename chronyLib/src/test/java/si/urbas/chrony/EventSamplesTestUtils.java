@@ -17,11 +17,11 @@ public class EventSamplesTestUtils {
   public static final int DAY_8 = 7;
   public static final int DAY_10 = 9;
 
-  private static EventSample eventSampleAtTime(Calendar calendar) {
+  public static EventSample eventSampleAtTime(Calendar calendar) {
     return eventSampleAtTime(calendar.getTimeInMillis());
   }
 
-  private static EventSample eventSampleAtTime(long timeInMillis) {
+  public static EventSample eventSampleAtTime(long timeInMillis) {
     return new EventSample(EVENT_NAME, timeInMillis, null);
   }
 
