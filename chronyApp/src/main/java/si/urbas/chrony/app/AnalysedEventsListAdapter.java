@@ -154,13 +154,13 @@ public class AnalysedEventsListAdapter extends BaseExpandableListAdapter {
   }
 
   private String getFormattedTimestamp(EventSample eventSample) {
-    Date eventSampleDate = new Date(eventSample.getTimestamp());
+    Date eventSampleDate = new Date(eventSample.getTimestampInMillis());
     return eventSampleTimestampFormat.format(eventSampleDate);
   }
 
   private void removeEventSample(int groupPosition, int childPosition) {
     String eventName = getNameOfEventAtPosition(groupPosition);
-    Long timestamp = getChild(groupPosition, childPosition).getTimestamp();
+    Long timestamp = getChild(groupPosition, childPosition).getTimestampInMillis();
     removeEventSample(eventName, timestamp);
   }
 

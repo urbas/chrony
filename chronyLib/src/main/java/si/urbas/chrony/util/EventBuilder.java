@@ -43,7 +43,7 @@ public class EventBuilder {
   }
 
   /**
-   * This class is not thread-safe.
+   * This class is mutable and is not thread-safe.
    */
   public class EventSampleBuilder {
 

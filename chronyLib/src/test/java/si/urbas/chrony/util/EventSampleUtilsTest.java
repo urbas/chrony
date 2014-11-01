@@ -2,25 +2,25 @@ package si.urbas.chrony.util;
 
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.EventSamplesTestUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static si.urbas.chrony.EventSamplesTestUtils.eventSampleAtTime;
 import static si.urbas.chrony.util.EventSampleUtils.averageTimeOfDay;
 import static si.urbas.chrony.util.TimeUtils.*;
 
 public class EventSampleUtilsTest {
 
-  private final EventSample eventSampleAt12h45m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 12, 45, 12));
-  private final EventSample eventSampleAt17h45m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 17, 45, 12));
-  private final EventSample eventSampleAt07h45m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 7, 45, 12));
-  private final EventSample eventSampleAt12h45m42s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 12, 45, 42));
-  private final EventSample eventSampleAt12h44m42s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 12, 44, 42));
-  private final EventSample eventSampleAt12h20m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 12, 20, 12));
-  private final EventSample eventSampleAt13h10m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 13, 10, 12));
+  private final EventSample eventSampleAt12h45m12s = EventSamplesTestUtils.eventSampleAt(toUtcTimeInMillis(2014, 9, 29, 12, 45, 12));
+  private final EventSample eventSampleAt17h45m12s = EventSamplesTestUtils.eventSampleAt(toUtcTimeInMillis(2014, 9, 29, 17, 45, 12));
+  private final EventSample eventSampleAt07h45m12s = EventSamplesTestUtils.eventSampleAt(toUtcTimeInMillis(2014, 9, 29, 7, 45, 12));
+  private final EventSample eventSampleAt12h45m42s = EventSamplesTestUtils.eventSampleAt(toUtcTimeInMillis(2014, 9, 29, 12, 45, 42));
+  private final EventSample eventSampleAt12h44m42s = EventSamplesTestUtils.eventSampleAt(toUtcTimeInMillis(2014, 9, 29, 12, 44, 42));
+  private final EventSample eventSampleAt12h20m12s = EventSamplesTestUtils.eventSampleAt(toUtcTimeInMillis(2014, 9, 29, 12, 20, 12));
+  private final EventSample eventSampleAt13h10m12s = EventSamplesTestUtils.eventSampleAt(toUtcTimeInMillis(2014, 9, 29, 13, 10, 12));
 
   @Test(expected = IllegalArgumentException.class)
   public void averageTimeOfDay_MUST_throw_an_exception_WHEN_there_are_no_event_samples() {

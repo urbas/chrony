@@ -10,8 +10,6 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 import static si.urbas.chrony.util.EventSampleUtils.averagePeriod;
 import static si.urbas.chrony.util.EventSampleUtils.averageTimeOfDay;
-import static si.urbas.chrony.util.TimeUtils.withDateOnly;
-import static si.urbas.chrony.util.TimeUtils.withTimeOfDay;
 
 public class SingleDailyRecurrenceFinder implements RecurrenceFinder {
 
@@ -27,11 +25,8 @@ public class SingleDailyRecurrenceFinder implements RecurrenceFinder {
     }
   }
 
-  public static long firstOccurrenceWithAverageTimeOfDay(List<EventSample> eventSamples) {
-    return withTimeOfDay(
-      withDateOnly(eventSamples.get(0).getTimestampAsCalendar()),
-      averageTimeOfDay(eventSamples)
-    ).getTimeInMillis();
+  public static org.joda.time.DateTime firstOccurrenceWithAverageTimeOfDay(List<EventSample> eventSamples) {
+    return eventSamples.get(0).getTimestamp().withMillisOfDay(averageTimeOfDay(eventSamples));
   }
 
   @Override

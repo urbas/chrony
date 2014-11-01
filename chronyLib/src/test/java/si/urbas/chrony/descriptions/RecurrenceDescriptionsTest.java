@@ -40,6 +40,6 @@ public class RecurrenceDescriptionsTest {
   }
 
   private List<Recurrence> dayRecurrenceEvery(int periodInDays, int hourOfDay, int minutesPastHour) {
-    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(periodInDays, 0, 0, 0, hourOfDay, minutesPastHour));
+    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(periodInDays, 0, 1, 1, hourOfDay, minutesPastHour));
   }
 }

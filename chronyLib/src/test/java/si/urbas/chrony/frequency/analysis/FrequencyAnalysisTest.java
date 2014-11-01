@@ -5,12 +5,10 @@ import si.urbas.chrony.EventSample;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static si.urbas.chrony.util.TimeUtils.DAY_IN_MILLIS;
-import static si.urbas.chrony.util.TimeUtils.TIME_0;
+import static si.urbas.chrony.util.TimeUtils.*;
 
 public class FrequencyAnalysisTest {
 
@@ -112,7 +110,7 @@ public class FrequencyAnalysisTest {
   }
 
   private static long now() {
-    return new Date().getTime();
+    return createUtcDate().getMillis();
   }
 
 }

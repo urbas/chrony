@@ -1,21 +1,23 @@
 package si.urbas.chrony;
 
-import si.urbas.chrony.util.TimeUtils;
+import org.joda.time.DateTime;
 
-import java.util.Calendar;
-import java.util.Date;
+import static si.urbas.chrony.util.TimeUtils.*;
 
 public class EventSample {
 
   private final String eventName;
-  private final long timestamp;
   private final Object data;
-  private Calendar timestampAsCalendar;
+  private final DateTime timestampDateTime;
 
   public EventSample(String eventName, long timestamp, Object data) {
+    this(eventName, toUtcDate(timestamp), data);
+  }
+
+  public EventSample(String eventName, DateTime timestamp, Object data) {
     this.eventName = eventName;
-    this.timestamp = timestamp;
     this.data = data;
+    this.timestampDateTime = timestamp;
   }
 
   public EventSample(String eventName) {
@@ -23,33 +25,30 @@ public class EventSample {
   }
 
   public EventSample(String eventName, Object data) {
-    this(eventName, new Date().getTime(), data);
+    this(eventName, createUtcDate(), data);
   }
 
   public String getEventName() {
     return eventName;
   }
 
-  public long getTimestamp() {
-    return timestamp;
+  public long getTimestampInMillis() {
+    return timestampDateTime.getMillis();
   }
 
   public Object getData() {
     return data;
   }
 
-  public Calendar getTimestampAsCalendar() {
-    if (timestampAsCalendar == null) {
-      timestampAsCalendar = TimeUtils.toUtcCalendar(timestamp);
-    }
-    return (Calendar) timestampAsCalendar.clone();
+  public DateTime getTimestamp() {
+    return timestampDateTime;
   }
 
   @Override
   public String toString() {
     return "EventSample{" +
            "eventName='" + eventName + '\'' +
-           ", timestamp=" + TimeUtils.toSimpleString(getTimestampAsCalendar()) +
+           ", timestamp=" + formatDate(getTimestamp()) +
            ", data=" + data +
            '}';
   }

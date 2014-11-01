@@ -12,6 +12,6 @@ public class EventSampleOldestFirstOrder implements Comparator<EventSample> {
 
   @Override
   public int compare(EventSample eventSample1, EventSample eventSample2) {
-    return Long.compare(eventSample1.getTimestamp(), eventSample2.getTimestamp());
+    return Long.compare(eventSample1.getTimestampInMillis(), eventSample2.getTimestampInMillis());
   }
 }

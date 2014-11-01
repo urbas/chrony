@@ -1,10 +1,10 @@
 package si.urbas.chrony.descriptions;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import static si.urbas.chrony.util.Ordinals.toNumericOrdinal;
@@ -12,7 +12,7 @@ import static si.urbas.chrony.util.Ordinals.toNumericOrdinal;
 public class RecurrenceDescriptions {
 
   static final String DESCRIPTION_OF_EMPTY_RECURRENCE_ANALYSIS = "No recurrence pattern discovered.";
-  private static final SimpleDateFormat HOUR_AND_MINUTE_FORMAT = new SimpleDateFormat("HH:mm");
+  private static final DateTimeFormatter TIME_OF_DAY_DATE_TIME_FORMAT = DateTimeFormat.forPattern("HH:mm");
 
   public static String toShortDescription(List<Recurrence> recurrences) {
     if (recurrences.size() == 1) {
@@ -46,6 +46,6 @@ public class RecurrenceDescriptions {
   }
 
   private static String formatTime(DailyPeriodRecurrence recurrence) {
-    return HOUR_AND_MINUTE_FORMAT.format(new Date(recurrence.getFirstOccurrenceInMillis()));
+    return recurrence.getFirstOccurrence().toString(TIME_OF_DAY_DATE_TIME_FORMAT);
   }
 }

@@ -31,7 +31,7 @@ public class EventsJsonWriter {
     jsonObjectWriter.beginArray();
     for (EventSample eventTimestamp : sourceEventRepository.samplesOf(event.getEventName())) {
       jsonObjectWriter.beginArray()
-                      .value(eventTimestamp.getTimestamp());
+                      .value(eventTimestamp.getTimestampInMillis());
       writeEventSampleData(event, eventTimestamp, jsonObjectWriter);
       jsonObjectWriter.endArray();
     }

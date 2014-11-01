@@ -10,7 +10,7 @@ public class EventSampleTimestampComparator implements Comparator<EventSample> {
 
   @Override
   public int compare(EventSample eventSample, EventSample eventSample2) {
-    return Long.compare(eventSample.getTimestamp(), eventSample2.getTimestamp());
+    return Long.compare(eventSample.getTimestampInMillis(), eventSample2.getTimestampInMillis());
   }
   
 }

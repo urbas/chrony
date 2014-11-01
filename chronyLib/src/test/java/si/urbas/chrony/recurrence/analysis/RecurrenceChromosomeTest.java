@@ -75,11 +75,11 @@ public class RecurrenceChromosomeTest {
   }
 
   private List<Recurrence> singleAvailableRecurrence() {
-    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(7, 0, 0, 0, 0, 0));
+    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(7, 0, 1, 1, 0, 0));
   }
 
   private List<Recurrence> threeAvailableRecurrences() {
-    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(7, 0, 0, 0, 0, 0), new DailyPeriodRecurrence(1, 0, 0, 0, 2, 3), new DailyPeriodRecurrence(4, 0, 0, 0, 5, 6));
+    return Arrays.<Recurrence>asList(new DailyPeriodRecurrence(7, 0, 1, 1, 0, 0), new DailyPeriodRecurrence(1, 0, 1, 1, 2, 3), new DailyPeriodRecurrence(4, 0, 1, 1, 5, 6));
   }
 
   private ArrayList<Integer> emptyIncludedRecurrences() {return new ArrayList<Integer>();}

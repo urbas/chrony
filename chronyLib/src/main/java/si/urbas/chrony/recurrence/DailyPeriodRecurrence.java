@@ -1,20 +1,22 @@
 package si.urbas.chrony.recurrence;
 
+import org.joda.time.DateTime;
+
 import static si.urbas.chrony.util.MathUtils.smallestByAbsoluteValue;
 import static si.urbas.chrony.util.TimeUtils.*;
 
 public class DailyPeriodRecurrence implements Recurrence {
 
   private final int periodInDays;
-  private final long firstOccurrenceInMillis;
+  private final DateTime firstOccurrence;
 
   public DailyPeriodRecurrence(int periodInDays, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {
-    this(periodInDays, toUtcTimeInMillis(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0));
+    this(periodInDays, toUtcDate(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0));
   }
 
-  public DailyPeriodRecurrence(int periodInDays, long firstOccurrenceInMillis) {
+  public DailyPeriodRecurrence(int periodInDays, DateTime firstOccurrence) {
     this.periodInDays = periodInDays;
-    this.firstOccurrenceInMillis = firstOccurrenceInMillis;
+    this.firstOccurrence = firstOccurrence;
   }
 
   public int getPeriodInDays() {
@@ -24,11 +26,12 @@ public class DailyPeriodRecurrence implements Recurrence {
   @Override
   public long distanceTo(long timeInMilliseconds) {
     long periodInMillis = DAY_IN_MILLIS * periodInDays;
-    long distanceFromFirstOccurrence = timeInMilliseconds - firstOccurrenceInMillis;
+    long millis = firstOccurrence.getMillis();
+    long distanceFromFirstOccurrence = timeInMilliseconds - millis;
     long distanceToTimeInPeriods = distanceFromFirstOccurrence / periodInMillis;
-    long distanceToUndershootingOccurrence = timeInMilliseconds - (firstOccurrenceInMillis + distanceToTimeInPeriods * periodInMillis);
+    long distanceToUndershootingOccurrence = timeInMilliseconds - (millis + distanceToTimeInPeriods * periodInMillis);
     boolean isTimeBeforeFirstOccurrence = distanceFromFirstOccurrence < 0;
-    long distanceToOvershootingOccurrence = timeInMilliseconds - (firstOccurrenceInMillis + (distanceToTimeInPeriods + (isTimeBeforeFirstOccurrence ? -1 : 1)) * periodInMillis);
+    long distanceToOvershootingOccurrence = timeInMilliseconds - (millis + (distanceToTimeInPeriods + (isTimeBeforeFirstOccurrence ? -1 : 1)) * periodInMillis);
     return smallestByAbsoluteValue(distanceToUndershootingOccurrence, distanceToOvershootingOccurrence);
   }
 
@@ -44,26 +47,26 @@ public class DailyPeriodRecurrence implements Recurrence {
 
     DailyPeriodRecurrence that = (DailyPeriodRecurrence) o;
 
-    return firstOccurrenceInMillis == that.firstOccurrenceInMillis && periodInDays == that.periodInDays;
+    return periodInDays == that.periodInDays && firstOccurrence.equals(that.firstOccurrence);
   }
 
   @Override
   public int hashCode() {
     int result = periodInDays;
-    result = 31 * result + (int) (firstOccurrenceInMillis ^ (firstOccurrenceInMillis >>> 32));
+    result = 31 * result + firstOccurrence.hashCode();
     return result;
   }
 
   @Override
   public String toString() {
     return "DailyPeriodRecurrence{" +
-           "firstOccurrence=" + toSimpleString(firstOccurrenceInMillis) +
+           "firstOccurrence=" + formatDate(firstOccurrence) +
            ", periodInDays=" + periodInDays +
            '}';
   }
 
-  public long getFirstOccurrenceInMillis() {
-    return firstOccurrenceInMillis;
+  public DateTime getFirstOccurrence() {
+    return firstOccurrence;
   }
 
   private long getFirstOccurrenceAfter(long timeInMillis) {

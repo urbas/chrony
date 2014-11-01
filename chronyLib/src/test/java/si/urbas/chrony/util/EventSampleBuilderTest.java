@@ -31,7 +31,7 @@ public class EventSampleBuilderTest {
     initialiseNumberEvent();
     EventSample eventSample = initialiseNumberEventSample().create();
     assertEquals(EventSampleBuilderTest.EVENT_NAME, eventSample.getEventName());
-    assertEquals(EventSampleBuilderTest.TIMESTAMP_1, eventSample.getTimestamp());
+    assertEquals(EventSampleBuilderTest.TIMESTAMP_1, eventSample.getTimestampInMillis());
     assertEquals(EventSampleBuilderTest.SAMPLE_DATA_NUMBER_42_1, eventSample.getData());
   }
 

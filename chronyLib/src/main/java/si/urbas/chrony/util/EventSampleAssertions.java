@@ -12,7 +12,7 @@ public class EventSampleAssertions {
       EventSample previousEventSample = eventSampleIterator.next();
       while (eventSampleIterator.hasNext()) {
         EventSample currentEventSample = eventSampleIterator.next();
-        if (currentEventSample.getTimestamp() < previousEventSample.getTimestamp()) {
+        if (currentEventSample.getTimestampInMillis() < previousEventSample.getTimestampInMillis()) {
           throw new IllegalArgumentException("The list of event samples is not ordered by ascending timestamp.");
         }
         previousEventSample = currentEventSample;

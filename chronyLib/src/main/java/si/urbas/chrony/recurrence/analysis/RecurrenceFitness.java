@@ -42,15 +42,15 @@ public class RecurrenceFitness {
   private static double sumOfDistancesFromSamples(Recurrence recurrence, List<EventSample> eventSamples) {
     double sum = 0;
     for (EventSample eventSample : eventSamples) {
-      sum += abs(recurrence.distanceTo(eventSample.getTimestamp()));
+      sum += abs(recurrence.distanceTo(eventSample.getTimestampInMillis()));
     }
     return sum;
   }
 
   private double sumOfDistancesToSamples(Recurrence recurrence, List<EventSample> eventSamples) {
     double distanceSum = 0;
-    long timestampOfFirstSample = eventSamples.get(0).getTimestamp();
-    long timestampOfLastSample = eventSamples.get(eventSamples.size() - 1).getTimestamp();
+    long timestampOfFirstSample = eventSamples.get(0).getTimestampInMillis();
+    long timestampOfLastSample = eventSamples.get(eventSamples.size() - 1).getTimestampInMillis();
     OccurrenceList occurrencesInEntireRange = recurrence.getOccurrencesBetween(timestampOfFirstSample, timestampOfLastSample);
     for (int i = 0; i < occurrencesInEntireRange.size(); i++) {
       distanceSum += distanceToClosestSample(occurrencesInEntireRange.getOccurrenceAt(i), eventSamples);
@@ -62,7 +62,7 @@ public class RecurrenceFitness {
     long minDistance = Long.MAX_VALUE;
     // TODO: Implement this via binary search.
     for (EventSample eventSample : eventSamples) {
-      long currentDistance = abs(eventSample.getTimestamp() - occurrenceInMillis);
+      long currentDistance = abs(eventSample.getTimestampInMillis() - occurrenceInMillis);
       if (currentDistance < minDistance) {
         minDistance = currentDistance;
       }

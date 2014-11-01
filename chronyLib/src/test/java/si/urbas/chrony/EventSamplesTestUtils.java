@@ -1,5 +1,6 @@
 package si.urbas.chrony;
 
+import org.joda.time.DateTime;
 import si.urbas.chrony.util.EventSampleOldestFirstOrder;
 
 import java.util.*;
@@ -10,40 +11,36 @@ import static si.urbas.chrony.util.TimeUtils.*;
 public class EventSamplesTestUtils {
 
   private static final String EVENT_NAME = "event name";
-  public static final int HOUR_17 = 16;
-  public static final int DAY_1 = 0;
-  public static final int DAY_2 = 1;
-  public static final int DAY_3 = 2;
-  public static final int DAY_8 = 7;
-  public static final int DAY_10 = 9;
+  public static final int DAY_1 = 1;
+  public static final int DAY_2 = 2;
+  public static final int DAY_3 = 3;
+  public static final int DAY_8 = 8;
+  public static final int DAY_10 = 10;
+  public static final int HOUR_17 = 17;
 
-  public static EventSample eventSampleAtTime(Calendar calendar) {
-    return eventSampleAtTime(calendar.getTimeInMillis());
+  public static EventSample eventSampleAt(DateTime timestamp) {
+    return new EventSample(EVENT_NAME, timestamp, null);
   }
 
-  public static EventSample eventSampleAtTime(long timeInMillis) {
+  public static EventSample eventSampleAt(long timeInMillis) {
     return new EventSample(EVENT_NAME, timeInMillis, null);
   }
 
   public static List<EventSample> emptyEventSamples() {return Collections.emptyList();}
 
   public static EventSample eventSampleAtTime(int day, int hour) {
-    Calendar calendar = createUtcCalendar();
-    calendar.set(0, Calendar.JANUARY, day, hour, 0, 0);
-    calendar.set(Calendar.MILLISECOND, 0);
-    return new EventSample(EVENT_NAME, calendar.getTimeInMillis(), null);
+    return new EventSample(EVENT_NAME, toUtcDate(0, 1, day, hour, 0, 0), null);
   }
 
   public static ArrayList<EventSample> createRecurringEventSamples(int periodInDays, int durationInDays, long timeOfFirstOccurrence) {
-    return createRecurringEventSamples(periodInDays, durationInDays, toUtcCalendar(timeOfFirstOccurrence));
+    return createRecurringEventSamples(periodInDays, durationInDays, toUtcDate(timeOfFirstOccurrence));
   }
 
-  public static ArrayList<EventSample> createRecurringEventSamples(int periodInDays, int durationInDays, Calendar timeOfFirstOccurrence) {
-    Calendar calendar = (Calendar) timeOfFirstOccurrence.clone();
+  public static ArrayList<EventSample> createRecurringEventSamples(int periodInDays, int durationInDays, DateTime timeOfFirstOccurrence) {
     ArrayList<EventSample> eventSamples = new ArrayList<EventSample>();
     do {
-      eventSamples.add(EventSamplesTestUtils.eventSampleAtTime(calendar));
-      calendar.add(Calendar.DAY_OF_MONTH, periodInDays);
+      eventSamples.add(EventSamplesTestUtils.eventSampleAt(timeOfFirstOccurrence));
+      timeOfFirstOccurrence = timeOfFirstOccurrence.plusDays(periodInDays);
       durationInDays -= periodInDays;
     } while (durationInDays >= 0);
     return eventSamples;
@@ -69,7 +66,7 @@ public class EventSamplesTestUtils {
     long periodInMillis = periodInDays * DAY_IN_MILLIS;
     for (long currentOccurrence = startTimeInMillis; currentOccurrence <= endTimeInMillis; currentOccurrence += periodInMillis) {
       long timeInMillis = currentOccurrence + randomValueBetween(randomnessSource, -maxDeviationInMillis, maxDeviationInMillis);
-      samplesToAddTo.add(eventSampleAtTime(timeInMillis));
+      samplesToAddTo.add(eventSampleAt(timeInMillis));
     }
     Collections.sort(samplesToAddTo, EventSampleOldestFirstOrder.INSTANCE);
   }
