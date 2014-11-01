@@ -14,7 +14,7 @@ import si.urbas.chrony.app.data.SQLiteEventRepository;
 import si.urbas.chrony.descriptions.RecurrenceDescriptions;
 import si.urbas.chrony.frequency.analysis.FrequencyAnalysis;
 import si.urbas.chrony.recurrence.Recurrence;
-import si.urbas.chrony.recurrence.analysis.RecurrenceAnalysers;
+import si.urbas.chrony.recurrence.analysis.RecurrenceFinders;
 
 import java.util.Date;
 import java.util.List;
@@ -77,7 +77,7 @@ public class EventDetail extends Activity {
     Event eventToShow = getEventToShow();
     List<EventSample> eventSamples = eventRepository.samplesOf(eventToShow.getEventName());
     FrequencyAnalysis frequencyAnalysis = new FrequencyAnalysis(eventSamples);
-    List<Recurrence> recurrenceAnalysis = RecurrenceAnalysers.create(eventSamples).foundRecurrences();
+    List<Recurrence> recurrenceAnalysis = RecurrenceFinders.findRecurrences(eventSamples);
     showEventDetails(eventToShow, frequencyAnalysis, recurrenceAnalysis);
   }
 
