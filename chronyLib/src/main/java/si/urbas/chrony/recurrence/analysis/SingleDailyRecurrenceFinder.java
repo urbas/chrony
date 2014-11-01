@@ -3,12 +3,15 @@ package si.urbas.chrony.recurrence.analysis;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
-import si.urbas.chrony.util.TimeUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static si.urbas.chrony.util.EventSampleUtils.averagePeriod;
+import static si.urbas.chrony.util.EventSampleUtils.averageTimeOfDay;
+import static si.urbas.chrony.util.TimeUtils.withDateOnly;
+import static si.urbas.chrony.util.TimeUtils.withTimeOfDay;
 
 public class SingleDailyRecurrenceFinder implements RecurrenceFinder {
 
@@ -18,15 +21,17 @@ public class SingleDailyRecurrenceFinder implements RecurrenceFinder {
     if (eventSamples.size() < 2) {
       foundRecurrences = emptyList();
     } else {
-      long firstEventTimestamp = eventSamples.get(0).getTimestamp();
-      long secondEventTimestamp = eventSamples.get(1).getTimestamp();
-      int periodInDays = (int) Math.round((double) (secondEventTimestamp - firstEventTimestamp) / TimeUtils.DAY_IN_MILLIS);
       foundRecurrences = Arrays.<Recurrence>asList(
-        new DailyPeriodRecurrence(
-          periodInDays,
-          firstEventTimestamp)
+        new DailyPeriodRecurrence(averagePeriod(eventSamples), firstOccurrenceWithAverageTimeOfDay(eventSamples))
       );
     }
+  }
+
+  public static long firstOccurrenceWithAverageTimeOfDay(List<EventSample> eventSamples) {
+    return withTimeOfDay(
+      withDateOnly(eventSamples.get(0).getTimestampAsCalendar()),
+      averageTimeOfDay(eventSamples)
+    ).getTimeInMillis();
   }
 
   @Override

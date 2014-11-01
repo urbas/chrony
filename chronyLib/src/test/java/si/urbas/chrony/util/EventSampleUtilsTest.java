@@ -1,4 +1,4 @@
-package si.urbas.chrony.recurrence.analysis;
+package si.urbas.chrony.util;
 
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
@@ -9,10 +9,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static si.urbas.chrony.EventSamplesTestUtils.eventSampleAtTime;
-import static si.urbas.chrony.recurrence.analysis.EventSamplesUtils.averageTimeOfDay;
+import static si.urbas.chrony.util.EventSampleUtils.averageTimeOfDay;
 import static si.urbas.chrony.util.TimeUtils.*;
 
-public class EventSamplesUtilsTest {
+public class EventSampleUtilsTest {
 
   private final EventSample eventSampleAt12h45m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 12, 45, 12));
   private final EventSample eventSampleAt17h45m12s = eventSampleAtTime(toUtcTimeInMillis(2014, 9, 29, 17, 45, 12));

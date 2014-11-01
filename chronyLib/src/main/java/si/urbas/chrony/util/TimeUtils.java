@@ -29,11 +29,15 @@ public class TimeUtils {
     return calendar;
   }
 
-  public static Calendar toUtcCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour, int secondsPastMinute) {
+  public static Calendar toUtcCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour, int secondsPastMinute, int millisecondsPastSecond) {
     Calendar calendar = createUtcCalendar();
     calendar.set(year, month, dayOfMonth, hourOfDay, minutesPastHour, secondsPastMinute);
-    calendar.set(Calendar.MILLISECOND, 0);
+    calendar.set(Calendar.MILLISECOND, millisecondsPastSecond);
     return calendar;
+  }
+
+  public static Calendar toUtcCalendar(int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour, int secondsPastMinute) {
+    return toUtcCalendar(year, month, dayOfMonth, hourOfDay, minutesPastHour, secondsPastMinute, 0);
   }
 
   public static String toSimpleString(Calendar calendar) {
@@ -49,5 +53,32 @@ public class TimeUtils {
            calendar.get(Calendar.MINUTE) * MINUTE_IN_MILLIS +
            calendar.get(Calendar.SECOND) * SECOND_IN_MILLIS +
            calendar.get(Calendar.MILLISECOND);
+  }
+
+  /**
+   * @return a calendar with time of day set to 00:00:00.000.
+   */
+  public static Calendar withDateOnly(Calendar calendar) {
+    Calendar newCalendar = (Calendar) calendar.clone();
+    newCalendar.set(Calendar.MILLISECOND, 0);
+    newCalendar.set(Calendar.SECOND, 0);
+    newCalendar.set(Calendar.MINUTE, 0);
+    newCalendar.set(Calendar.HOUR_OF_DAY, 0);
+    return newCalendar;
+  }
+
+  public static Calendar withTimeOfDay(Calendar calendar, long timeOfDayInMillis) {
+    Calendar newCalendar = (Calendar) calendar.clone();
+    int hourOfDay = (int) (timeOfDayInMillis / HOUR_IN_MILLIS);
+    long remainingTimeOfDayInMillis = timeOfDayInMillis - hourOfDay * HOUR_IN_MILLIS;
+    newCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+    int minutes = (int) (remainingTimeOfDayInMillis / MINUTE_IN_MILLIS);
+    remainingTimeOfDayInMillis = remainingTimeOfDayInMillis - minutes * MINUTE_IN_MILLIS;
+    newCalendar.set(Calendar.MINUTE, minutes);
+    int seconds = (int) (remainingTimeOfDayInMillis / SECOND_IN_MILLIS);
+    remainingTimeOfDayInMillis = remainingTimeOfDayInMillis - seconds * SECOND_IN_MILLIS;
+    newCalendar.set(Calendar.SECOND, seconds);
+    newCalendar.set(Calendar.MILLISECOND, (int) remainingTimeOfDayInMillis);
+    return newCalendar;
   }
 }

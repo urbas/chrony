@@ -49,12 +49,12 @@ public class EventSamplesTestUtils {
     return eventSamples;
   }
 
-  public static ArrayList<EventSample> createRandomEventSamples(Random randomnessSource, int periodInDays, int durationInDays, int maxDeviationInMillis, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {
+  public static ArrayList<EventSample> createRandomEventSamples(Random randomnessSource, int periodInDays, int durationInDays, long maxDeviationInMillis, int year, int month, int dayOfMonth, int hourOfDay, int minutesPastHour) {
     long startTimeInMillis = toUtcTimeInMillis(year, month, dayOfMonth, hourOfDay, minutesPastHour, 0);
     return createRandomEventSamples(randomnessSource, periodInDays, durationInDays, maxDeviationInMillis, startTimeInMillis);
   }
 
-  public static ArrayList<EventSample> createRandomEventSamples(Random randomnessSource, int periodInDays, int durationInDays, int maxDeviationInMillis, long startTimeInMillis) {
+  public static ArrayList<EventSample> createRandomEventSamples(Random randomnessSource, int periodInDays, int durationInDays, long maxDeviationInMillis, long startTimeInMillis) {
     ArrayList<EventSample> roughlyRecurringSamples = new ArrayList<EventSample>();
     return addRandomEventSamples(roughlyRecurringSamples, randomnessSource, periodInDays, durationInDays, maxDeviationInMillis, startTimeInMillis);
   }
@@ -67,7 +67,7 @@ public class EventSamplesTestUtils {
 
   private static void addUniformlyRandomOccurrences(ArrayList<EventSample> samplesToAddTo, Random randomnessSource, long periodInDays, long startTimeInMillis, long endTimeInMillis, long maxDeviationInMillis) {
     long periodInMillis = periodInDays * DAY_IN_MILLIS;
-    for (long currentOccurrence = startTimeInMillis; currentOccurrence < endTimeInMillis; currentOccurrence += periodInMillis) {
+    for (long currentOccurrence = startTimeInMillis; currentOccurrence <= endTimeInMillis; currentOccurrence += periodInMillis) {
       long timeInMillis = currentOccurrence + randomValueBetween(randomnessSource, -maxDeviationInMillis, maxDeviationInMillis);
       samplesToAddTo.add(eventSampleAtTime(timeInMillis));
     }
