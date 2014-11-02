@@ -3,10 +3,10 @@ package si.urbas.chrony.frequency.analysis;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.util.EventSampleUtils;
 
-import java.util.Collection;
 import java.util.List;
 
-import static si.urbas.chrony.util.EventSampleUtils.*;
+import static si.urbas.chrony.util.EventSampleUtils.countSamplesWithinTime;
+import static si.urbas.chrony.util.EventSampleUtils.oldestTimestamp;
 
 public class FrequencyAnalysis {
 
@@ -28,7 +28,7 @@ public class FrequencyAnalysis {
     if (eventSamples.isEmpty()) {
       return 0;
     } else {
-      return frequency(eventSamples, getMinimumTimestamp(eventSamples), untilTime);
+      return frequency(eventSamples, oldestTimestamp(eventSamples), untilTime);
     }
   }
 
@@ -40,7 +40,7 @@ public class FrequencyAnalysis {
     return EventSampleUtils.countSamplesWithinTime(eventSamples, fromTime, untilTime);
   }
 
-  private static double frequency(Collection<EventSample> eventSamples, long fromTime, long untilTime) {
+  private static double frequency(List<EventSample> eventSamples, long fromTime, long untilTime) {
     if (eventSamples.isEmpty()) {
       return 0;
     } else {
