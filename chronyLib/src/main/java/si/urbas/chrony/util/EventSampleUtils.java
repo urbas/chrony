@@ -10,14 +10,23 @@ import java.util.List;
 
 public class EventSampleUtils {
 
-  public static List<EventSample> sort(List<EventSample> eventSamples) {
+  /**
+   * Sorts the given list by the increasing timestamps of the event samples (oldest to newest).
+   * @return the same list (same instance ) as the given {@code eventSamples}.
+   */
+  public static List<EventSample> sortByTimestamp(List<EventSample> eventSamples) {
     Collections.sort(eventSamples, EventSampleTimestampComparator.INSTANCE);
     return eventSamples;
   }
 
+  /**
+   * @param eventSamples a sorted list of event samples (oldest to newest).
+   * @return the number of event samples with timestamps between {@code fromTime} (inclusive) and {@code untilTime}
+   * (inclusive).
+   */
   public static int countSamplesWithinTime(List<EventSample> eventSamples, long fromTime, long untilTime) {
-    int indexOfLower = Collections.binarySearch(eventSamples, fromTime, new EventSampleWithLongComparator());
-    int indexOfUpper = Collections.binarySearch(eventSamples, untilTime, new EventSampleWithLongComparator());
+    int indexOfLower = Collections.binarySearch(eventSamples, fromTime, new EventSampleWithTimestampLongComparator());
+    int indexOfUpper = Collections.binarySearch(eventSamples, untilTime, new EventSampleWithTimestampLongComparator());
     if (indexOfLower < 0) {
       if (indexOfUpper < 0) {
         return indexOfLower - indexOfUpper;
@@ -45,6 +54,9 @@ public class EventSampleUtils {
     return eventSamples.get(eventSamples.size() - 1).getTimestampInMillis();
   }
 
+  /**
+   * @param eventSamples a sorted list of event samples (oldest to newest).
+   */
   public static int averageTimeOfDay(Iterable<EventSample> eventSamples) {
     Iterator<EventSample> eventSampleIterator = eventSamples.iterator();
     if (!eventSampleIterator.hasNext()) {
@@ -60,22 +72,25 @@ public class EventSampleUtils {
     return (int) (averageTimeOfDayInMillis / count);
   }
 
-  public static int averagePeriod(List<EventSample> eventSamples) {
-    return averagePeriod(
+  /**
+   * @param eventSamples a sorted list of event samples (oldest to newest).
+   */
+  public static int averagePeriodInDays(List<EventSample> eventSamples) {
+    return averagePeriodInDays(
       eventSamples.size(),
       eventSamples.get(0).getTimestampInMillis(),
       eventSamples.get(eventSamples.size() - 1).getTimestampInMillis()
     );
   }
 
-  public static int averagePeriod(int numberOfOccurrences,
-                                  long firstOccurrenceTimeInMillis,
-                                  long lastOccurrenceTimeInMillis) {
+  public static int averagePeriodInDays(int numberOfOccurrences,
+                                        long firstOccurrenceTimeInMillis,
+                                        long lastOccurrenceTimeInMillis) {
     double durationInDays = (double) (lastOccurrenceTimeInMillis - firstOccurrenceTimeInMillis) / TimeUtils.DAY_IN_MILLIS;
     return (int) Math.round(durationInDays / (numberOfOccurrences - 1));
   }
 
-  private static class EventSampleWithLongComparator implements Comparator<Object> {
+  private static class EventSampleWithTimestampLongComparator implements Comparator<Object> {
     @Override
     public int compare(Object o1, Object o2) {
       EventSample eventSample = (EventSample) o1;

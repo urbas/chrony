@@ -21,10 +21,10 @@ public class EventSampleUtilsTest {
   private static final EventSample eventSampleAt12h44m42s = EventSamplesTestUtils.eventSampleAt(toUtcTimeInMillis(2014, 9, 29, 12, 44, 42));
   private static final EventSample eventSampleAt12h20m12s = EventSamplesTestUtils.eventSampleAt(toUtcTimeInMillis(2014, 9, 29, 12, 20, 12));
   private static final EventSample eventSampleAt13h10m12s = EventSamplesTestUtils.eventSampleAt(toUtcTimeInMillis(2014, 9, 29, 13, 10, 12));
-  private static final List<EventSample> eventSamples = EventSampleUtils.sort(Arrays.asList(eventSampleAt07h45m12s, eventSampleAt17h45m12s,
-                                                                                            eventSampleAt12h45m42s, eventSampleAt12h44m42s,
-                                                                                            eventSampleAt12h20m12s, eventSampleAt13h10m12s,
-                                                                                            eventSampleAt12h45m12s));
+  private static final List<EventSample> eventSamples = EventSampleUtils.sortByTimestamp(Arrays.asList(eventSampleAt07h45m12s, eventSampleAt17h45m12s,
+                                                                                                       eventSampleAt12h45m42s, eventSampleAt12h44m42s,
+                                                                                                       eventSampleAt12h20m12s, eventSampleAt13h10m12s,
+                                                                                                       eventSampleAt12h45m12s));
 
   @Test
   public void countSamplesWithinTime_MUST_return_0_WHEN_bounds_are_before_all_the_event_samples() {

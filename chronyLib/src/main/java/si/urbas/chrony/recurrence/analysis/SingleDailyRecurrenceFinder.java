@@ -3,12 +3,12 @@ package si.urbas.chrony.recurrence.analysis;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.DailyPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
+import si.urbas.chrony.util.EventSampleUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
-import static si.urbas.chrony.util.EventSampleUtils.averagePeriod;
 import static si.urbas.chrony.util.EventSampleUtils.averageTimeOfDay;
 
 public class SingleDailyRecurrenceFinder implements RecurrenceFinder {
@@ -20,7 +20,7 @@ public class SingleDailyRecurrenceFinder implements RecurrenceFinder {
       foundRecurrences = emptyList();
     } else {
       foundRecurrences = Arrays.<Recurrence>asList(
-        new DailyPeriodRecurrence(averagePeriod(eventSamples), firstOccurrenceWithAverageTimeOfDay(eventSamples))
+        new DailyPeriodRecurrence(EventSampleUtils.averagePeriodInDays(eventSamples), firstOccurrenceWithAverageTimeOfDay(eventSamples))
       );
     }
   }
