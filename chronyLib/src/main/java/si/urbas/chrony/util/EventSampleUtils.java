@@ -18,14 +18,17 @@ public class EventSampleUtils {
   public static int countSamplesWithinTime(List<EventSample> eventSamples, long fromTime, long untilTime) {
     int indexOfLower = Collections.binarySearch(eventSamples, fromTime, new EventSampleWithLongComparator());
     int indexOfUpper = Collections.binarySearch(eventSamples, untilTime, new EventSampleWithLongComparator());
-    if (indexOfUpper >= 0 && indexOfLower >= 0) {
-      return indexOfUpper - indexOfLower + 1;
-    } else if (indexOfLower >= 0) {
+    if (indexOfLower < 0) {
+      if (indexOfUpper < 0) {
+        return indexOfLower - indexOfUpper;
+      } else {
+        return indexOfUpper + indexOfLower + 2;
+      }
+    } else if (indexOfUpper < 0) {
       return -(indexOfUpper + 1) - indexOfLower;
-    } else if (indexOfUpper >= 0) {
-      return indexOfUpper + indexOfLower + 2;
+    } else {
+      return indexOfUpper - indexOfLower + 1;
     }
-    return indexOfLower - indexOfUpper;
   }
 
   /**
@@ -75,7 +78,7 @@ public class EventSampleUtils {
   private static class EventSampleWithLongComparator implements Comparator<Object> {
     @Override
     public int compare(Object o1, Object o2) {
-      EventSample eventSample = (EventSample)o1;
+      EventSample eventSample = (EventSample) o1;
       Long bound = (Long) o2;
       return Long.compare(eventSample.getTimestampInMillis(), bound);
     }
