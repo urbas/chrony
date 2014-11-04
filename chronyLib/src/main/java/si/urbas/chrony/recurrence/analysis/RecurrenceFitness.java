@@ -9,6 +9,8 @@ import java.util.List;
 
 import static java.lang.Math.abs;
 import static si.urbas.chrony.util.EventSampleAssertions.assertEventSamplesOrdered;
+import static si.urbas.chrony.util.EventSampleUtils.distanceBetween;
+import static si.urbas.chrony.util.EventSampleUtils.findClosest;
 
 public class RecurrenceFitness {
 
@@ -59,15 +61,7 @@ public class RecurrenceFitness {
   }
 
   private double distanceToClosestSample(long occurrenceInMillis, List<EventSample> eventSamples) {
-    long minDistance = Long.MAX_VALUE;
-    // TODO: Implement this via binary search.
-    for (EventSample eventSample : eventSamples) {
-      long currentDistance = abs(eventSample.getTimestampInMillis() - occurrenceInMillis);
-      if (currentDistance < minDistance) {
-        minDistance = currentDistance;
-      }
-    }
-    return minDistance;
+    return distanceBetween(findClosest(eventSamples, occurrenceInMillis), occurrenceInMillis);
   }
 
 

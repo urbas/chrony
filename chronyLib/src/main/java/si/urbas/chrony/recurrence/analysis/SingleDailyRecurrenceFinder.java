@@ -20,7 +20,10 @@ public class SingleDailyRecurrenceFinder implements RecurrenceFinder {
       foundRecurrences = emptyList();
     } else {
       foundRecurrences = Arrays.<Recurrence>asList(
-        new DailyPeriodRecurrence(EventSampleUtils.averagePeriodInDays(eventSamples), firstOccurrenceWithAverageTimeOfDay(eventSamples))
+        new DailyPeriodRecurrence(
+          EventSampleUtils.averagePeriodInDays(eventSamples),
+          firstOccurrenceWithAverageTimeOfDay(eventSamples)
+        )
       );
     }
   }

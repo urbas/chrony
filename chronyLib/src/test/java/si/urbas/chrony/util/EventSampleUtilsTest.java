@@ -106,4 +106,44 @@ public class EventSampleUtilsTest {
     assertEquals(expectedAverage, averageTimeOfDay(eventSamples));
   }
 
+  @Test
+  public void findClosest_MUST_return_the_first_event_sample_WHEN_given_a_timestamp_smaller_than_the_timestamp_of_first_sample() {
+    assertEquals(
+      eventSampleAt07h45m12s,
+      findClosest(eventSamples, eventSampleAt07h45m12s.getTimestamp().minusMillis(1).getMillis())
+    );
+  }
+
+  @Test
+  public void findClosest_MUST_return_the_first_event_sample_WHEN_given_the_timestamp_of_the_sample() {
+    assertEquals(
+      eventSampleAt07h45m12s,
+      findClosest(eventSamples, eventSampleAt07h45m12s.getTimestamp().getMillis())
+    );
+  }
+
+  @Test
+  public void findClosest_MUST_return_the_last_event_sample_WHEN_the_timestamp_greater_than_the_last_sample() {
+    assertEquals(
+      eventSampleAt17h45m12s,
+      findClosest(eventSamples, eventSampleAt17h45m12s.getTimestamp().plusMillis(1).getMillis())
+    );
+  }
+
+  @Test
+  public void findClosest_MUST_return_the_first_event_sample_WHEN_the_timestamp_closer_to_it() {
+    assertEquals(
+      eventSampleAt07h45m12s,
+      findClosest(eventSamples, eventSampleAt07h45m12s.getTimestamp().plusMillis(1).getMillis())
+    );
+  }
+
+  @Test
+  public void findClosest_MUST_return_the_second_event_sample_WHEN_the_timestamp_closer_to_it() {
+    assertEquals(
+      eventSampleAt12h20m12s,
+      findClosest(eventSamples, eventSampleAt12h20m12s.getTimestamp().minusMillis(1).getMillis())
+    );
+  }
+
 }

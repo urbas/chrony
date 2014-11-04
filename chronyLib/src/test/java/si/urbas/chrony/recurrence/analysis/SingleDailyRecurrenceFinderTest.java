@@ -21,7 +21,7 @@ public class SingleDailyRecurrenceFinderTest {
   private Random random;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     random = new Random(9382937L);
   }
 

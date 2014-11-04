@@ -8,10 +8,40 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.lang.Math.abs;
+
 public class EventSampleUtils {
 
   /**
+   * @param eventSamples a sorted list of event samples (oldest to newest).
+   */
+  public static EventSample findClosest(List<EventSample> eventSamples, long millis) {
+    int insertionIndex = Collections.binarySearch(eventSamples, millis, EventSampleWithTimestampLongComparator.INSTANCE);
+    if (insertionIndex == -1) {
+      return eventSamples.get(0);
+    } else if (insertionIndex < -eventSamples.size()) {
+      return eventSamples.get(eventSamples.size() - 1);
+    } else if (insertionIndex < 0) {
+      insertionIndex = -(insertionIndex + 1);
+      EventSample olderEventSample = eventSamples.get(insertionIndex - 1);
+      EventSample newerEventSample = eventSamples.get(insertionIndex);
+      if (distanceBetween(olderEventSample, millis) < distanceBetween(newerEventSample, millis)) {
+        return olderEventSample;
+      } else {
+        return newerEventSample;
+      }
+    } else {
+      return eventSamples.get(insertionIndex);
+    }
+  }
+
+  public static long distanceBetween(EventSample olderEventSample, long millis) {
+    return abs(olderEventSample.getTimestampInMillis() - millis);
+  }
+
+  /**
    * Sorts the given list by the increasing timestamps of the event samples (oldest to newest).
+   *
    * @return the same list (same instance ) as the given {@code eventSamples}.
    */
   public static List<EventSample> sortByTimestamp(List<EventSample> eventSamples) {
@@ -25,8 +55,8 @@ public class EventSampleUtils {
    * (inclusive).
    */
   public static int countSamplesWithinTime(List<EventSample> eventSamples, long fromTime, long untilTime) {
-    int indexOfLower = Collections.binarySearch(eventSamples, fromTime, new EventSampleWithTimestampLongComparator());
-    int indexOfUpper = Collections.binarySearch(eventSamples, untilTime, new EventSampleWithTimestampLongComparator());
+    int indexOfLower = Collections.binarySearch(eventSamples, fromTime, EventSampleWithTimestampLongComparator.INSTANCE);
+    int indexOfUpper = Collections.binarySearch(eventSamples, untilTime, EventSampleWithTimestampLongComparator.INSTANCE);
     if (indexOfLower < 0) {
       if (indexOfUpper < 0) {
         return indexOfLower - indexOfUpper;
@@ -91,6 +121,8 @@ public class EventSampleUtils {
   }
 
   private static class EventSampleWithTimestampLongComparator implements Comparator<Object> {
+    private static final EventSampleWithTimestampLongComparator INSTANCE = new EventSampleWithTimestampLongComparator();
+
     @Override
     public int compare(Object o1, Object o2) {
       EventSample eventSample = (EventSample) o1;

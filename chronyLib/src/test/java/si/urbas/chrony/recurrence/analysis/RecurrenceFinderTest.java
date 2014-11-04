@@ -30,7 +30,7 @@ public abstract class RecurrenceFinderTest {
   private final EventSample eventSampleAtTime10d17h = eventSampleAtTime(DAY_10, HOUR_17);
   private final Matcher<Recurrence> weeklyRecurrence = recurrence().withPeriodOf(7);
   private final Matcher<Recurrence> dailyRecurrence = recurrence().withPeriodOf(1);
-  private Random randomnessSource;
+  protected Random randomnessSource;
 
   @Before
   public void setUp() {
@@ -61,31 +61,27 @@ public abstract class RecurrenceFinderTest {
   }
 
   @Test
-  @Ignore
   public void foundRecurrences_MUST_return_a_daily_recurrence_WHEN_given_two_events_a_day_apart() {
     RecurrenceFinder recurrenceFinder = createRecurrenceAnalyser(asList(eventSampleAtTime1d17h, eventSampleAtTime2d17h));
     assertThat(recurrenceFinder.foundRecurrences(), contains(dailyRecurrence));
   }
 
   @Test
-  @Ignore
   public void foundRecurrences_MUST_return_a_weekly_recurrence_WHEN_given_two_events_a_week_apart() {
     RecurrenceFinder recurrenceFinder = createRecurrenceAnalyser(asList(eventSampleAtTime1d17h, eventSampleAtTime8d17h));
     assertThat(recurrenceFinder.foundRecurrences(), contains(weeklyRecurrence));
   }
 
   @Test
-  @Ignore
   public void foundRecurrences_MUST_return_a_recurrence_of_every_second_day_WHEN_given_two_events_that_are_two_days_apart() {
     RecurrenceFinder recurrenceFinder = createRecurrenceAnalyser(asList(eventSampleAtTime1d17h, eventSampleAtTime3d17h));
     assertThat(recurrenceFinder.foundRecurrences(), contains(recurrence().withPeriodOf(TWO_DAYS)));
   }
 
   @Test
-  @Ignore
   public void foundRecurrences_MUST_return_a_3_day_recurrence_WHEN_given_a_larger_number_of_samples_roughly_three_day_apart() {
     long firstOccurrenceTimeInMillis = toUtcTimeInMillis(2010, 2, 19, 4, 45, 0);
-    RecurrenceFinder recurrenceFinder = createRecurrenceAnalyser(createRandomEventSamples(randomnessSource, 3, 10, 1, firstOccurrenceTimeInMillis));
+    RecurrenceFinder recurrenceFinder = createRecurrenceAnalyser(createRandomEventSamples(randomnessSource, 3, 30, 1, firstOccurrenceTimeInMillis));
     assertThat(
       recurrenceFinder.foundRecurrences(),
       contains(
