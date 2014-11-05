@@ -19,13 +19,15 @@ public class SingleDailyRecurrenceFinder implements RecurrenceFinder {
     if (eventSamples.size() < 2) {
       foundRecurrences = emptyList();
     } else {
-      foundRecurrences = Arrays.<Recurrence>asList(
-        new DailyPeriodRecurrence(
-          EventSampleUtils.averagePeriodInDays(eventSamples),
-          firstOccurrenceWithAverageTimeOfDay(eventSamples)
-        )
-      );
+      foundRecurrences = Arrays.<Recurrence>asList(extractRecurrence(eventSamples));
     }
+  }
+
+  public static DailyPeriodRecurrence extractRecurrence(List<EventSample> eventSamples) {
+    return new DailyPeriodRecurrence(
+      EventSampleUtils.averagePeriodInDays(eventSamples),
+      firstOccurrenceWithAverageTimeOfDay(eventSamples)
+    );
   }
 
   public static org.joda.time.DateTime firstOccurrenceWithAverageTimeOfDay(List<EventSample> eventSamples) {
