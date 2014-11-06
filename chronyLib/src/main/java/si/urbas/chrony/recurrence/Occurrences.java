@@ -2,7 +2,7 @@ package si.urbas.chrony.recurrence;
 
 import java.util.List;
 
-public interface OccurrenceList extends List<Long> {
+public interface Occurrences extends List<Long> {
   long getOccurrenceAt(int index);
 
   int indexOf(long timeInMillis);
