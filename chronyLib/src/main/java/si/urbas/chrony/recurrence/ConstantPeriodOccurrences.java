@@ -143,10 +143,15 @@ public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occ
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (int) (fromTimeInMillis ^ (fromTimeInMillis >>> 32));
-    result = 31 * result + (int) (periodInMillis ^ (periodInMillis >>> 32));
-    result = 31 * result + (int) (untilTimeInMillis ^ (untilTimeInMillis >>> 32));
-    return result;
+    int size = size();
+    if (size == 0) {
+      return 1;
+    } else {
+      long lastElement = getOccurrenceAt(size - 1);
+      int result = 31 * Math.max(size, 1);
+      result = 31 * result + (int) (fromTimeInMillis ^ (fromTimeInMillis >>> 32));
+      result = 31 * result + (int) (lastElement ^ (lastElement >>> 32));
+      return result;
+    }
   }
 }
