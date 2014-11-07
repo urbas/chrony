@@ -53,7 +53,7 @@ public class RecurrenceFitness {
     double distanceSum = 0;
     long timestampOfFirstSample = eventSamples.get(0).getTimestampInMillis();
     long timestampOfLastSample = eventSamples.get(eventSamples.size() - 1).getTimestampInMillis();
-    Occurrences occurrencesInEntireRange = recurrence.getSubOccurrences(timestampOfFirstSample, timestampOfLastSample);
+    Occurrences occurrencesInEntireRange = recurrence.subOccurrences(timestampOfFirstSample, timestampOfLastSample);
     for (int i = 0; i < occurrencesInEntireRange.size(); i++) {
       distanceSum += distanceToClosestSample(occurrencesInEntireRange.getOccurrenceAt(i), eventSamples);
     }

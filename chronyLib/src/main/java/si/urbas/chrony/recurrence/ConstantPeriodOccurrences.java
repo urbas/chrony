@@ -87,7 +87,7 @@ public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occ
   }
 
   @Override
-  public ConstantPeriodOccurrences getSubOccurrences(long fromTimeInMillis, long untilTimeInMillis) {
+  public ConstantPeriodOccurrences subOccurrences(long fromTimeInMillis, long untilTimeInMillis) {
     if (fromTimeInMillis <= this.fromTimeInMillis && untilTimeInMillis >= this.untilTimeInMillis) {
       return this;
     } else if (fromTimeInMillis <= this.fromTimeInMillis) {

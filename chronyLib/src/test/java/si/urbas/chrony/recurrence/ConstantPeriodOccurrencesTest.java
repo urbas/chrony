@@ -152,38 +152,38 @@ public class ConstantPeriodOccurrencesTest {
   }
 
   @Test
-  public void getSubOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_old_period() {
-    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(-150, 7400);
+  public void subOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_old_period() {
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.subOccurrences(-150, 7400);
     assertEquals(400, subOccurrences.getPeriodInMillis());
   }
 
   @Test
-  public void getSubOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_old_lower_bound_WHEN_the_given_one_is_lower() {
-    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(-150, 7400);
+  public void subOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_old_lower_bound_WHEN_the_given_one_is_lower() {
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.subOccurrences(-150, 7400);
     assertEquals(150, subOccurrences.getFromTimeInMillis());
   }
 
   @Test
-  public void getSubOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_new_lower_bound_WHEN_the_given_one_is_higher() {
-    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(200, 7400);
+  public void subOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_new_lower_bound_WHEN_the_given_one_is_higher() {
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.subOccurrences(200, 7400);
     assertEquals(200, subOccurrences.getFromTimeInMillis());
   }
 
   @Test
-  public void getSubOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_new_upper_bound_WHEN_the_given_one_is_lower() {
-    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(200, 7400);
+  public void subOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_new_upper_bound_WHEN_the_given_one_is_lower() {
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.subOccurrences(200, 7400);
     assertEquals(7400, subOccurrences.getUntilTimeInMillis());
   }
 
   @Test
-  public void getSubOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_old_upper_bound_WHEN_the_given_one_is_higher() {
-    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(200, 9002);
+  public void subOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_old_upper_bound_WHEN_the_given_one_is_higher() {
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.subOccurrences(200, 9002);
     assertEquals(9001, subOccurrences.getUntilTimeInMillis());
   }
 
   @Test
-  public void getSubOccurrences_MUST_return_itself_WHEN_the_given_bounds_subsume_it() {
-    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(149, 9002);
+  public void subOccurrences_MUST_return_itself_WHEN_the_given_bounds_subsume_it() {
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.subOccurrences(149, 9002);
     assertSame(occurrencesStart150Period400End9001, subOccurrences);
   }
 

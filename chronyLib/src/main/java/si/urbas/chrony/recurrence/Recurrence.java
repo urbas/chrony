@@ -7,5 +7,5 @@ public interface Recurrence {
    */
   long distanceTo(long timeInMilliseconds);
 
-  Occurrences getSubOccurrences(long fromTimeInMillis, long toTimeInMillis);
+  Occurrences subOccurrences(long fromTimeInMillis, long toTimeInMillis);
 }

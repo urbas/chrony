@@ -120,7 +120,7 @@ public class DailyPeriodRecurrenceTest {
 
   @Test
   public void getOccurrencesBetween_MUST_return_an_empty_list_WHEN_the_range_is_non_positive() {
-    List<Long> foundOccurrences = createDailyPeriodRecurrence().getSubOccurrences(123, 123);
+    List<Long> foundOccurrences = createDailyPeriodRecurrence().subOccurrences(123, 123);
     assertThat(foundOccurrences, is(empty()));
   }
 
@@ -129,7 +129,7 @@ public class DailyPeriodRecurrenceTest {
     DateTime firstOccurrence = toUtcDate(1, 2, 3, 4, 5, 6);
     long rangeStart = firstOccurrence.getMillis() - RANGE_WIDTH_10_MILLIS / 2;
     DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_1_DAY, firstOccurrence);
-    List<Long> foundOccurrences = recurrence.getSubOccurrences(rangeStart, rangeStart + RANGE_WIDTH_10_MILLIS);
+    List<Long> foundOccurrences = recurrence.subOccurrences(rangeStart, rangeStart + RANGE_WIDTH_10_MILLIS);
     assertThat(foundOccurrences, contains(firstOccurrence.getMillis()));
   }
 
@@ -139,7 +139,7 @@ public class DailyPeriodRecurrenceTest {
     long futureOccurrence = toUtcTimeInMillis(1, 2, 5, 4, 5, 6);
     long rangeStart = futureOccurrence - RANGE_WIDTH_10_MILLIS / 2;
     DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_1_DAY, firstOccurrence);
-    List<Long> foundOccurrences = recurrence.getSubOccurrences(rangeStart, rangeStart + RANGE_WIDTH_10_MILLIS);
+    List<Long> foundOccurrences = recurrence.subOccurrences(rangeStart, rangeStart + RANGE_WIDTH_10_MILLIS);
     assertThat(foundOccurrences, contains(futureOccurrence));
   }
 
@@ -149,7 +149,7 @@ public class DailyPeriodRecurrenceTest {
     long rangeStart = toUtcTimeInMillis(2014, 8, 8, 11, 45, 0);
     long rangeEnd = toUtcTimeInMillis(2014, 9, 6, 19, 45, 0);
     DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_7_DAYS, firstOccurrence);
-    Occurrences foundOccurrences = recurrence.getSubOccurrences(rangeStart, rangeEnd);
+    Occurrences foundOccurrences = recurrence.subOccurrences(rangeStart, rangeEnd);
     assertThat(
       foundOccurrences,
       contains(
