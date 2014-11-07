@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
 public class ConstantPeriodOccurrencesTest {
 
   private ConstantPeriodOccurrences occurrencesStart150Period400End9001;
