@@ -11,12 +11,14 @@ public class ConstantPeriodOccurrencesTest {
   private ConstantPeriodOccurrences occurrencesStart150Period400End9001;
   private ConstantPeriodOccurrences occurrencesWithNegativeInterval;
   private ConstantPeriodOccurrences occurrencesWithZeroInterval;
+  private int lastIndex;
 
   @Before
   public void setUp() throws Exception {
     occurrencesStart150Period400End9001 = new ConstantPeriodOccurrences(150, 400, 9001);
     occurrencesWithNegativeInterval = new ConstantPeriodOccurrences(123, 150, 42);
     occurrencesWithZeroInterval = new ConstantPeriodOccurrences(123, 150, 123);
+    lastIndex = occurrencesStart150Period400End9001.size() - 1;
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -81,7 +83,7 @@ public class ConstantPeriodOccurrencesTest {
 
   @Test
   public void indexOf_MUST_return_size_minus_1_WHEN_asking_for_the_last_occurrence() {
-    assertEquals(occurrencesStart150Period400End9001.size() - 1, occurrencesStart150Period400End9001.indexOf(8950));
+    assertEquals(lastIndex, occurrencesStart150Period400End9001.indexOf(8950));
   }
 
   @Test
@@ -101,12 +103,12 @@ public class ConstantPeriodOccurrencesTest {
 
   @Test
   public void indexOfClosest_MUST_return_size_minus_1_WHEN_asking_for_an_occurrence_beyond_the_last() {
-    assertEquals(occurrencesStart150Period400End9001.size() - 1, occurrencesStart150Period400End9001.indexOfClosest(8951));
+    assertEquals(lastIndex, occurrencesStart150Period400End9001.indexOfClosest(8951));
   }
 
   @Test
   public void indexOfClosest_MUST_return_size_minus_1_WHEN_asking_for_an_occurrence_just_before_untilTime() {
-    assertEquals(occurrencesStart150Period400End9001.size() - 1, occurrencesStart150Period400End9001.indexOfClosest(8949));
+    assertEquals(lastIndex, occurrencesStart150Period400End9001.indexOfClosest(8949));
   }
 
   @Test
@@ -151,32 +153,98 @@ public class ConstantPeriodOccurrencesTest {
 
   @Test
   public void getSubOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_old_period() {
-    ConstantPeriodOccurrences subOccurrences = (ConstantPeriodOccurrences) occurrencesStart150Period400End9001.getSubOccurrences(-150, 7400);
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(-150, 7400);
     assertEquals(400, subOccurrences.getPeriodInMillis());
   }
 
   @Test
   public void getSubOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_old_lower_bound_WHEN_the_given_one_is_lower() {
-    ConstantPeriodOccurrences subOccurrences = (ConstantPeriodOccurrences) occurrencesStart150Period400End9001.getSubOccurrences(-150, 7400);
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(-150, 7400);
     assertEquals(150, subOccurrences.getFromTimeInMillis());
   }
 
   @Test
   public void getSubOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_new_lower_bound_WHEN_the_given_one_is_higher() {
-    ConstantPeriodOccurrences subOccurrences = (ConstantPeriodOccurrences) occurrencesStart150Period400End9001.getSubOccurrences(200, 7400);
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(200, 7400);
     assertEquals(200, subOccurrences.getFromTimeInMillis());
   }
 
   @Test
   public void getSubOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_new_upper_bound_WHEN_the_given_one_is_lower() {
-    ConstantPeriodOccurrences subOccurrences = (ConstantPeriodOccurrences) occurrencesStart150Period400End9001.getSubOccurrences(200, 7400);
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(200, 7400);
     assertEquals(7400, subOccurrences.getUntilTimeInMillis());
   }
 
   @Test
   public void getSubOccurrences_MUST_return_a_constant_period_occurrences_list_with_the_old_upper_bound_WHEN_the_given_one_is_higher() {
-    ConstantPeriodOccurrences subOccurrences = (ConstantPeriodOccurrences) occurrencesStart150Period400End9001.getSubOccurrences(200, 9002);
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(200, 9002);
     assertEquals(9001, subOccurrences.getUntilTimeInMillis());
   }
 
+  @Test
+  public void getSubOccurrences_MUST_return_itself_WHEN_the_given_bounds_subsume_it() {
+    ConstantPeriodOccurrences subOccurrences = occurrencesStart150Period400End9001.getSubOccurrences(149, 9002);
+    assertSame(occurrencesStart150Period400End9001, subOccurrences);
+  }
+
+  @Test
+  public void subList_MUST_return_itself_WHEN_new_boundaries_match_the_old_boundaries() {
+    assertSame(occurrencesStart150Period400End9001, occurrencesStart150Period400End9001.subList(0, lastIndex + 1));
+  }
+
+  @Test
+  public void subList_MUST_return_a_new_occurrences_with_the_same_period_WHEN_boundaries_are_strictly_enclosed() {
+    assertEquals(
+      new ConstantPeriodOccurrences(2150, 400, 4950),
+      occurrencesStart150Period400End9001.subList(5, lastIndex - 9)
+    );
+  }
+
+  @Test
+  public void subList_MUST_return_empty_occurrences_WHEN_boundaries_the_same_number() {
+    assertSame(
+      ConstantPeriodOccurrences.EMPTY_OCCURRENCES,
+      occurrencesStart150Period400End9001.subList(3, 3)
+    );
+  }
+
+  @Test
+  public void equals_MUST_return_true_WHEN_all_parameters_are_the_same() {
+    assertEquals(
+      new ConstantPeriodOccurrences(150, 400, 9001),
+      occurrencesStart150Period400End9001
+    );
+  }
+
+  @Test
+  public void equals_MUST_return_true_WHEN_all_the_period_is_the_same_and_the_first_and_the_last_occurrences_are_the_same() {
+    assertEquals(
+      new ConstantPeriodOccurrences(150, 400, 8951),
+      occurrencesStart150Period400End9001
+    );
+  }
+
+  @Test
+  public void equals_MUST_return_true_WHEN_occurrences_have_a_different_period_they_have_both_just_one_and_the_same_element() {
+    assertEquals(
+      new ConstantPeriodOccurrences(0, 400, 399),
+      new ConstantPeriodOccurrences(0, 500, 499)
+    );
+  }
+
+  @Test
+  public void equals_MUST_return_true_WHEN_the_occurrences_are_empty() {
+    assertEquals(
+      new ConstantPeriodOccurrences(0, 400, 399),
+      new ConstantPeriodOccurrences(0, 500, 499)
+    );
+  }
+
+  @Test
+  public void equals_MUST_return_false_WHEN_the_sizes_are_the_same_but_the_period_is_different() {
+      assertNotEquals(
+        new ConstantPeriodOccurrences(0, 500, 500),
+        new ConstantPeriodOccurrences(0, 499, 500)
+      );
+  }
 }

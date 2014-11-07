@@ -6,6 +6,7 @@ import static java.lang.Math.*;
 
 public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occurrences, Recurrence {
 
+  public static final ConstantPeriodOccurrences EMPTY_OCCURRENCES = new ConstantPeriodOccurrences(0, 1, -1);
   private final long fromTimeInMillis;
   private final long periodInMillis;
   private final long untilTimeInMillis;
@@ -86,12 +87,15 @@ public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occ
   }
 
   @Override
-  public Occurrences getSubOccurrences(long fromTimeInMillis, long untilTimeInMillis) {
-    return new ConstantPeriodOccurrences(
-      max(fromTimeInMillis, this.fromTimeInMillis),
-      periodInMillis,
-      min(untilTimeInMillis, this.untilTimeInMillis)
-    );
+  public ConstantPeriodOccurrences getSubOccurrences(long fromTimeInMillis, long untilTimeInMillis) {
+    if (fromTimeInMillis <= this.fromTimeInMillis && untilTimeInMillis >= this.untilTimeInMillis) {
+      return this;
+    } else if (fromTimeInMillis <= this.fromTimeInMillis) {
+      return new ConstantPeriodOccurrences(this.fromTimeInMillis, periodInMillis, untilTimeInMillis);
+    } else if (untilTimeInMillis >= this.untilTimeInMillis) {
+      return new ConstantPeriodOccurrences(fromTimeInMillis, periodInMillis, this.untilTimeInMillis);
+    }
+    return new ConstantPeriodOccurrences(fromTimeInMillis, periodInMillis, untilTimeInMillis);
   }
 
   @Override
@@ -101,5 +105,48 @@ public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occ
 
   public boolean contains(long occurrence) {
     return indexOf(occurrence) >= 0;
+  }
+
+  @Override
+  public ConstantPeriodOccurrences subList(int fromIndex, int toIndex) {
+    if (fromIndex == 0 && toIndex == size()) {
+      return this;
+    } else if (fromIndex >= toIndex) {
+      return EMPTY_OCCURRENCES;
+    } else {
+      return new ConstantPeriodOccurrences(getOccurrenceAt(fromIndex), periodInMillis, getOccurrenceAt(toIndex - 1));
+    }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    } else if (o == null) {
+      return false;
+    } else if (getClass() == o.getClass()) {
+      ConstantPeriodOccurrences other = (ConstantPeriodOccurrences) o;
+      int size = size();
+      if (size == other.size()) {
+        if (fromTimeInMillis == other.fromTimeInMillis) {
+          return periodInMillis == other.periodInMillis || size <= 1;
+        } else {
+          return size == 0;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return super.equals(o);
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + (int) (fromTimeInMillis ^ (fromTimeInMillis >>> 32));
+    result = 31 * result + (int) (periodInMillis ^ (periodInMillis >>> 32));
+    result = 31 * result + (int) (untilTimeInMillis ^ (untilTimeInMillis >>> 32));
+    return result;
   }
 }
