@@ -127,13 +127,16 @@ public class ConstantPeriodOccurrencesTest {
   }
 
   @Test
-  public void distanceTo_MUST_return_positive_50_WHEN_the_given_time_is_50_millis_after_the_closest_occurrence() {
+  public void distanceTo_MUST_return_positive_numbers_WHEN_the_given_time_is_after_the_closest_occurrence() {
     assertEquals(50, occurrencesStart150Period400End9001.distanceTo(200));
+    assertEquals(199, occurrencesStart150Period400End9001.distanceTo(1149));
   }
 
   @Test
-  public void distanceTo_MUST_return_negative_50_WHEN_the_given_time_is_50_millis_before_the_closest_occurrence() {
+  public void distanceTo_MUST_return_negative_numbers_WHEN_the_given_time_is_before_the_closest_occurrence() {
     assertEquals(-50, occurrencesStart150Period400End9001.distanceTo(500));
+    assertEquals(-50, occurrencesStart150Period400End9001.distanceTo(1300));
+    assertEquals(-200, occurrencesStart150Period400End9001.distanceTo(1150));
   }
 
   @Test
