@@ -1,10 +1,11 @@
 package si.urbas.chrony.recurrence;
 
 import java.util.AbstractList;
+import java.util.RandomAccess;
 
 import static java.lang.Math.*;
 
-public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occurrences, Recurrence {
+public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occurrences, Recurrence, RandomAccess {
 
   public static final ConstantPeriodOccurrences EMPTY_OCCURRENCES = new ConstantPeriodOccurrences(0, 1, -1);
   private final long fromTimeInMillis;
@@ -119,25 +120,27 @@ public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occ
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object other) {
+    if (this == other) {
       return true;
-    } else if (o == null) {
+    } else if (other == null) {
       return false;
-    } else if (getClass() == o.getClass()) {
-      ConstantPeriodOccurrences other = (ConstantPeriodOccurrences) o;
-      int size = size();
-      if (size == other.size()) {
-        if (fromTimeInMillis == other.fromTimeInMillis) {
-          return periodInMillis == other.periodInMillis || size <= 1;
-        } else {
-          return size == 0;
-        }
-      } else {
-        return false;
-      }
+    } else if (getClass() == other.getClass()) {
+      return equals((ConstantPeriodOccurrences) other);
     } else {
-      return super.equals(o);
+      return super.equals(other);
+    }
+  }
+
+  public boolean equals(ConstantPeriodOccurrences other) {
+    int size = size();
+    if (size != other.size()) {
+      return false;
+    }
+    if (fromTimeInMillis == other.fromTimeInMillis) {
+      return periodInMillis == other.periodInMillis || size <= 1;
+    } else {
+      return size == 0;
     }
   }
 
