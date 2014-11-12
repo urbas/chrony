@@ -5,7 +5,7 @@ import java.util.RandomAccess;
 
 import static java.lang.Math.*;
 
-public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occurrences, Recurrence, RandomAccess {
+public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occurrences, RandomAccess {
 
   public static final ConstantPeriodOccurrences EMPTY_OCCURRENCES = new ConstantPeriodOccurrences(0, 1, -1);
   private final long fromTimeInMillis;
