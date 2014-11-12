@@ -64,5 +64,4 @@ public class RecurrenceFitness {
     return distanceBetween(findClosest(eventSamples, occurrenceInMillis), occurrenceInMillis);
   }
 
-
 }
