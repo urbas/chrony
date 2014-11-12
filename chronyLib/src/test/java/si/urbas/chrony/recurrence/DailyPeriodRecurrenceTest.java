@@ -149,9 +149,9 @@ public class DailyPeriodRecurrenceTest {
     long rangeStart = toUtcTimeInMillis(2014, 8, 8, 11, 45, 0);
     long rangeEnd = toUtcTimeInMillis(2014, 9, 6, 19, 45, 0);
     DailyPeriodRecurrence recurrence = new DailyPeriodRecurrence(PERIOD_7_DAYS, firstOccurrence);
-    Occurrences foundOccurrences = recurrence.subOccurrences(rangeStart, rangeEnd);
+    IndexedRecurrence foundSubRecurrence = recurrence.subOccurrences(rangeStart, rangeEnd);
     assertThat(
-      foundOccurrences,
+      foundSubRecurrence,
       contains(
         toUtcTimeInMillis(2014, 8, 8, 13, 45, 0),
         toUtcTimeInMillis(2014, 8, 15, 13, 45, 0),

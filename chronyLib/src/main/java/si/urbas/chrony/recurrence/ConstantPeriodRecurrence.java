@@ -5,14 +5,14 @@ import java.util.RandomAccess;
 
 import static java.lang.Math.*;
 
-public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occurrences, RandomAccess {
+public class ConstantPeriodRecurrence extends AbstractList<Long> implements IndexedRecurrence, RandomAccess {
 
-  public static final ConstantPeriodOccurrences EMPTY_OCCURRENCES = new ConstantPeriodOccurrences(0, 1, -1);
+  public static final ConstantPeriodRecurrence EMPTY_OCCURRENCES = new ConstantPeriodRecurrence(0, 1, -1);
   private final long fromTimeInMillis;
   private final long periodInMillis;
   private final long untilTimeInMillis;
 
-  public ConstantPeriodOccurrences(long fromTimeInMillis, long periodInMillis, long untilTimeInMillis) {
+  public ConstantPeriodRecurrence(long fromTimeInMillis, long periodInMillis, long untilTimeInMillis) {
     if (periodInMillis <= 0) {
       throw new IllegalArgumentException("The period must be a positive number.");
     }
@@ -88,15 +88,15 @@ public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occ
   }
 
   @Override
-  public ConstantPeriodOccurrences subOccurrences(long fromTimeInMillis, long untilTimeInMillis) {
+  public ConstantPeriodRecurrence subOccurrences(long fromTimeInMillis, long untilTimeInMillis) {
     if (fromTimeInMillis <= this.fromTimeInMillis && untilTimeInMillis >= this.untilTimeInMillis) {
       return this;
     } else if (fromTimeInMillis <= this.fromTimeInMillis) {
-      return new ConstantPeriodOccurrences(this.fromTimeInMillis, periodInMillis, untilTimeInMillis);
+      return new ConstantPeriodRecurrence(this.fromTimeInMillis, periodInMillis, untilTimeInMillis);
     } else if (untilTimeInMillis >= this.untilTimeInMillis) {
-      return new ConstantPeriodOccurrences(fromTimeInMillis, periodInMillis, this.untilTimeInMillis);
+      return new ConstantPeriodRecurrence(fromTimeInMillis, periodInMillis, this.untilTimeInMillis);
     }
-    return new ConstantPeriodOccurrences(fromTimeInMillis, periodInMillis, untilTimeInMillis);
+    return new ConstantPeriodRecurrence(fromTimeInMillis, periodInMillis, untilTimeInMillis);
   }
 
   @Override
@@ -109,13 +109,13 @@ public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occ
   }
 
   @Override
-  public ConstantPeriodOccurrences subList(int fromIndex, int toIndex) {
+  public ConstantPeriodRecurrence subList(int fromIndex, int toIndex) {
     if (fromIndex == 0 && toIndex == size()) {
       return this;
     } else if (fromIndex >= toIndex) {
       return EMPTY_OCCURRENCES;
     } else {
-      return new ConstantPeriodOccurrences(getOccurrenceAt(fromIndex), periodInMillis, getOccurrenceAt(toIndex - 1));
+      return new ConstantPeriodRecurrence(getOccurrenceAt(fromIndex), periodInMillis, getOccurrenceAt(toIndex - 1));
     }
   }
 
@@ -126,13 +126,13 @@ public class ConstantPeriodOccurrences extends AbstractList<Long> implements Occ
     } else if (other == null) {
       return false;
     } else if (getClass() == other.getClass()) {
-      return equals((ConstantPeriodOccurrences) other);
+      return equals((ConstantPeriodRecurrence) other);
     } else {
       return super.equals(other);
     }
   }
 
-  public boolean equals(ConstantPeriodOccurrences other) {
+  public boolean equals(ConstantPeriodRecurrence other) {
     int size = size();
     if (size != other.size()) {
       return false;

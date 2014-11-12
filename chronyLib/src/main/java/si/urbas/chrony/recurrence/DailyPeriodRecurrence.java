@@ -36,8 +36,8 @@ public class DailyPeriodRecurrence implements Recurrence {
   }
 
   @Override
-  public Occurrences subOccurrences(final long fromTimeInMillis, final long toTimeInMillis) {
-    return new ConstantPeriodOccurrences(getFirstOccurrenceAfter(fromTimeInMillis), periodInDays * DAY_IN_MILLIS, toTimeInMillis);
+  public IndexedRecurrence subOccurrences(final long fromTimeInMillis, final long toTimeInMillis) {
+    return new ConstantPeriodRecurrence(getFirstOccurrenceAfter(fromTimeInMillis), periodInDays * DAY_IN_MILLIS, toTimeInMillis);
   }
 
   @Override
