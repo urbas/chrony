@@ -3,10 +3,7 @@ package si.urbas.chrony.util;
 import org.joda.time.DateTime;
 import si.urbas.chrony.EventSample;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Math.abs;
 
@@ -93,13 +90,13 @@ public class EventSampleUtils {
       throw new IllegalArgumentException("No event samples given. Could not calculate the average time of day of occurrences.");
     }
     int count = 0;
-    long averageTimeOfDayInMillis = 0;
+    long summedTimeOfDayInMillis = 0;
     do {
       ++count;
       DateTime timestamp = eventSampleIterator.next().getTimestamp();
-      averageTimeOfDayInMillis += (long) timestamp.getMillisOfDay();
+      summedTimeOfDayInMillis += (long) timestamp.getMillisOfDay();
     } while (eventSampleIterator.hasNext());
-    return (int) (averageTimeOfDayInMillis / count);
+    return (int) (summedTimeOfDayInMillis / count);
   }
 
   /**
@@ -118,6 +115,45 @@ public class EventSampleUtils {
                                         long lastOccurrenceTimeInMillis) {
     double durationInDays = (double) (lastOccurrenceTimeInMillis - firstOccurrenceTimeInMillis) / TimeUtils.DAY_IN_MILLIS;
     return (int) Math.round(durationInDays / (numberOfOccurrences - 1));
+  }
+
+  public static ArrayList<EventSample> merge(Iterable<EventSample> eventSamplesA, Iterable<EventSample> eventSamplesB) {
+    ArrayList<EventSample> eventSamples = new ArrayList<EventSample>();
+    Iterator<EventSample> eventSamplesAIterator = eventSamplesA.iterator();
+    Iterator<EventSample> eventSamplesBIterator = eventSamplesB.iterator();
+    EventSample eventSampleA = nextOrNull(eventSamplesAIterator);
+    EventSample eventSampleB = nextOrNull(eventSamplesBIterator);
+    while (eventSampleA != null && eventSampleB != null) {
+      if (eventSampleB.getTimestamp().isBefore(eventSampleA.getTimestamp())) {
+        eventSamples.add(eventSampleB);
+        eventSampleB = nextOrNull(eventSamplesBIterator);
+      } else {
+        eventSamples.add(eventSampleA);
+        eventSampleA = nextOrNull(eventSamplesAIterator);
+      }
+    }
+    addIfNonNull(eventSamples, eventSampleA);
+    addIfNonNull(eventSamples, eventSampleB);
+    addRest(eventSamples, eventSamplesAIterator);
+    addRest(eventSamples, eventSamplesBIterator);
+    return eventSamples;
+  }
+
+  private static void addIfNonNull(ArrayList<EventSample> eventSamples, EventSample eventSample) {
+    if (eventSample != null) {
+      eventSamples.add(eventSample);
+    }
+  }
+
+  private static EventSample nextOrNull(Iterator<EventSample> iterator) {
+    return iterator.hasNext() ? iterator.next() : null;
+  }
+
+  private static void addRest(ArrayList<EventSample> eventSamples, Iterator<EventSample> eventSamplesAIterator) {
+    while (eventSamplesAIterator.hasNext()) {
+      EventSample eventSampleA = eventSamplesAIterator.next();
+      eventSamples.add(eventSampleA);
+    }
   }
 
   private static class EventSampleWithTimestampLongComparator implements Comparator<Object> {
