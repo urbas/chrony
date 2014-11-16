@@ -9,8 +9,8 @@ public class EventSampleTimestampComparator implements Comparator<EventSample> {
   public static final EventSampleTimestampComparator INSTANCE = new EventSampleTimestampComparator();
 
   @Override
-  public int compare(EventSample eventSample, EventSample eventSample2) {
-    return Long.compare(eventSample.getTimestampInMillis(), eventSample2.getTimestampInMillis());
+  public int compare(EventSample eventSampleA, EventSample eventSampleB) {
+    return eventSampleA.getTimestamp().compareTo(eventSampleB.getTimestamp());
   }
   
 }

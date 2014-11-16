@@ -117,45 +117,6 @@ public class EventSampleUtils {
     return (int) Math.round(durationInDays / (numberOfOccurrences - 1));
   }
 
-  public static ArrayList<EventSample> merge(Iterable<EventSample> eventSamplesA, Iterable<EventSample> eventSamplesB) {
-    ArrayList<EventSample> eventSamples = new ArrayList<EventSample>();
-    Iterator<EventSample> eventSamplesAIterator = eventSamplesA.iterator();
-    Iterator<EventSample> eventSamplesBIterator = eventSamplesB.iterator();
-    EventSample eventSampleA = nextOrNull(eventSamplesAIterator);
-    EventSample eventSampleB = nextOrNull(eventSamplesBIterator);
-    while (eventSampleA != null && eventSampleB != null) {
-      if (eventSampleB.getTimestamp().isBefore(eventSampleA.getTimestamp())) {
-        eventSamples.add(eventSampleB);
-        eventSampleB = nextOrNull(eventSamplesBIterator);
-      } else {
-        eventSamples.add(eventSampleA);
-        eventSampleA = nextOrNull(eventSamplesAIterator);
-      }
-    }
-    addIfNonNull(eventSamples, eventSampleA);
-    addIfNonNull(eventSamples, eventSampleB);
-    addRest(eventSamples, eventSamplesAIterator);
-    addRest(eventSamples, eventSamplesBIterator);
-    return eventSamples;
-  }
-
-  private static void addIfNonNull(ArrayList<EventSample> eventSamples, EventSample eventSample) {
-    if (eventSample != null) {
-      eventSamples.add(eventSample);
-    }
-  }
-
-  private static EventSample nextOrNull(Iterator<EventSample> iterator) {
-    return iterator.hasNext() ? iterator.next() : null;
-  }
-
-  private static void addRest(ArrayList<EventSample> eventSamples, Iterator<EventSample> eventSamplesAIterator) {
-    while (eventSamplesAIterator.hasNext()) {
-      EventSample eventSampleA = eventSamplesAIterator.next();
-      eventSamples.add(eventSampleA);
-    }
-  }
-
   private static class EventSampleWithTimestampLongComparator implements Comparator<Object> {
     private static final EventSampleWithTimestampLongComparator INSTANCE = new EventSampleWithTimestampLongComparator();
 
