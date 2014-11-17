@@ -22,8 +22,6 @@ import static si.urbas.chrony.util.TimeUtils.*;
 public class TimeOfDayClustererTest {
 
   private TimeOfDayClusterer timeOfDayClusterer;
-  private static final int TIME_13_56_IN_MILLIS = millisOfDay(13, 56);
-  private static final int TIME_17_13_IN_MILLIS = millisOfDay(17, 13);
   private Random randomnessSource;
 
   @Before
@@ -41,42 +39,40 @@ public class TimeOfDayClustererTest {
   @Test
   public void millisOfDayClusters_MUST_return_a_single_time_WHEN_all_event_samples_occur_at_the_exact_same_time_of_day() {
     assertArrayEquals(
-      toIntArray(TIME_13_56_IN_MILLIS),
-      timeOfDayClusterer.millisOfDayClusters(someEventSamplesAt(TIME_13_56_IN_MILLIS))
+      new int[]{millisOfDay(16, 0)},
+      timeOfDayClusterer.millisOfDayClusters(someEventSamplesAt(millisOfDay(16, 0)))
     );
   }
 
   @Test
   public void millisOfDayClusters_MUST_return_an_averages_time() {
-    List<EventSample> eventSamples = someEventSamplesRoughlyAt(TIME_13_56_IN_MILLIS);
+    List<EventSample> eventSamples = someEventSamplesRoughlyAt(millisOfDay(16, 0));
     int averageTimeOfDayInMillis = averageTimeOfDay(eventSamples);
     assertArrayEquals(
-      toIntArray(averageTimeOfDayInMillis),
+      new int[]{averageTimeOfDayInMillis},
       timeOfDayClusterer.millisOfDayClusters(eventSamples)
     );
   }
 
   @Test
   public void millisOfDayClusters_MUST_find_two_clusters() {
-    List<EventSample> eventSamples13_56 = someEventSamplesRoughlyAt(TIME_13_56_IN_MILLIS);
-    List<EventSample> eventSamples17_13 = someEventSamplesRoughlyAt(TIME_17_13_IN_MILLIS);
+    List<EventSample> eventSamples16_00 = someEventSamplesRoughlyAt(millisOfDay(16, 0));
+    List<EventSample> eventSamples17_00 = someEventSamplesRoughlyAt(millisOfDay(17, 0));
 
     assertArrayEquals(
-      toIntArray(averageTimeOfDay(eventSamples13_56), averageTimeOfDay(eventSamples17_13)),
-      timeOfDayClusterer.millisOfDayClusters(Iterables.merge(eventSamples13_56, eventSamples17_13, EventSampleTimestampComparator.INSTANCE))
+      new int[]{averageTimeOfDay(eventSamples16_00), averageTimeOfDay(eventSamples17_00)},
+      timeOfDayClusterer.millisOfDayClusters(Iterables.merge(eventSamples16_00, eventSamples17_00, EventSampleTimestampComparator.INSTANCE))
     );
   }
 
   private List<EventSample> someEventSamplesRoughlyAt(int timeOfDayInMillis) {
-    return createRandomEventSamples(randomnessSource, 3, 3 * 25, 10 * MINUTE_IN_MILLIS, timeOfDayInMillis);
+    return createRandomEventSamples(randomnessSource, 3, 3 * 25, 25 * MINUTE_IN_MILLIS, timeOfDayInMillis);
   }
 
   private static ArrayList<EventSample> someEventSamplesAt(int millisOfDay) {
     DateTime timeOfFirstOccurrence = createUtcDate().withMillisOfDay(millisOfDay);
     return createRecurringEventSamples(4, 4 * 10, timeOfFirstOccurrence);
   }
-
-  public static int[] toIntArray(int... ints) {return ints;}
 
   public static int millisOfDay(int hour, int minute) {return (int) (hour * HOUR_IN_MILLIS + minute * MINUTE_IN_MILLIS);}
 
