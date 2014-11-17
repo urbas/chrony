@@ -8,6 +8,6 @@ import java.util.List;
 public class RecurrenceFinders {
 
   public static List<Recurrence> findRecurrences(List<EventSample> eventSamples) {
-    return new SingleDailyRecurrenceFinder(eventSamples).foundRecurrences();
+    return new SingleDailyRecurrenceFinder().foundRecurrences(eventSamples);
   }
 }

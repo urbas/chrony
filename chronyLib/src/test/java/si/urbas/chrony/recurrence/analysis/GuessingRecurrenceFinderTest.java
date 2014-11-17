@@ -11,13 +11,8 @@ public class GuessingRecurrenceFinderTest {
 
   @Test
   public void foundRecurrences_MUST_be_empty_WHEN_there_are_fewer_than_two_event_samples() {
-    GuessingRecurrenceFinder recurrenceAnalyser = new GuessingRecurrenceFinder(emptyEventSamples());
-    assertThat(recurrenceAnalyser.foundRecurrences(), is(empty()));
-  }
-
-  @Test
-  public void foundRecurrences_MUST_() {
-
+    GuessingRecurrenceFinder recurrenceAnalyser = new GuessingRecurrenceFinder();
+    assertThat(recurrenceAnalyser.foundRecurrences(emptyEventSamples()), is(empty()));
   }
 
 }

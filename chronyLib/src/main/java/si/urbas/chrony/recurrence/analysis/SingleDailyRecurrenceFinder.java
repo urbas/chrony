@@ -13,29 +13,23 @@ import static si.urbas.chrony.util.EventSampleUtils.averageTimeOfDay;
 
 public class SingleDailyRecurrenceFinder implements RecurrenceFinder {
 
-  private final List<Recurrence> foundRecurrences;
-
-  public SingleDailyRecurrenceFinder(List<EventSample> eventSamples) {
+  @Override
+  public List<Recurrence> foundRecurrences(List<EventSample> eventSamples) {
     if (eventSamples.size() < 2) {
-      foundRecurrences = emptyList();
+      return emptyList();
     } else {
-      foundRecurrences = Arrays.<Recurrence>asList(extractRecurrence(eventSamples));
+      return Arrays.<Recurrence>asList(extractRecurrence(eventSamples));
     }
   }
 
-  public static DailyPeriodRecurrence extractRecurrence(List<EventSample> eventSamples) {
+  private static DailyPeriodRecurrence extractRecurrence(List<EventSample> eventSamples) {
     return new DailyPeriodRecurrence(
       EventSampleUtils.averagePeriodInDays(eventSamples),
       firstOccurrenceWithAverageTimeOfDay(eventSamples)
     );
   }
 
-  public static org.joda.time.DateTime firstOccurrenceWithAverageTimeOfDay(List<EventSample> eventSamples) {
+  private static org.joda.time.DateTime firstOccurrenceWithAverageTimeOfDay(List<EventSample> eventSamples) {
     return eventSamples.get(0).getTimestamp().withMillisOfDay(averageTimeOfDay(eventSamples));
-  }
-
-  @Override
-  public List<Recurrence> foundRecurrences() {
-    return foundRecurrences;
   }
 }

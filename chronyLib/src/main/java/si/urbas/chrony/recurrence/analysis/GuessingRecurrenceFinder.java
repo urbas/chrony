@@ -13,19 +13,14 @@ import java.util.List;
 public class GuessingRecurrenceFinder implements RecurrenceFinder {
 
   private static final int[] POSSIBLE_PERIODS = new int[]{1, 2, 3, 4, 5, 6, 7};
-  private final List<Recurrence> foundRecurrences;
-
-  public GuessingRecurrenceFinder(List<EventSample> eventSamples) {
-    if (eventSamples.size() > 1) {
-      foundRecurrences = guessPossibleRecurrences(eventSamples);
-    } else {
-      foundRecurrences = Collections.emptyList();
-    }
-  }
 
   @Override
-  public List<Recurrence> foundRecurrences() {
-    return foundRecurrences;
+  public List<Recurrence> foundRecurrences(List<EventSample> eventSamples) {
+    if (eventSamples.size() > 1) {
+      return guessPossibleRecurrences(eventSamples);
+    } else {
+      return Collections.emptyList();
+    }
   }
 
   static List<Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples) {
