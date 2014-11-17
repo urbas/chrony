@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import si.urbas.chrony.AnalysedEvent;
+import si.urbas.chrony.analysis.AnalysedEvent;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.util.ChangeNotifier;

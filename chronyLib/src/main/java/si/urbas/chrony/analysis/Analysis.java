@@ -1,4 +1,4 @@
-package si.urbas.chrony;
+package si.urbas.chrony.analysis;
 
 import java.util.List;
 

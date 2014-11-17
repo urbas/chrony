@@ -1,7 +1,5 @@
 package si.urbas.chrony.analysis;
 
-import si.urbas.chrony.AnalysedEvent;
-import si.urbas.chrony.Analysis;
 import si.urbas.chrony.Event;
 import si.urbas.chrony.EventRepository;
 import si.urbas.chrony.metrics.EventTemporalMetrics;

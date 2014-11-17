@@ -7,6 +7,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import si.urbas.chrony.*;
+import si.urbas.chrony.analysis.AnalysedEvent;
+import si.urbas.chrony.analysis.Analysis;
 import si.urbas.chrony.analysis.SimpleAnalyser;
 import si.urbas.chrony.util.ChangeListener;
 import si.urbas.chrony.util.ChangeNotifier;

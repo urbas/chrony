@@ -1,6 +1,5 @@
 package si.urbas.chrony.analysis;
 
-import si.urbas.chrony.Analysis;
 import si.urbas.chrony.EventRepository;
 
 public class SimpleAnalyser {

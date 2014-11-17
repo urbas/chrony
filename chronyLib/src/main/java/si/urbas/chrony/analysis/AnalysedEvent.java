@@ -1,4 +1,6 @@
-package si.urbas.chrony;
+package si.urbas.chrony.analysis;
+
+import si.urbas.chrony.Event;
 
 public interface AnalysedEvent {
 
