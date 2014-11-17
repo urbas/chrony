@@ -4,18 +4,18 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ChangeNotifier {
 
-  private final ConcurrentLinkedQueue<ChangeListener> dataSetObservable = new ConcurrentLinkedQueue<ChangeListener>();
+  private final ConcurrentLinkedQueue<ChangeListener> changeListeners = new ConcurrentLinkedQueue<ChangeListener>();
 
   public void registerChangeListener(ChangeListener changeListener) {
-    dataSetObservable.add(changeListener);
+    changeListeners.add(changeListener);
   }
 
   public void unregisterChangeListener(ChangeListener changeListener) {
-    dataSetObservable.remove(changeListener);
+    changeListeners.remove(changeListener);
   }
 
   public void notifyChangeListeners() {
-    for (ChangeListener changeListener : dataSetObservable) {
+    for (ChangeListener changeListener : changeListeners) {
       changeListener.changed();
     }
   }
