@@ -1,9 +1,12 @@
 package si.urbas.chrony;
 
 import org.joda.time.DateTime;
-import si.urbas.chrony.util.EventSampleOldestFirstOrder;
+import si.urbas.chrony.util.EventSampleOldestFirstComparator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 import static si.urbas.chrony.util.MathUtils.randomValueBetween;
 import static si.urbas.chrony.util.TimeUtils.*;
@@ -68,6 +71,6 @@ public class EventSamplesTestUtils {
       long timeInMillis = currentOccurrence + randomValueBetween(randomnessSource, -maxDeviationInMillis, maxDeviationInMillis);
       samplesToAddTo.add(eventSampleAt(timeInMillis));
     }
-    Collections.sort(samplesToAddTo, EventSampleOldestFirstOrder.INSTANCE);
+    Collections.sort(samplesToAddTo, EventSampleOldestFirstComparator.INSTANCE);
   }
 }

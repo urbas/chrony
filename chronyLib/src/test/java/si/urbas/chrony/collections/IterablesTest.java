@@ -3,7 +3,7 @@ package si.urbas.chrony.collections;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import si.urbas.chrony.EventSample;
-import si.urbas.chrony.util.EventSampleTimestampComparator;
+import si.urbas.chrony.util.EventSampleOldestFirstComparator;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ import static si.urbas.chrony.util.TimeUtils.createUtcDate;
 
 public class IterablesTest {
 
-  private static final EventSampleTimestampComparator EVENT_SAMPLE_COMPARATOR = EventSampleTimestampComparator.INSTANCE;
+  private static final EventSampleOldestFirstComparator EVENT_SAMPLE_COMPARATOR = EventSampleOldestFirstComparator.INSTANCE;
 
 
   @Test

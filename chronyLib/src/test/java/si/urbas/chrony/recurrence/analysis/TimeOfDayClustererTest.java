@@ -6,7 +6,7 @@ import org.junit.Test;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.EventSamplesTestUtils;
 import si.urbas.chrony.collections.Iterables;
-import si.urbas.chrony.util.EventSampleTimestampComparator;
+import si.urbas.chrony.util.EventSampleOldestFirstComparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class TimeOfDayClustererTest {
 
     assertArrayEquals(
       new int[]{averageTimeOfDay(eventSamples16_00), averageTimeOfDay(eventSamples17_00)},
-      timeOfDayClusterer.millisOfDayClusters(Iterables.merge(eventSamples16_00, eventSamples17_00, EventSampleTimestampComparator.INSTANCE))
+      timeOfDayClusterer.millisOfDayClusters(Iterables.merge(eventSamples16_00, eventSamples17_00, EventSampleOldestFirstComparator.INSTANCE))
     );
   }
 

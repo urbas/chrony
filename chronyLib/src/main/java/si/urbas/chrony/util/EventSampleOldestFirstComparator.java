@@ -4,9 +4,9 @@ import si.urbas.chrony.EventSample;
 
 import java.util.Comparator;
 
-public class EventSampleTimestampComparator implements Comparator<EventSample> {
+public class EventSampleOldestFirstComparator implements Comparator<EventSample> {
 
-  public static final EventSampleTimestampComparator INSTANCE = new EventSampleTimestampComparator();
+  public static final EventSampleOldestFirstComparator INSTANCE = new EventSampleOldestFirstComparator();
 
   @Override
   public int compare(EventSample eventSampleA, EventSample eventSampleB) {

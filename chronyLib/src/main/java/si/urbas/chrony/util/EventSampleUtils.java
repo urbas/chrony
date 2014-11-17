@@ -42,7 +42,7 @@ public class EventSampleUtils {
    * @return the same list (same instance ) as the given {@code eventSamples}.
    */
   public static List<EventSample> sortByTimestamp(List<EventSample> eventSamples) {
-    Collections.sort(eventSamples, EventSampleTimestampComparator.INSTANCE);
+    Collections.sort(eventSamples, EventSampleOldestFirstComparator.INSTANCE);
     return eventSamples;
   }
 
