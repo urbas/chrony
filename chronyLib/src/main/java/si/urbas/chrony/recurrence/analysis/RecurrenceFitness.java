@@ -4,39 +4,30 @@ import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.IndexedRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
-import static si.urbas.chrony.util.EventSampleAssertions.assertEventSamplesOrdered;
 import static si.urbas.chrony.util.EventSampleUtils.distanceBetween;
 import static si.urbas.chrony.util.EventSampleUtils.findClosest;
 
 public class RecurrenceFitness {
 
-  private final double fitness;
 
-  /**
-   * @param eventSamples event samples ordered by ascending timestamp.
-   */
-  public RecurrenceFitness(Recurrence recurrence, List<EventSample> eventSamples) {
-    assertEventSamplesOrdered(eventSamples);
+  public double fitness(Recurrence recurrence, List<EventSample> eventSamples) {
     if (eventSamples.size() > 0) {
-      fitness = -sumOfDistancesFromSamples(recurrence, eventSamples)
-                - sumOfDistancesToSamples(recurrence, eventSamples);
+      return -sumOfDistancesFromSamples(recurrence, eventSamples)
+             - sumOfDistancesToSamples(recurrence, eventSamples);
     } else {
-      fitness = Double.NEGATIVE_INFINITY;
+      return Double.NEGATIVE_INFINITY;
     }
   }
 
-  public double fitness() {
-    return fitness;
-  }
-
-  public static ArrayList<RecurrenceFitness> computeFitnesses(List<Recurrence> recurrences, List<EventSample> eventSamples) {
-    ArrayList<RecurrenceFitness> recurrenceFitnesses = new ArrayList<RecurrenceFitness>();
+  public static double[] computeFitnesses(List<Recurrence> recurrences, List<EventSample> eventSamples) {
+    double[] recurrenceFitnesses = new double[recurrences.size()];
+    RecurrenceFitness recurrenceFitness = new RecurrenceFitness();
+    int idx = -1;
     for (Recurrence recurrence : recurrences) {
-      recurrenceFitnesses.add(new RecurrenceFitness(recurrence, eventSamples));
+      recurrenceFitnesses[++idx] = recurrenceFitness.fitness(recurrence, eventSamples);
     }
     return recurrenceFitnesses;
   }

@@ -3,14 +3,13 @@ package si.urbas.chrony.recurrence.analysis;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.Recurrence;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BitMaskChromosomeFitness {
 
   private static final int SIZE_PENALTY_RATE = 1000 * 60 * 60;
   private final List<EventSample> eventSamples;
-  private final ArrayList<RecurrenceFitness> recurrenceFitnesses;
+  private final double[] recurrenceFitnesses;
 
   public BitMaskChromosomeFitness(List<EventSample> eventSamples, List<Recurrence> recurrencePool) {
     this.eventSamples = eventSamples;
@@ -28,9 +27,9 @@ public class BitMaskChromosomeFitness {
 
   private double sumOfRecurrencesFitnesses(RecurrenceChromosome recurrences) {
     double sumOfRecurrenceFitnesses = 0;
-    for (int i = 0; i < recurrenceFitnesses.size(); i++) {
+    for (int i = 0; i < recurrenceFitnesses.length; i++) {
       if (recurrences.hasRecurrence(i)) {
-        sumOfRecurrenceFitnesses += recurrenceFitnesses.get(i).fitness();
+        sumOfRecurrenceFitnesses += recurrenceFitnesses[i];
       }
     }
     return sumOfRecurrenceFitnesses;
