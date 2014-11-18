@@ -45,7 +45,7 @@ public class TimeOfDayClustererTest {
   }
 
   @Test
-  public void millisOfDayClusters_MUST_return_an_averages_time() {
+  public void millisOfDayClusters_MUST_return_an_average_time() {
     List<EventSample> eventSamples = someEventSamplesRoughlyAt(millisOfDay(16, 0));
     int averageTimeOfDayInMillis = averageTimeOfDay(eventSamples);
     assertArrayEquals(

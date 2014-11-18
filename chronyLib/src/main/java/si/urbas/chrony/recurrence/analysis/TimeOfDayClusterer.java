@@ -12,6 +12,7 @@ import java.util.List;
 import static si.urbas.chrony.util.TimeUtils.MINUTE_IN_MILLIS;
 
 public class TimeOfDayClusterer {
+  
   public int[] millisOfDayClusters(List<EventSample> eventSamples) {
     DBSCANClusterer<DoublePoint> doublePointDBSCANClusterer = new DBSCANClusterer<DoublePoint>(10 * MINUTE_IN_MILLIS, 2);
     List<Cluster<DoublePoint>> clusters = doublePointDBSCANClusterer.cluster(convertToDoublePoints(eventSamples));
@@ -21,8 +22,7 @@ public class TimeOfDayClusterer {
   private int[] toAverageMillisOfDay(List<Cluster<DoublePoint>> clusters) {
     int[] millisOfDay = new int[clusters.size()];
     for (int i = 0, clustersSize = clusters.size(); i < clustersSize; i++) {
-      Cluster<DoublePoint> cluster = clusters.get(i);
-      millisOfDay[i] = calculateAverage(cluster);
+      millisOfDay[i] = calculateAverage(clusters.get(i));
     }
     return millisOfDay;
   }
