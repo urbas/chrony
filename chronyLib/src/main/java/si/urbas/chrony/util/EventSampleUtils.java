@@ -33,7 +33,7 @@ public class EventSampleUtils {
   }
 
   public static long distanceBetween(EventSample olderEventSample, long millis) {
-    return abs(olderEventSample.getTimestampInMillis() - millis);
+    return abs(olderEventSample.getTimestamp().getMillis() - millis);
   }
 
   /**
@@ -71,14 +71,14 @@ public class EventSampleUtils {
    * @param eventSamples a sorted list of event samples (oldest to newest).
    */
   public static long oldestTimestamp(List<EventSample> eventSamples) {
-    return eventSamples.get(0).getTimestampInMillis();
+    return eventSamples.get(0).getTimestamp().getMillis();
   }
 
   /**
    * @param eventSamples a sorted list of event samples (oldest to newest).
    */
   public static long newestTimestamp(List<EventSample> eventSamples) {
-    return eventSamples.get(eventSamples.size() - 1).getTimestampInMillis();
+    return eventSamples.get(eventSamples.size() - 1).getTimestamp().getMillis();
   }
 
   /**
@@ -105,8 +105,8 @@ public class EventSampleUtils {
   public static int averagePeriodInDays(List<EventSample> eventSamples) {
     return averagePeriodInDays(
       eventSamples.size(),
-      eventSamples.get(0).getTimestampInMillis(),
-      eventSamples.get(eventSamples.size() - 1).getTimestampInMillis()
+      eventSamples.get(0).getTimestamp().getMillis(),
+      eventSamples.get(eventSamples.size() - 1).getTimestamp().getMillis()
     );
   }
 
@@ -124,7 +124,7 @@ public class EventSampleUtils {
     public int compare(Object o1, Object o2) {
       EventSample eventSample = (EventSample) o1;
       Long bound = (Long) o2;
-      return Long.compare(eventSample.getTimestampInMillis(), bound);
+      return Long.compare(eventSample.getTimestamp().getMillis(), bound);
     }
   }
 }

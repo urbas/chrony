@@ -63,29 +63,29 @@ public class EventSampleUtilsTest {
 
   @Test
   public void countSamplesWithinTime_MUST_return_the_count_of_encompassed_elements() {
-    long fromTime = eventSamples.get(1).getTimestampInMillis();
-    long untilTime = eventSamples.get(3).getTimestampInMillis();
+    long fromTime = eventSamples.get(1).getTimestamp().getMillis();
+    long untilTime = eventSamples.get(3).getTimestamp().getMillis();
     assertEquals(3, countSamplesWithinTime(eventSamples, fromTime, untilTime));
   }
 
   @Test
   public void countSamplesWithinTime_MUST_return_the_count_of_encompassed_elements_WHEN_the_upper_bound_is_beyond() {
-    long fromTime = eventSamples.get(1).getTimestampInMillis();
-    long untilTime = eventSamples.get(3).getTimestampInMillis() + 1;
+    long fromTime = eventSamples.get(1).getTimestamp().getMillis();
+    long untilTime = eventSamples.get(3).getTimestamp().getMillis() + 1;
     assertEquals(3, countSamplesWithinTime(eventSamples, fromTime, untilTime));
   }
 
   @Test
   public void countSamplesWithinTime_MUST_return_the_count_of_encompassed_elements_WHEN_the_lower_bound_is_beyond() {
-    long fromTime = eventSamples.get(1).getTimestampInMillis() - 1;
-    long untilTime = eventSamples.get(3).getTimestampInMillis();
+    long fromTime = eventSamples.get(1).getTimestamp().getMillis() - 1;
+    long untilTime = eventSamples.get(3).getTimestamp().getMillis();
     assertEquals(3, countSamplesWithinTime(eventSamples, fromTime, untilTime));
   }
 
   @Test
   public void countSamplesWithinTime_MUST_return_the_count_of_encompassed_elements_WHEN_both_bounds_are_beyond() {
-    long fromTime = eventSamples.get(1).getTimestampInMillis() - 1;
-    long untilTime = eventSamples.get(3).getTimestampInMillis() + 1;
+    long fromTime = eventSamples.get(1).getTimestamp().getMillis() - 1;
+    long untilTime = eventSamples.get(3).getTimestamp().getMillis() + 1;
     assertEquals(3, countSamplesWithinTime(eventSamples, fromTime, untilTime));
   }
 

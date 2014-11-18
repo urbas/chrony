@@ -32,10 +32,6 @@ public class EventSample {
     return eventName;
   }
 
-  public long getTimestampInMillis() {
-    return timestampDateTime.getMillis();
-  }
-
   public Object getData() {
     return data;
   }

@@ -54,7 +54,7 @@ public class SQLiteEventRepository extends SQLiteOpenHelper implements EventRepo
   public void addEventSample(EventSample eventSample) {
     SQLiteDatabase dbWriter = getWritableDatabase();
     try {
-      addEventSample(eventSample.getEventName(), eventSample.getTimestampInMillis(), eventSample.getData(), dbWriter);
+      addEventSample(eventSample.getEventName(), eventSample.getTimestamp().getMillis(), eventSample.getData(), dbWriter);
     } finally {
       dbWriter.close();
     }
