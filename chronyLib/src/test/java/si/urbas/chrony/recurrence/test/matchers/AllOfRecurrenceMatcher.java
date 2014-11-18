@@ -21,6 +21,10 @@ public class AllOfRecurrenceMatcher extends RecurrenceMatcher {
     return new RecurrenceOccurringCloseToMatcherBuilder(this, distanceInMillis);
   }
 
+  public RecurrenceMatcher withPeriodInMillis(long periodInMillis, long delta) {
+    return and(new ConstantPeriodRecurrenceWithDeltaMatcher(periodInMillis, delta));
+  }
+
   @Override
   protected boolean matches(Recurrence recurrence) {
     return Matchers.allOf(recurrenceMatchers).matches(recurrence);

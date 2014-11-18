@@ -5,6 +5,10 @@ import java.util.Random;
 import static java.lang.Math.abs;
 
 public class MathUtils {
+  public static boolean isWithin(long number, long centerPoint, long radius) {
+    return abs(number - centerPoint) <= radius;
+  }
+
   /**
    * @return the number whose absolute value is smallest.
    */
