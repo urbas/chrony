@@ -3,7 +3,6 @@ package si.urbas.chrony.recurrence.analysis;
 import si.urbas.chrony.EventSample;
 import si.urbas.chrony.recurrence.IndexedRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
-import si.urbas.chrony.util.EventSampleUtils;
 
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class RecurrenceFitness {
 
   private double sumOfDistancesToSamples(Recurrence recurrence, List<EventSample> eventSamples) {
     double distanceSum = 0;
-    IndexedRecurrence occurrencesInEntireRange = recurrence.subOccurrences(oldestTimestamp(eventSamples), newestTimestamp(eventSamples));
+    IndexedRecurrence occurrencesInEntireRange = recurrence.subOccurrences(oldestTimestamp(eventSamples).getMillis(), newestTimestamp(eventSamples).getMillis());
     for (int i = 0; i < occurrencesInEntireRange.size(); i++) {
       distanceSum += distanceToClosestSample(occurrencesInEntireRange.getOccurrenceAt(i), eventSamples);
     }

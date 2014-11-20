@@ -28,36 +28,36 @@ public class EventSampleUtilsTest {
 
   @Test
   public void countSamplesWithinTime_MUST_return_0_WHEN_bounds_are_before_all_the_event_samples() {
-    long fromTime = oldestTimestamp(eventSamples) - 1;
-    long untilTime = oldestTimestamp(eventSamples) - 1;
+    long fromTime = oldestTimestamp(eventSamples).getMillis() - 1;
+    long untilTime = oldestTimestamp(eventSamples).getMillis() - 1;
     assertEquals(0, countSamplesWithinTime(eventSamples, fromTime, untilTime));
   }
 
   @Test
   public void countSamplesWithinTime_MUST_return_the_size_of_the_list_WHEN_bounds_encompass_the_entire_list_of_samples() {
-    long fromTime = oldestTimestamp(eventSamples) - 1;
-    long untilTime = newestTimestamp(eventSamples) + 1;
+    long fromTime = oldestTimestamp(eventSamples).getMillis() - 1;
+    long untilTime = newestTimestamp(eventSamples).getMillis() + 1;
     assertEquals(eventSamples.size(), countSamplesWithinTime(eventSamples, fromTime, untilTime));
   }
 
   @Test
   public void countSamplesWithinTime_MUST_return_1_WHEN_bounds_encompass_the_first_element() {
-    long fromTime = oldestTimestamp(eventSamples) - 1;
-    long untilTime = oldestTimestamp(eventSamples) + 1;
+    long fromTime = oldestTimestamp(eventSamples).getMillis() - 1;
+    long untilTime = oldestTimestamp(eventSamples).getMillis() + 1;
     assertEquals(1, countSamplesWithinTime(eventSamples, fromTime, untilTime));
   }
 
   @Test
   public void countSamplesWithinTime_MUST_return_1_WHEN_bounds_fall_on_the_first_element() {
-    long fromTime = oldestTimestamp(eventSamples);
-    long untilTime = oldestTimestamp(eventSamples);
+    long fromTime = oldestTimestamp(eventSamples).getMillis();
+    long untilTime = oldestTimestamp(eventSamples).getMillis();
     assertEquals(1, countSamplesWithinTime(eventSamples, fromTime, untilTime));
   }
 
   @Test
   public void countSamplesWithinTime_MUST_return_the_size_of_the_list_WHEN_bounds_fall_on_the_bounding_elements() {
-    long fromTime = oldestTimestamp(eventSamples);
-    long untilTime = newestTimestamp(eventSamples);
+    long fromTime = oldestTimestamp(eventSamples).getMillis();
+    long untilTime = newestTimestamp(eventSamples).getMillis();
     assertEquals(eventSamples.size(), countSamplesWithinTime(eventSamples, fromTime, untilTime));
   }
 

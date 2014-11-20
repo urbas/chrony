@@ -1,5 +1,7 @@
 package si.urbas.chrony.recurrence.test.matchers;
 
+import org.joda.time.DateTime;
+
 public class RecurrenceOccurringCloseToMatcherBuilder {
 
   private final AllOfRecurrenceMatcher allOfRecurrenceMatcher;
@@ -12,5 +14,9 @@ public class RecurrenceOccurringCloseToMatcherBuilder {
 
   public AllOfRecurrenceMatcher of(long firstOccurrenceTimeInMillis) {
     return allOfRecurrenceMatcher.and(new RecurrenceOccurringCloseToMatcher(firstOccurrenceTimeInMillis, maxDistanceToOccurrence));
+  }
+
+  public AllOfRecurrenceMatcher of(DateTime timestamp) {
+    return of(timestamp.getMillis());
   }
 }

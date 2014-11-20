@@ -70,15 +70,15 @@ public class EventSampleUtils {
   /**
    * @param eventSamples a sorted list of event samples (oldest to newest).
    */
-  public static long oldestTimestamp(List<EventSample> eventSamples) {
-    return eventSamples.get(0).getTimestamp().getMillis();
+  public static DateTime oldestTimestamp(List<EventSample> eventSamples) {
+    return eventSamples.get(0).getTimestamp();
   }
 
   /**
    * @param eventSamples a sorted list of event samples (oldest to newest).
    */
-  public static long newestTimestamp(List<EventSample> eventSamples) {
-    return eventSamples.get(eventSamples.size() - 1).getTimestamp().getMillis();
+  public static DateTime newestTimestamp(List<EventSample> eventSamples) {
+    return eventSamples.get(eventSamples.size() - 1).getTimestamp();
   }
 
   /**

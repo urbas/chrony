@@ -30,12 +30,9 @@ public class EventTemporalMetrics {
   }
 
   public static EventTemporalMetrics calculate(List<EventSample> eventSamples) {
-    long latestTimestampForEvent = eventSamples.size() == 0 ? Long.MIN_VALUE : EventSampleUtils.newestTimestamp(eventSamples);
-    long oldestTimestampForEvent = eventSamples.size() == 0 ? Long.MIN_VALUE : EventSampleUtils.oldestTimestamp(eventSamples);
+    long latestTimestampForEvent = eventSamples.size() == 0 ? Long.MIN_VALUE : EventSampleUtils.newestTimestamp(eventSamples).getMillis();
+    long oldestTimestampForEvent = eventSamples.size() == 0 ? Long.MIN_VALUE : EventSampleUtils.oldestTimestamp(eventSamples).getMillis();
     return new EventTemporalMetrics(eventSamples.size(), latestTimestampForEvent, oldestTimestampForEvent);
   }
 
-  public long entireTimeSpan() {
-    return newestTimestamp - oldestTimestamp;
-  }
 }

@@ -28,7 +28,7 @@ public class FrequencyAnalysis {
     if (eventSamples.isEmpty()) {
       return 0;
     } else {
-      return frequency(eventSamples, oldestTimestamp(eventSamples), untilTime);
+      return frequency(eventSamples, oldestTimestamp(eventSamples).getMillis(), untilTime);
     }
   }
 
