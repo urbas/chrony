@@ -5,6 +5,7 @@ import si.urbas.chrony.recurrence.ConstantPeriodRecurrence;
 import si.urbas.chrony.recurrence.Recurrence;
 
 import static si.urbas.chrony.util.MathUtils.isWithin;
+import static si.urbas.chrony.util.TimeUtils.describePeriod;
 
 public class ConstantPeriodRecurrenceWithDeltaMatcher extends RecurrenceMatcher {
 
@@ -30,7 +31,7 @@ public class ConstantPeriodRecurrenceWithDeltaMatcher extends RecurrenceMatcher 
 
   @Override
   protected String isolatedDescription() {
-    return "having a period of " + expectedPeriodInMillis + " +- " + expectedDelta + " ms";
+    return "having a period of " + describePeriod(expectedPeriodInMillis) + " +- " + describePeriod(expectedDelta);
   }
 
   private boolean matches(ConstantPeriodRecurrence recurrence) {
