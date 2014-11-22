@@ -4,8 +4,10 @@ import java.util.AbstractList;
 import java.util.RandomAccess;
 
 import static java.lang.Math.*;
+import static si.urbas.chrony.util.TimeUtils.formatDate;
+import static si.urbas.chrony.util.TimeUtils.formatPeriod;
 
-public class ConstantPeriodRecurrence extends AbstractList<Long> implements IndexedRecurrence, RandomAccess {
+public class ConstantPeriodRecurrence extends AbstractList<Long> implements PeriodicRecurrence, IndexedRecurrence, RandomAccess {
 
   public static final ConstantPeriodRecurrence EMPTY_OCCURRENCES = new ConstantPeriodRecurrence(0, 1, -1);
   private final long fromTimeInMillis;
@@ -25,6 +27,7 @@ public class ConstantPeriodRecurrence extends AbstractList<Long> implements Inde
     return fromTimeInMillis;
   }
 
+  @Override
   public long getPeriodInMillis() {
     return periodInMillis;
   }
@@ -156,5 +159,29 @@ public class ConstantPeriodRecurrence extends AbstractList<Long> implements Inde
       result = 31 * result + (int) (lastElement ^ (lastElement >>> 32));
       return result;
     }
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append("ConstantPeriodRecurrence{")
+                 .append("fromTimeInMillis=").append(formatDate(fromTimeInMillis))
+                 .append(", periodInMillis=").append(formatPeriod(periodInMillis))
+                 .append(", untilTimeInMillis=").append(formatDate(untilTimeInMillis));
+    stringBuilder.append(", occurrences=");
+    printOccurrences(stringBuilder);
+    stringBuilder.append("}");
+    return stringBuilder.toString();
+  }
+
+  private void printOccurrences(StringBuilder sb) {
+    sb.append("[");
+    if (!isEmpty()) {
+      sb.append(formatDate(get(0)));
+      for (int i = 1; i < size(); i++) {
+        sb.append(", ").append(formatDate(get(i)));
+      }
+    }
+    sb.append("]");
   }
 }

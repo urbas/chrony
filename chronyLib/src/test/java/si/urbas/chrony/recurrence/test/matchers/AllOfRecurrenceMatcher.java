@@ -6,6 +6,8 @@ import si.urbas.chrony.recurrence.Recurrence;
 
 import java.util.Arrays;
 
+import static si.urbas.chrony.util.TimeUtils.DAY_IN_MILLIS;
+
 public class AllOfRecurrenceMatcher extends RecurrenceMatcher {
   private final RecurrenceMatcher[] recurrenceMatchers;
 
@@ -13,16 +15,20 @@ public class AllOfRecurrenceMatcher extends RecurrenceMatcher {
     this.recurrenceMatchers = recurrenceMatchers;
   }
 
-  public RecurrenceMatcher withPeriodOf(int periodInDays) {
-    return and(new DailyPeriodRecurrenceMatcher(periodInDays));
-  }
-
   public RecurrenceOccurringCloseToMatcherBuilder within(long distanceInMillis) {
     return new RecurrenceOccurringCloseToMatcherBuilder(this, distanceInMillis);
   }
 
   public RecurrenceMatcher withPeriodInMillis(long periodInMillis, long delta) {
-    return and(new ConstantPeriodRecurrenceWithDeltaMatcher(periodInMillis, delta));
+    return and(new PeriodicRecurrenceWithDeltaMatcher(periodInMillis, delta));
+  }
+
+  public RecurrenceMatcher withPeriodInMillis(long periodInMillis) {
+    return withPeriodInMillis(periodInMillis, 0L);
+  }
+
+  public RecurrenceMatcher withPeriodInDays(int periodInDays) {
+    return withPeriodInMillis(periodInDays * DAY_IN_MILLIS);
   }
 
   @Override

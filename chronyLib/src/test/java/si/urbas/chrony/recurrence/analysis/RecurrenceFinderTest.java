@@ -27,8 +27,8 @@ public abstract class RecurrenceFinderTest {
   private final EventSample eventSampleAtTime3d17h = eventSampleAtTime(DAY_3, HOUR_17);
   private final EventSample eventSampleAtTime8d17h = eventSampleAtTime(DAY_8, HOUR_17);
   private final EventSample eventSampleAtTime10d17h = eventSampleAtTime(DAY_10, HOUR_17);
-  private final Matcher<Recurrence> weeklyRecurrence = recurrence().withPeriodOf(7);
-  private final Matcher<Recurrence> dailyRecurrence = recurrence().withPeriodOf(1);
+  private final Matcher<Recurrence> weeklyRecurrence = recurrence().withPeriodInDays(7);
+  private final Matcher<Recurrence> dailyRecurrence = recurrence().withPeriodInDays(1);
   protected Random randomnessSource;
   private RecurrenceFinder recurrenceFinder;
 
@@ -36,11 +36,6 @@ public abstract class RecurrenceFinderTest {
   public void setUp() {
     randomnessSource = new Random(731297);
     recurrenceFinder = createRecurrenceFinder();
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void constructor_MUST_throw_an_exception_WHEN_the_list_of_event_samples_is_not_sorted() {
-    recurrenceFinder.foundRecurrences(asList(eventSampleAtTime2d17h, eventSampleAtTime1d17h));
   }
 
   @Test
@@ -70,7 +65,7 @@ public abstract class RecurrenceFinderTest {
 
   @Test
   public void foundRecurrences_MUST_return_a_recurrence_of_every_second_day_WHEN_given_two_events_that_are_two_days_apart() {
-    assertThat(recurrenceFinder.foundRecurrences(asList(eventSampleAtTime1d17h, eventSampleAtTime3d17h)), contains(recurrence().withPeriodOf(TWO_DAYS)));
+    assertThat(recurrenceFinder.foundRecurrences(asList(eventSampleAtTime1d17h, eventSampleAtTime3d17h)), contains(recurrence().withPeriodInDays(TWO_DAYS)));
   }
 
   @Test
@@ -80,7 +75,7 @@ public abstract class RecurrenceFinderTest {
     assertThat(
       recurrenceFinder.foundRecurrences(eventSamples),
       contains(
-        recurrence().within(HOUR_IN_MILLIS).of(firstOccurrenceTimeInMillis).withPeriodOf(THREE_DAYS)
+        recurrence().within(HOUR_IN_MILLIS).of(firstOccurrenceTimeInMillis).withPeriodInDays(THREE_DAYS)
       )
     );
   }
@@ -95,8 +90,8 @@ public abstract class RecurrenceFinderTest {
     assertThat(
       recurrenceFinder.foundRecurrences(eventSamples),
       contains(
-        recurrence().within(HOUR_IN_MILLIS).of(startTimeInMillis_4Day).withPeriodOf(4),
-        recurrence().within(HOUR_IN_MILLIS).of(startTimeInMillis_7Day).withPeriodOf(7)
+        recurrence().within(HOUR_IN_MILLIS).of(startTimeInMillis_4Day).withPeriodInDays(4),
+        recurrence().within(HOUR_IN_MILLIS).of(startTimeInMillis_7Day).withPeriodInDays(7)
       )
     );
   }

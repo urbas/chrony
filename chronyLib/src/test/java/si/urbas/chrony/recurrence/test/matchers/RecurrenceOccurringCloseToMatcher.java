@@ -3,7 +3,7 @@ package si.urbas.chrony.recurrence.test.matchers;
 import org.hamcrest.Description;
 import si.urbas.chrony.recurrence.Recurrence;
 
-import static si.urbas.chrony.util.TimeUtils.describePeriod;
+import static si.urbas.chrony.util.TimeUtils.formatPeriod;
 import static si.urbas.chrony.util.TimeUtils.formatDate;
 
 public class RecurrenceOccurringCloseToMatcher extends RecurrenceMatcher {
@@ -24,7 +24,7 @@ public class RecurrenceOccurringCloseToMatcher extends RecurrenceMatcher {
 
   @Override
   protected String isolatedDescription() {
-    return "happening within " + describePeriod(maxDistanceToOccurrence) + " of " + formatDate(targetOccurrenceTimeInMillis);
+    return "happening within " + formatPeriod(maxDistanceToOccurrence) + " of " + formatDate(targetOccurrenceTimeInMillis);
   }
 
   @Override

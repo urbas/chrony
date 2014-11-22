@@ -20,7 +20,7 @@ public class TimeUtils {
   private static final DateTimeFormatter DEFAULT_DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
   private static final PeriodFormatter PERIOD_FORMATTER = PeriodFormat.getDefault();
 
-  public static String describePeriod(long periodInMillis) {
+  public static String formatPeriod(long periodInMillis) {
     return PERIOD_FORMATTER.print(new Period(0, periodInMillis));
   }
 

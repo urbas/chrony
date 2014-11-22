@@ -37,7 +37,7 @@ public class SingleDailyRecurrenceFinderTest {
     ArrayList<EventSample> twoEventSamples = createRecurringEventSamples(THREE_DAYS, THREE_DAYS, TIME_OF_FIRST_OCCURRENCE);
     assertThat(
       recurrenceFinder.foundRecurrences(twoEventSamples),
-      contains(recurrence().withPeriodOf(THREE_DAYS))
+      contains(recurrence().withPeriodInDays(THREE_DAYS))
     );
   }
 
@@ -46,7 +46,7 @@ public class SingleDailyRecurrenceFinderTest {
     ArrayList<EventSample> eventSamples = createRandomEventSamples(random, THREE_DAYS, 10 * THREE_DAYS, ONE_HOUR_DEVIATION, TIME_OF_FIRST_OCCURRENCE);
     assertThat(
       recurrenceFinder.foundRecurrences(eventSamples),
-      contains(recurrence().withPeriodOf(THREE_DAYS))
+      contains(recurrence().withPeriodInDays(THREE_DAYS))
     );
   }
 
@@ -55,7 +55,7 @@ public class SingleDailyRecurrenceFinderTest {
     ArrayList<EventSample> eventSamples = createRandomEventSamples(random, THREE_DAYS, 30 * THREE_DAYS, ONE_HOUR_DEVIATION, TIME_OF_FIRST_OCCURRENCE);
     assertThat(
       recurrenceFinder.foundRecurrences(eventSamples),
-      contains(recurrence().within(10 * MINUTE_IN_MILLIS).of(TIME_OF_FIRST_OCCURRENCE).withPeriodOf(THREE_DAYS))
+      contains(recurrence().within(10 * MINUTE_IN_MILLIS).of(TIME_OF_FIRST_OCCURRENCE).withPeriodInDays(THREE_DAYS))
     );
   }
 

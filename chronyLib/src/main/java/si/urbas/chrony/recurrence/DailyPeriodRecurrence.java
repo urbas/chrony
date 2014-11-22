@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 import static si.urbas.chrony.util.MathUtils.smallestByAbsoluteValue;
 import static si.urbas.chrony.util.TimeUtils.*;
 
-public class DailyPeriodRecurrence implements Recurrence {
+public class DailyPeriodRecurrence implements PeriodicRecurrence {
 
   private final int periodInDays;
   private final DateTime firstOccurrence;
@@ -21,6 +21,11 @@ public class DailyPeriodRecurrence implements Recurrence {
 
   public int getPeriodInDays() {
     return periodInDays;
+  }
+
+  @Override
+  public long getPeriodInMillis() {
+    return getPeriodInDays() * DAY_IN_MILLIS;
   }
 
   @Override
