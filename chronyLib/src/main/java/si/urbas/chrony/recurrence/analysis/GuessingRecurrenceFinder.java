@@ -23,7 +23,7 @@ public class GuessingRecurrenceFinder implements RecurrenceFinder {
   }
 
   private static List<Recurrence> guessPossibleRecurrences(List<EventSample> eventSamples) {
-    int[] timesOfDay = new TimeOfDayClusterer().millisOfDayClusters(eventSamples);
+    int[] timesOfDay = TimeOfDayClusterer.millisOfDayClusters(eventSamples);
     long startTime = EventSampleUtils.oldestTimestamp(eventSamples).withMillisOfDay(timesOfDay[0]).getMillis();
     long endTime = EventSampleUtils.newestTimestamp(eventSamples).plusDays(1).getMillis();
     return Arrays.<Recurrence>asList(new ConstantPeriodRecurrence(startTime, 3 * DAY_IN_MILLIS, endTime));
