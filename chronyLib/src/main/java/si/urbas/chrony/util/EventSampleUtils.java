@@ -2,6 +2,7 @@ package si.urbas.chrony.util;
 
 import org.joda.time.DateTime;
 import si.urbas.chrony.EventSample;
+import si.urbas.chrony.collections.Iterables;
 
 import java.util.*;
 
@@ -115,6 +116,10 @@ public class EventSampleUtils {
                                         long lastOccurrenceTimeInMillis) {
     double durationInDays = (double) (lastOccurrenceTimeInMillis - firstOccurrenceTimeInMillis) / TimeUtils.DAY_IN_MILLIS;
     return (int) Math.round(durationInDays / (numberOfOccurrences - 1));
+  }
+
+  public static ArrayList<EventSample> merge(Iterable<EventSample> eventSamplesA, Iterable<EventSample> eventSamplesB) {
+    return Iterables.merge(eventSamplesA, eventSamplesB, EventSampleOldestFirstComparator.INSTANCE);
   }
 
   private static class EventSampleWithTimestampLongComparator implements Comparator<Object> {
